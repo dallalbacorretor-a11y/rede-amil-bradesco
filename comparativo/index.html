@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comparativo Amil x Bradesco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* mesma paleta da pagina inicial e dos PDFs */
+:root{
+  --papel:#f2f5f9; --carta:#ffffff; --tinta:#101828; --tinta-fraca:#5b6577;
+  --risco:#dbe2ec; --realce:#f6f8fc; --zebra:#f7f9fc;
+  --marca-fundo:#0f1a29; --sobre-marca:#ffffff; --ouro:#8a6810; --ouro-topo:#c9a227;
+  --amil:#2733c4; --bradesco:#8b0633; --ambos:#0e6b64; --nao:#c3cbd8;
+  --sombra:0 1px 2px rgba(16,26,41,.05),0 6px 18px rgba(16,26,41,.05);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --papel:#0a0f17; --carta:#131a25; --tinta:#e7ecf4; --tinta-fraca:#94a0b4;
+    --risco:#25303f; --realce:#19212e; --zebra:#161e2a;
+    --marca-fundo:#0b1422; --sobre-marca:#dbe7f7; --ouro:#d6b155;
+    --amil:#8d99ff; --bradesco:#f08aa6; --ambos:#6cc9c0; --nao:#3a4658;
+    --sombra:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.28);
+  }
+}
+:root[data-theme="dark"]{
+  --papel:#0a0f17; --carta:#131a25; --tinta:#e7ecf4; --tinta-fraca:#94a0b4;
+  --risco:#25303f; --realce:#19212e; --zebra:#161e2a;
+  --marca-fundo:#0b1422; --sobre-marca:#dbe7f7; --ouro:#d6b155;
+  --amil:#8d99ff; --bradesco:#f08aa6; --ambos:#6cc9c0; --nao:#3a4658;
+  --sombra:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--papel); color:var(--tinta);
+  font:14px/1.5 "IBM Plex Sans",-apple-system,"Segoe UI",sans-serif; -webkit-font-smoothing:antialiased}
+button,select,input{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--ouro-topo); outline-offset:2px; border-radius:4px}
+
+.topo{background:var(--marca-fundo); color:var(--sobre-marca); border-bottom:3px solid var(--ouro-topo);
+  padding:26px 24px 22px}
+.topo-in{max-width:1240px; margin:0 auto}
+.selo{font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--ouro-topo)}
+.topo h1{margin:6px 0 0; font:500 30px/1.15 Newsreader,Georgia,serif; letter-spacing:-.01em}
+.topo h1 em{font-style:italic; color:var(--ouro-topo); font-weight:400}
+.topo p{margin:8px 0 0; max-width:74ch; font-size:13.5px; opacity:.8}
+
+main{max-width:1240px; margin:0 auto; padding:20px 24px 40px}
+
+.filtros{background:var(--carta); border:1px solid var(--risco); border-radius:12px; box-shadow:var(--sombra);
+  padding:16px 18px; display:grid; gap:14px}
+.linha{display:flex; gap:12px 18px; flex-wrap:wrap; align-items:flex-end}
+.campo{display:flex; flex-direction:column; gap:5px; min-width:0}
+.campo > span{font-size:10.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--tinta-fraca)}
+select,input[type=search]{height:38px; border:1px solid var(--risco); border-radius:8px; background:var(--carta);
+  padding:0 10px; min-width:230px}
+input[type=search]{min-width:260px}
+.chips{display:flex; gap:6px; flex-wrap:wrap}
+.chip{border:1px solid var(--risco); background:var(--carta); border-radius:999px; padding:5px 12px;
+  cursor:pointer; font-size:12.5px; font-weight:500; display:inline-flex; gap:7px; align-items:center}
+.chip i{width:9px; height:9px; border-radius:50%; background:var(--c); opacity:.35}
+.chip[aria-pressed="true"]{border-color:var(--c); background:color-mix(in srgb, var(--c) 12%, var(--carta));}
+.chip[aria-pressed="true"] i{opacity:1}
+.op{font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-right:4px; align-self:center}
+.op.amil{color:var(--amil)} .op.brad{color:var(--bradesco)}
+.seg{display:inline-flex; border:1px solid var(--risco); border-radius:8px; overflow:hidden}
+.seg button{border:0; background:var(--carta); padding:8px 12px; cursor:pointer; font-size:12.5px; font-weight:500;
+  border-right:1px solid var(--risco)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--marca-fundo); color:#fff}
+.acoes{margin-left:auto; display:flex; gap:8px}
+.btn{height:38px; border-radius:8px; border:1px solid var(--marca-fundo); background:var(--marca-fundo); color:#fff;
+  padding:0 16px; font-weight:600; cursor:pointer}
+.btn:disabled{opacity:.6; cursor:wait}
+
+.placar{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin:18px 0}
+.card{background:var(--carta); border:1px solid var(--risco); border-radius:12px; padding:14px 16px 12px; box-shadow:var(--sombra);
+  border-top:3px solid var(--c, var(--ouro-topo)); cursor:pointer; text-align:left}
+.card[aria-pressed="true"]{outline:2px solid var(--c, var(--ouro-topo)); outline-offset:-1px}
+.card b{display:block; font:500 30px/1 Newsreader,Georgia,serif}
+.card span{display:block; margin-top:6px; font-size:10.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--tinta-fraca)}
+
+.aviso{font-size:12.5px; color:var(--tinta-fraca); margin:0 0 10px}
+.grade{background:var(--carta); border:1px solid var(--risco); border-radius:12px; box-shadow:var(--sombra); overflow:auto}
+table{border-collapse:collapse; width:100%; font-size:13px}
+thead th{position:sticky; top:0; z-index:2; background:var(--marca-fundo); color:#fff; font-size:10.5px; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase; padding:10px 8px; text-align:left; white-space:nowrap}
+thead th.pl{text-align:center; min-width:74px; background:var(--c); white-space:normal; line-height:1.25}
+thead th.pl small{display:block; opacity:.8; font-weight:500; letter-spacing:.05em}
+tbody td{padding:9px 8px; border-bottom:1px solid var(--risco); vertical-align:top}
+tbody tr:nth-child(even) td{background:var(--zebra)}
+tr.grupo td{background:var(--realce)!important; font-size:10.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--tinta-fraca); padding:12px 10px 8px}
+td.nome b{font-weight:600}
+td.nome .al{display:block; font-size:11.5px; color:var(--tinta-fraca)}
+td.nome .end{display:block; font-size:11.5px; color:var(--tinta-fraca); margin-top:2px}
+td.nome .acred{font-size:10px; font-weight:700; letter-spacing:.08em; color:var(--ouro); margin-left:6px}
+td.bairro{font-size:12px; color:var(--tinta-fraca); min-width:110px}
+td.pl{text-align:center; font-weight:700; font-size:15px}
+td.pl.nao{color:var(--nao); font-weight:400}
+td.pl small{display:block; font-size:10px; font-weight:600; color:var(--tinta-fraca)}
+td.onde{white-space:nowrap}
+.tag{display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.06em; border-radius:999px; padding:2px 9px;
+  color:#fff; background:var(--c)}
+.vazio{padding:30px; text-align:center; color:var(--tinta-fraca)}
+.mais{display:block; margin:12px auto; }
+
+.rodape{border-top:1px solid var(--risco); padding:16px 24px 26px; font-size:12px; color:var(--tinta-fraca)}
+.rodape-in{max-width:1240px; margin:0 auto}
+.rodape b{color:var(--tinta)}
+
+@media (max-width:720px){
+  .topo{padding:20px 16px 18px} .topo h1{font-size:24px}
+  main{padding:14px 16px 30px} .rodape{padding-left:16px; padding-right:16px}
+  select,input[type=search]{min-width:0; width:100%} .campo{flex:1 1 100%}
+  .acoes{margin-left:0; width:100%} .acoes .btn{flex:1}
+  .seg{flex-wrap:wrap; border:0; gap:6px} .seg button{border:1px solid var(--risco); border-radius:8px}
+  .card b{font-size:24px}
+}
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-in">
+    <div class="selo">Mazza Broker</div>
+    <h1>Comparativo de rede — <em>Amil</em> × <em>Bradesco Saúde</em></h1>
+    <p>Hospitais, clínicas, laboratórios e centros de imagem lado a lado, cidade por cidade.
+       Escolha os planos de cada operadora, veja o que está nos dois e o que é exclusivo de cada um,
+       e gere o PDF.</p>
+  </div>
+</header>
+
+<main>
+  <section class="filtros" aria-label="Filtros">
+    <div class="linha">
+      <label class="campo"><span>Cidade</span><select id="cidade"></select></label>
+      <label class="campo"><span>Buscar prestador</span>
+        <input id="busca" type="search" placeholder="hospital, laboratório, bairro…" autocomplete="off"></label>
+      <div class="campo"><span>Tipo</span><div class="seg" id="tipo"></div></div>
+      <div class="acoes"><button class="btn" id="pdf" type="button">Gerar PDF</button></div>
+    </div>
+    <div class="linha"><span class="op amil">Amil</span><div class="chips" id="planosAmil"></div></div>
+    <div class="linha"><span class="op brad">Bradesco</span><div class="chips" id="planosBrad"></div></div>
+  </section>
+
+  <div class="placar" id="placar"></div>
+  <p class="aviso" id="aviso"></p>
+  <div class="grade"><table id="tabela"></table></div>
+  <button class="btn mais" id="mais" type="button" hidden>Mostrar mais</button>
+</main>
+
+<footer class="rodape">
+  <div class="rodape-in" id="fonte"></div>
+</footer>
+
+<script src="dados.js"></script>
+<script src="../amil/pdf-rede.js"></script>
+<script>
+(function () {
+  "use strict";
+  var C = window.COMPARATIVO;
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  };
+  var sem = function (s) { return (s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase(); };
+  var guarda = function (k, v) { try { localStorage.setItem("cmp_" + k, JSON.stringify(v)); } catch (e) {} };
+  var lembra = function (k) { try { return JSON.parse(localStorage.getItem("cmp_" + k)); } catch (e) { return null; } };
+
+  var POR_VEZ = 400;
+  var st = { cidade: null, amil: [], brad: [0, 2], tipo: -1, onde: "todos", q: "", teto: POR_VEZ };
+
+  // ------------------------------------------------------------ cidades
+  var porUf = {};
+  C.cidades.forEach(function (c) { (porUf[c.uf] = porUf[c.uf] || []).push(c); });
+  $("cidade").innerHTML = Object.keys(porUf).sort().map(function (uf) {
+    return '<optgroup label="' + uf + '">' + porUf[uf].map(function (c) {
+      return '<option value="' + esc(c.k) + '">' + esc(c.nome) + " (" + (c.amil + c.brad - c.ambos) +
+             ")</option>";
+    }).join("") + "</optgroup>";
+  }).join("");
+
+  function cidade() { return C.cidades.filter(function (c) { return c.k === st.cidade; })[0]; }
+  function produtosAmil() { return C.amil[cidade().uf] || []; }
+
+  // ------------------------------------------------------------- chips
+  function chips() {
+    var pa = produtosAmil();
+    st.amil = st.amil.filter(function (c) { return pa.some(function (p) { return p.c === c; }); });
+    $("planosAmil").innerHTML = pa.map(function (p) {
+      return '<button type="button" class="chip" data-c="' + esc(p.c) + '" style="--c:' + p.cor + '" aria-pressed="' +
+             (st.amil.indexOf(p.c) >= 0) + '"><i></i>' + esc(p.r) + "</button>";
+    }).join("");
+    $("planosBrad").innerHTML = C.bradesco.map(function (p, i) {
+      return '<button type="button" class="chip" data-i="' + i + '" style="--c:' + p.cor + '" aria-pressed="' +
+             (st.brad.indexOf(i) >= 0) + '"><i></i>' + esc(p.r) + "</button>";
+    }).join("");
+    $("tipo").innerHTML = ['<button type="button" data-t="-1">Todos</button>'].concat(C.tipos.map(function (t, i) {
+      return '<button type="button" data-t="' + i + '">' + esc(t) + "</button>";
+    })).join("");
+    Array.prototype.forEach.call($("tipo").children, function (b) {
+      b.setAttribute("aria-pressed", String(+b.dataset.t === st.tipo));
+    });
+  }
+
+  // ----------------------------------------------------------- filtro
+  function colunas() {
+    var pa = produtosAmil();
+    var cols = [];
+    pa.forEach(function (p) {
+      if (st.amil.indexOf(p.c) >= 0) cols.push({ op: "amil", c: p.c, nome: p.r, cor: p.cor });
+    });
+    st.brad.slice().sort().forEach(function (i) {
+      var p = C.bradesco[i];
+      cols.push({ op: "brad", i: i, nome: p.r, cor: p.cor, sub: p.sub });
+    });
+    return cols;
+  }
+
+  function marca(l, col) {
+    if (col.op === "amil") return l.a.indexOf(col.c) >= 0 ? 1 : 0;
+    var d = l.m ? +l.m.charAt(col.i) : 0;
+    return d;   // 0 nao, 1 sim, 2/3 so uma acomodacao
+  }
+
+  function linhas() {
+    var cols = colunas(), q = sem(st.q).split(/\s+/).filter(Boolean);
+    var out = [];
+    (C.rede[st.cidade] || []).forEach(function (l) {
+      if (st.tipo >= 0 && l.t !== st.tipo) return;
+      var ms = cols.map(function (c) { return marca(l, c); });
+      var naAmil = cols.some(function (c, k) { return c.op === "amil" && ms[k]; });
+      var naBrad = cols.some(function (c, k) { return c.op === "brad" && ms[k]; });
+      if (!naAmil && !naBrad) return;
+      var onde = naAmil && naBrad ? "ambos" : (naAmil ? "amil" : "brad");
+      if (st.onde !== "todos" && st.onde !== onde) return;
+      if (q.length) {
+        var alvo = sem(l.n + " " + l.al + " " + l.b + " " + l.e);
+        if (!q.every(function (t) { return alvo.indexOf(t) >= 0; })) return;
+      }
+      out.push({ l: l, ms: ms, onde: onde, n: ms.filter(Boolean).length });
+    });
+    // por tipo; dentro dele, quem esta em mais planos primeiro
+    out.sort(function (a, b) {
+      return a.l.t - b.l.t || b.n - a.n || (sem(a.l.n) < sem(b.l.n) ? -1 : 1);
+    });
+    return { cols: cols, itens: out };
+  }
+
+  // ------------------------------------------------------------- tela
+  var NOME_ONDE = { ambos: "Nos dois", amil: "Só Amil", brad: "Só Bradesco" };
+  var COR_ONDE = { ambos: "var(--ambos)", amil: "var(--amil)", brad: "var(--bradesco)" };
+
+  function placar(r) {
+    var conta = { todos: 0, ambos: 0, amil: 0, brad: 0 };
+    // o placar conta sem o filtro "onde", para os cartoes servirem de filtro
+    var salvo = st.onde; st.onde = "todos";
+    var todos = linhas().itens; st.onde = salvo;
+    todos.forEach(function (x) { conta.todos++; conta[x.onde]++; });
+    var cards = [["todos", "Estabelecimentos", "var(--ouro-topo)"], ["ambos", "Nos dois", COR_ONDE.ambos],
+                 ["amil", "Só na Amil", COR_ONDE.amil], ["brad", "Só na Bradesco", COR_ONDE.brad]];
+    $("placar").innerHTML = cards.map(function (c) {
+      return '<button type="button" class="card" data-onde="' + c[0] + '" style="--c:' + c[2] + '" aria-pressed="' +
+             (st.onde === c[0]) + '"><b>' + conta[c[0]].toLocaleString("pt-BR") + "</b><span>" + c[1] + "</span></button>";
+    }).join("");
+    return conta;
+  }
+
+  function desenhar() {
+    var r = linhas(), cols = r.cols;
+    placar(r);
+    var c = cidade();
+    $("aviso").innerHTML = cols.length
+      ? "Mostrando <b>" + r.itens.length.toLocaleString("pt-BR") + "</b> estabelecimentos em " + esc(c.nome) + "/" + c.uf +
+        ". Clique nos cartões acima para ver só o que está nos dois ou só o exclusivo de cada operadora."
+      : "Marque pelo menos um plano da Amil ou da Bradesco.";
+    var h = '<thead><tr><th>Prestador</th><th>Bairro</th>' + cols.map(function (col) {
+      return '<th class="pl" style="--c:' + col.cor + '"><small>' + (col.op === "amil" ? "Amil" : "Bradesco") +
+             "</small>" + esc(col.nome) + "</th>";
+    }).join("") + '<th>Onde</th></tr></thead><tbody>';
+    var tipoAtual = -1, mostrados = r.itens.slice(0, st.teto);
+    mostrados.forEach(function (x) {
+      var l = x.l;
+      if (l.t !== tipoAtual) {
+        tipoAtual = l.t;
+        var n = r.itens.filter(function (y) { return y.l.t === l.t; }).length;
+        h += '<tr class="grupo"><td colspan="' + (cols.length + 3) + '">' + esc(C.tipos[l.t]) + " · " + n + "</td></tr>";
+      }
+      h += '<tr><td class="nome"><b>' + esc(l.n) + "</b>" + (l.s ? '<span class="acred">' + esc(l.s) + "</span>" : "") +
+           (l.al ? '<span class="al">na Bradesco: ' + esc(l.al) + "</span>" : "") +
+           (l.e || l.f ? '<span class="end">' + esc([l.e, l.f].filter(Boolean).join(" · ")) + "</span>" : "") +
+           '</td><td class="bairro">' + esc(l.b || "—") + "</td>";
+      x.ms.forEach(function (m, k) {
+        var col = cols[k];
+        if (!m) { h += '<td class="pl nao">–</td>'; return; }
+        h += '<td class="pl" style="color:' + col.cor + '">✓' +
+             (m > 1 && col.sub ? "<small>" + esc(col.sub[m - 2]) + "</small>" : "") + "</td>";
+      });
+      h += '<td class="onde"><span class="tag" style="--c:' + COR_ONDE[x.onde] + '">' + NOME_ONDE[x.onde] + "</span></td></tr>";
+    });
+    if (!r.itens.length) h += '<tr><td class="vazio" colspan="' + (cols.length + 3) + '">Nenhum estabelecimento com esses filtros.</td></tr>';
+    $("tabela").innerHTML = h + "</tbody>";
+    $("mais").hidden = r.itens.length <= st.teto;
+    $("mais").textContent = "Mostrar mais (" + (r.itens.length - st.teto).toLocaleString("pt-BR") + " restantes)";
+    guarda("st", { cidade: st.cidade, amil: st.amil, brad: st.brad });
+  }
+
+  // --------------------------------------------------------------- PDF
+  function nomeArquivo(partes) {
+    return partes.filter(Boolean).join(" - ").replace(/\s*\/\s*/g, "-")
+                 .replace(/[\\:*?"<>|]+/g, "-").replace(/\s+/g, " ").trim() + ".pdf";
+  }
+  function juntar(n) { return n.length <= 1 ? (n[0] || "") : n.slice(0, -1).join(", ") + " e " + n[n.length - 1]; }
+
+  function documento() {
+    var r = linhas(), cols = r.cols, c = cidade();
+    var onde = c.nome + " / " + c.uf;
+    var nomesA = cols.filter(function (x) { return x.op === "amil"; }).map(function (x) { return x.nome; });
+    var nomesB = cols.filter(function (x) { return x.op === "brad"; }).map(function (x) { return x.nome; });
+    var conta = { ambos: 0, amil: 0, brad: 0 };
+    r.itens.forEach(function (x) { conta[x.onde]++; });
+    var placarPdf = [[r.itens.length, "estabelecimentos"], [conta.ambos, "nos dois"],
+                     [conta.amil, "só na Amil"], [conta.brad, "só na Bradesco"]];
+    cols.forEach(function (col, k) {
+      placarPdf.push([r.itens.filter(function (x) { return x.ms[k]; }).length,
+                      (col.op === "amil" ? "Amil " : "Bradesco ") + col.nome]);
+    });
+    var secoes = [{ tipo: "leitura",
+      cartoes: [
+        { titulo: "Os planos comparados", etiquetas: cols.map(function (x) {
+            return [(x.op === "amil" ? "Amil " : "Bradesco ") + x.nome, x.cor]; }),
+          texto: [["O ", false], ["visto", true], [" na coluna do plano diz que o estabelecimento atende " +
+                  "quem tem aquele plano; o traço, que não atende. Na Bradesco, \"só enf\" ou \"só apto\" " +
+                  "avisa quando só uma acomodação é atendida.", false]] },
+        { titulo: "Como ler o comparativo", texto: [["Cada bloco é um tipo de estabelecimento: ", false],
+            ["hospitais", true], [", ", false], ["clínicas", true], [", ", false], ["laboratórios", true],
+            [" e ", false], ["centros de imagem", true], [". Primeiro vêm os que estão em mais planos. " +
+             "Médicos pessoa física não entram.", false]] },
+        { titulo: "De onde vêm os dados", texto: [["Amil", true], [": busca avançada oficial, base de " +
+            (C.baseAmil[c.uf] || "") + ". ", false], ["Bradesco Saúde", true], [": buscador oficial, base " +
+            C.baseBradesco + ". O mesmo estabelecimento com nomes diferentes em cada operadora foi " +
+            "unificado pelo nome e pela cidade.", false]] }
+      ],
+      aviso: [["Antes de contratar. ", true], ["A rede é definida e alterada exclusivamente por cada " +
+              "operadora, a qualquer tempo. Este comparativo reproduz as bases oficiais nas datas indicadas e " +
+              "serve para orientar a escolha — ", false],
+              ["confirme o prestador no portal da operadora antes de fechar o contrato.", true]] }];
+    C.tipos.forEach(function (nomeTipo, t) {
+      var itens = r.itens.filter(function (x) { return x.l.t === t; });
+      secoes.push({ tipo: "bloco", titulo: nomeTipo,
+        conta: itens.length + (itens.length === 1 ? " estabelecimento" : " estabelecimentos"),
+        endereco: true, telefone: true,
+        produtos: cols.map(function (x) { return { nome: (x.op === "amil" ? "Amil " : "Brad. ") + x.nome, cor: x.cor }; }),
+        linhas: itens.map(function (x) {
+          return { nome: x.l.n.toUpperCase(), tag: x.l.s || "",
+                   esp: x.l.al ? "na Bradesco: " + x.l.al : "", end: x.l.e, tel: x.l.f,
+                   bairro: x.l.b, cidade: NOME_ONDE[x.onde],
+                   marcas: x.ms.map(function (m, k) {
+                     return !m ? false : (m > 1 && cols[k].sub ? cols[k].sub[m - 2] : true);
+                   }) };
+        }) });
+    });
+    return {
+      arquivo: nomeArquivo(["Comparativo Amil x Bradesco", juntar(nomesA) + (nomesA.length && nomesB.length ? " x " : "") +
+                            juntar(nomesB), onde]),
+      rodape: "Comparativo Amil × Bradesco Saúde   ·   " + onde,
+      corretora: "Mazza Broker", corretorNome: (lembra("nome") || ""),
+      capa: { titulo: "Comparativo de rede", destaque: "Amil × Bradesco Saúde", onde: onde,
+              recorte: (nomesA.length ? "Amil " + juntar(nomesA) : "") + (nomesA.length && nomesB.length ? "  ·  " : "") +
+                       (nomesB.length ? "Bradesco " + juntar(nomesB) : ""),
+              placar: placarPdf, cores: cols.map(function (x) { return x.cor; }),
+              assinatura: "Documento gerado em " + new Date().toLocaleDateString("pt-BR") + "  ·  Mazza Broker" },
+      secoes: secoes
+    };
+  }
+
+  $("pdf").onclick = function () {
+    var b = $("pdf");
+    if (!colunas().length) { alert("Marque pelo menos um plano."); return; }
+    if (colunas().length > 8) { alert("Até 8 planos cabem no PDF — desmarque alguns."); return; }
+    if (!window.PDFRede) { alert("O gerador de PDF não carregou. Recarregue a página."); return; }
+    b.disabled = true; b.textContent = "Montando…";
+    var fim = function () { b.disabled = false; b.textContent = "Gerar PDF"; };
+    setTimeout(function () {
+      var r;
+      try { r = window.PDFRede.baixar(documento()); } catch (e) { fim(); alert("Não consegui montar o PDF: " + e.message); return; }
+      Promise.resolve(r).then(fim, function (e) { fim(); alert("Não consegui montar o PDF: " + (e && e.message || e)); });
+    }, 30);
+  };
+
+  // ----------------------------------------------------------- eventos
+  $("cidade").onchange = function () {
+    st.cidade = this.value; st.teto = POR_VEZ;
+    if (!st.amil.length || !produtosAmil().some(function (p) { return st.amil.indexOf(p.c) >= 0; })) {
+      st.amil = produtosAmil().slice(0, 2).map(function (p) { return p.c; });
+    }
+    chips(); desenhar();
+  };
+  $("planosAmil").onclick = function (e) {
+    var b = e.target.closest(".chip"); if (!b) return;
+    var c = b.dataset.c, i = st.amil.indexOf(c);
+    if (i >= 0) st.amil.splice(i, 1); else st.amil.push(c);
+    b.setAttribute("aria-pressed", String(i < 0)); st.teto = POR_VEZ; desenhar();
+  };
+  $("planosBrad").onclick = function (e) {
+    var b = e.target.closest(".chip"); if (!b) return;
+    var k = +b.dataset.i, i = st.brad.indexOf(k);
+    if (i >= 0) st.brad.splice(i, 1); else st.brad.push(k);
+    b.setAttribute("aria-pressed", String(i < 0)); st.teto = POR_VEZ; desenhar();
+  };
+  $("tipo").onclick = function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    st.tipo = +b.dataset.t; st.teto = POR_VEZ;
+    Array.prototype.forEach.call(this.children, function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+    desenhar();
+  };
+  $("placar").onclick = function (e) {
+    var b = e.target.closest(".card"); if (!b) return;
+    st.onde = b.dataset.onde; st.teto = POR_VEZ; desenhar();
+  };
+  var espera;
+  $("busca").oninput = function () {
+    clearTimeout(espera); var v = this.value;
+    espera = setTimeout(function () { st.q = v; st.teto = POR_VEZ; desenhar(); }, 150);
+  };
+  $("mais").onclick = function () { st.teto += POR_VEZ; desenhar(); };
+
+  $("fonte").innerHTML = "<b>Fontes:</b> Amil — busca avançada oficial (base " +
+    Object.keys(C.baseAmil).map(function (uf) { return uf + " " + C.baseAmil[uf]; }).join(", ") +
+    "). Bradesco Saúde — buscador oficial (base " + esc(C.baseBradesco) + "). Somente estabelecimentos; " +
+    "médicos pessoa física não entram. O mesmo prestador com nomes diferentes foi unificado pelo nome e pela " +
+    "cidade — quando o nome difere, a linha mostra também o nome da Bradesco. <b>A rede é definida e alterada " +
+    "exclusivamente pelas operadoras: confirme no portal antes de contratar.</b>";
+
+  // ------------------------------------------------------------ inicio
+  var salvo = lembra("st") || {};
+  st.cidade = C.cidades.some(function (c) { return c.k === salvo.cidade; }) ? salvo.cidade :
+              (C.cidades.filter(function (c) { return c.k === "PR|CURITIBA"; })[0] || C.cidades[0]).k;
+  $("cidade").value = st.cidade;
+  st.amil = salvo.amil && salvo.amil.length ? salvo.amil : [];
+  if (salvo.brad) st.brad = salvo.brad;
+  if (!produtosAmil().some(function (p) { return st.amil.indexOf(p.c) >= 0; })) {
+    st.amil = produtosAmil().slice(0, 2).map(function (p) { return p.c; });
+  }
+  chips(); desenhar();
+})();
+</script>
+<script src="../operadoras.js" data-operadora="comparativo"></script>
+</body>
+</html>

@@ -5,7 +5,8 @@
 (function () {
   var OPERADORAS = [
     { id: "amil", nome: "Amil" },
-    { id: "bradesco", nome: "Bradesco Saúde" }
+    { id: "bradesco", nome: "Bradesco", longo: " Saúde" },
+    { id: "comparativo", nome: "Comparativo" }
   ];
   var eu = document.currentScript;
   var atual = eu && eu.getAttribute("data-operadora");
@@ -25,7 +26,9 @@
     ".mzop-troca a:hover{background:rgba(255,255,255,.1);color:#fff}" +
     ".mzop-troca a[aria-current=page]{background:#d6b155;color:#0a0f17;font-weight:600}" +
     ".mzop a:focus-visible{outline:2px solid #d6b155;outline-offset:2px}" +
-    "@media (max-width:560px){.mzop{padding:6px 16px}.mzop-longo{display:none}}" +
+    "@media (max-width:560px){.mzop{padding:6px 12px;gap:8px}.mzop-longo{display:none}" +
+    ".mzop-troca a{padding:5px 9px}}" +
+    "@media (max-width:400px){.mzop-inicio b{display:none}}" +
     "@media print{.mzop{display:none!important}}";
 
   var estilo = document.createElement("style");
@@ -49,6 +52,12 @@
     var a = document.createElement("a");
     a.href = "../" + op.id + "/";
     a.textContent = op.nome;
+    if (op.longo) {
+      var l = document.createElement("span");
+      l.className = "mzop-longo";
+      l.textContent = op.longo;
+      a.appendChild(l);
+    }
     if (op.id === atual) a.setAttribute("aria-current", "page");
     troca.appendChild(a);
   });
