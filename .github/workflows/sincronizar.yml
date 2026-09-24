@@ -1,0 +1,47 @@
+# Mantem amil/ e bradesco/ iguais aos sites de rede-amil e rede-bradesco.
+# Roda sozinho a cada 3 horas; para puxar na hora: aba Actions > Sincronizar > Run workflow.
+name: Sincronizar
+
+on:
+  schedule:
+    - cron: "23 */3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: sincronizar
+  cancel-in-progress: false
+
+jobs:
+  sincronizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Traz as duas redes
+        run: ./ferramentas/sincronizar.sh
+
+      - name: Grava o que mudou
+        id: grava
+        run: |
+          if [ -z "$(git status --porcelain -- amil bradesco)" ]; then
+            echo "Nada mudou nas redes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A amil bradesco
+          git commit -m "Sincroniza com rede-amil e rede-bradesco"
+          git push
+          echo "mudou=1" >> "$GITHUB_OUTPUT"
+
+      # garante que o GitHub Pages publique o commit acima
+      - name: Republica o site
+        if: steps.grava.outputs.mudou == '1'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X POST "repos/${{ github.repository }}/pages/builds"

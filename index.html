@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rede credenciada Amil e Bradesco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,500;0,600;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* mesma paleta das duas redes: navy e ouro da Mazza, e a cor de cada operadora */
+:root{
+  --papel:#f2f5f9;
+  --carta:#ffffff;
+  --tinta:#101828;
+  --tinta-fraca:#5b6577;
+  --risco:#dbe2ec;
+  --marca-fundo:#0d2a4f;
+  --sobre-marca:#ffffff;
+  --ouro:#8a6810;
+  --ouro-topo:#d6b155;
+  --amil:#2733c4;
+  --bradesco:#8b0633;
+  --sombra:0 1px 2px rgba(16,26,41,.05),0 6px 18px rgba(16,26,41,.05);
+  --sombra-alta:0 12px 30px rgba(16,26,41,.13);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --papel:#0a0f17;
+    --carta:#131a25;
+    --tinta:#e7ecf4;
+    --tinta-fraca:#94a0b4;
+    --risco:#25303f;
+    --marca-fundo:#0b1a2f;
+    --sobre-marca:#dbe7f7;
+    --ouro:#d6b155;
+    --amil:#8d99ff;
+    --bradesco:#f08aa6;
+    --sombra:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.28);
+    --sombra-alta:0 12px 30px rgba(0,0,0,.45);
+  }
+}
+:root[data-theme="dark"]{
+  --papel:#0a0f17;
+  --carta:#131a25;
+  --tinta:#e7ecf4;
+  --tinta-fraca:#94a0b4;
+  --risco:#25303f;
+  --marca-fundo:#0b1a2f;
+  --sobre-marca:#dbe7f7;
+  --ouro:#d6b155;
+  --amil:#8d99ff;
+  --bradesco:#f08aa6;
+  --sombra:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.28);
+  --sombra-alta:0 12px 30px rgba(0,0,0,.45);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  background:var(--papel);
+  color:var(--tinta);
+  font:15px/1.5 "IBM Plex Sans",-apple-system,"Segoe UI",sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+:focus-visible{outline:2px solid var(--ouro);outline-offset:3px;border-radius:6px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.topo{
+  background:
+    radial-gradient(120% 180% at 88% -40%, rgba(214,177,85,.16), transparent 60%),
+    var(--marca-fundo);
+  color:var(--sobre-marca);
+  border-bottom:3px solid var(--ouro-topo);
+  padding:34px 24px 32px;
+}
+.topo-in{max-width:980px;margin:0 auto}
+.selo{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ouro-topo)}
+.topo h1{
+  margin:8px 0 0;
+  font:600 32px/1.15 Spectral,Georgia,serif;
+  letter-spacing:-.015em;
+  text-wrap:balance;
+}
+.topo h1 em{font-style:italic;font-weight:500;color:var(--ouro-topo)}
+.topo p{margin:10px 0 0;max-width:60ch;font-size:14.5px;opacity:.8}
+
+main{flex:1;width:100%;max-width:1028px;margin:0 auto;padding:30px 24px 40px}
+.redes{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+
+.rede{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  padding:24px 24px 22px;
+  border:1px solid var(--risco);
+  border-radius:12px;
+  background:var(--carta);
+  box-shadow:var(--sombra);
+  color:inherit;
+  text-decoration:none;
+  overflow:hidden;
+  transition:box-shadow .18s,transform .18s,border-color .18s;
+}
+.rede::before{content:"";position:absolute;inset:0 0 auto;height:5px;background:var(--cor)}
+.rede:hover{box-shadow:var(--sombra-alta);transform:translateY(-2px);border-color:var(--cor)}
+.rede.amil{--cor:var(--amil)}
+.rede.bradesco{--cor:var(--bradesco)}
+.rede .op{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--cor)}
+.rede h2{margin:6px 0 0;font:600 23px/1.2 Spectral,Georgia,serif;letter-spacing:-.01em}
+.rede .onde{margin:6px 0 0;font-size:14px;color:var(--tinta-fraca)}
+.rede ul{margin:16px 0 22px;padding:0;list-style:none;display:grid;gap:7px;font-size:13.5px}
+.rede li{display:flex;gap:9px;align-items:baseline}
+.rede li::before{content:"";flex:none;width:6px;height:6px;border-radius:50%;
+  background:var(--cor);transform:translateY(-1px)}
+.rede .abrir{margin-top:auto;font-weight:600;font-size:14px;color:var(--cor)}
+.rede .abrir span{display:inline-block;transition:transform .18s}
+.rede:hover .abrir span{transform:translateX(4px)}
+
+.dica{margin:22px 0 0;font-size:13px;color:var(--tinta-fraca)}
+
+.rodape{
+  border-top:1px solid var(--risco);
+  padding:18px 24px 24px;
+  font-size:12.5px;
+  color:var(--tinta-fraca);
+}
+.rodape-in{max-width:980px;margin:0 auto;display:flex;gap:16px 24px;flex-wrap:wrap;
+  align-items:baseline}
+.rodape .aviso{border-left:3px solid var(--ouro);padding-left:11px;max-width:66ch}
+.rodape .assina{margin-left:auto;font-family:Spectral,Georgia,serif;font-size:14px;color:var(--ouro)}
+
+@media (max-width:640px){
+  .topo{padding:26px 16px 24px}
+  .topo h1{font-size:25px}
+  main{padding:22px 16px 32px}
+  .rede{padding:22px 18px 20px}
+  .rodape{padding-left:16px;padding-right:16px}
+  .rodape .assina{margin-left:0}
+}
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-in">
+    <div class="selo">Mazza Broker</div>
+    <h1>Rede credenciada <em>Amil</em> e <em>Bradesco Saúde</em></h1>
+    <p>As duas consultas num link só. Escolha a operadora: em cada uma dá para
+      filtrar por cidade, produto, categoria e especialidade, comparar planos e
+      gerar o PDF de apresentação.</p>
+  </div>
+</header>
+
+<main>
+  <div class="redes">
+    <a class="rede amil" href="amil/">
+      <span class="op">Amil</span>
+      <h2>Rede credenciada Amil</h2>
+      <p class="onde">Paraná, Santa Catarina e São Paulo</p>
+      <ul>
+        <li>Linhas PME, Adesão e Amil S</li>
+        <li>Hospitais, pronto-socorro, laboratórios e clínicas</li>
+        <li>Comparação entre planos e PDF</li>
+      </ul>
+      <span class="abrir">Abrir a rede Amil <span aria-hidden="true">→</span></span>
+    </a>
+
+    <a class="rede bradesco" href="bradesco/">
+      <span class="op">Bradesco Saúde</span>
+      <h2>Rede referenciada Bradesco</h2>
+      <p class="onde">Todos os estados, por cidade</p>
+      <ul>
+        <li>Efetivo, Top Nacional, Nacional Plus e Premium</li>
+        <li>Hospitais, clínicas, laboratórios e centros de imagem</li>
+        <li>Comparação entre planos e PDF</li>
+      </ul>
+      <span class="abrir">Abrir a rede Bradesco <span aria-hidden="true">→</span></span>
+    </a>
+  </div>
+
+  <p class="dica">Dentro de cada rede, a barra no topo leva direto para a outra operadora.</p>
+</main>
+
+<footer class="rodape">
+  <div class="rodape-in">
+    <p class="aviso">A rede credenciada é definida e alterada exclusivamente pela
+      operadora. Cada consulta é um retrato da data indicada nela.
+      <strong>Confirme no portal da operadora antes de contratar.</strong></p>
+    <span class="assina">Mazza Broker</span>
+  </div>
+</footer>
+
+</body>
+</html>
