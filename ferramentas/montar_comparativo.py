@@ -45,6 +45,7 @@ def sem_acento(s):
 
 
 ABREV = {
+    "JR": "JUNIOR", "JUN": "JUNIOR", "FO": "FILHO",
     "HOSP": "HOSPITAL", "HOSPIT": "HOSPITAL", "HOSPITALAR": "HOSPITAL",
     "STA": "SANTA", "STO": "SANTO", "SRA": "SENHORA", "SR": "SENHOR",
     "MAT": "MATERNIDADE", "MATER": "MATERNIDADE", "MATERN": "MATERNIDADE",
@@ -148,7 +149,8 @@ def _partes_endereco(e):
     rua = re.sub(r"\b([A-Z]{2})\s*-?\s*(\d{2,3})\b", r"\1\2", rua)
     nums = re.findall(r"\d+", pedacos[1]) if len(pedacos) > 1 else []
     extra = {n.lstrip("0") for x in pedacos[1:] for n in re.findall(r"\d{3,}", x)}
-    palavras = [t for t in re.split(r"[^A-Z0-9]+", rua)
+    # letra dobrada: "AFFONSO PENNA" e "AFONSO PENA"
+    palavras = [re.sub(r"([A-Z])\1", r"\1", t) for t in re.split(r"[^A-Z0-9]+", rua)
                 if len(t) >= 3 and t not in LIGACAO and not t.isdigit()]
     return (nums[0].lstrip("0") if nums else ""), extra, (palavras[-1] if palavras else ""), frozenset(palavras)
 
@@ -488,12 +490,26 @@ def nota_pf(a, b):
     nome do medico."""
     if a.get("pf") and b.get("pf") or a["cidade"] != b["cidade"]:
         return 0.0
-    if not mesmo_endereco(a["end"], b["end"]) or parecido(a["tok"], b["tok"]) < 0.8:
+    if not mesmo_endereco(a["end"], b["end"]):
         return 0.0
+    nome = parecido(a["tok"], b["tok"])
+    # o nome todo de um cabe no outro: "SILVIA CAROLINE S M CARVALHO" e "SILVIA CAROLINE
+    # SANTANA MOURA CARVALHO"; ou o sobrenome da empresa no nome do medico: "CLINICA
+    # MEDICA DARE" e "GUSTAVO MARCELO RODRIGUES DARE"
+    da = [t for t in a["tok"] if t not in GENERICAS]
+    db = [t for t in b["tok"] if t not in GENERICAS]
+    curto, longo = (da, db) if len(da) <= len(db) else (db, da)
+    cabe = bool(curto) and max(map(len, curto)) >= 4 and all(any(casa(x, y) for y in longo) for x in curto)
+    if cabe and len(curto) == 1:
+        cabe = casa(curto[0], longo[-1])      # uma palavra so: o sobrenome, nao "JOSE" de "CLINICA SAO JOSE"
+    if nome < 0.8 and not cabe:
+        return 0.0
+    # sala diferente: outro consultorio do predio, salvo o mesmo nome completo (o
+    # medico que mudou de sala)
     na, xa, _, _ = _partes_endereco(a["end"])
     nb, xb, _, _ = _partes_endereco(b["end"])
     sa, sb = xa - {na}, xb - {nb}
-    if sa and sb and not sa & sb:
+    if sa and sb and not sa & sb and not (cabe and len(curto) >= 2):
         return 0.0
     return 0.73 + (0.1 if a["fones"] & b["fones"] else 0)
 
@@ -539,6 +555,8 @@ def nota_par(a, b):
         s += 0.8
     if mesmo_end:
         s += 0.5
+        if mesma_raiz and not mesmo_cnpj:
+            s += 0.3              # a mesma empresa no mesmo endereco (outra filial no cadastro)
     elif mesma_quadra:
         s += 0.3
     if mesmo_fone:
