@@ -143,24 +143,50 @@ def parecido(ta, tb):
 def _partes_endereco(e):
     pedacos = [x.strip() for x in sem_acento(e).split(",")]
     rua = re.split(r"\s+-\s+", pedacos[0])[0]
+    # rodovia: "ROD BR-116" e "RODOVIA BR 116" -> BR116
+    rua = re.sub(r"\b([A-Z]{2})\s*-?\s*(\d{2,3})\b", r"\1\2", rua)
     nums = re.findall(r"\d+", pedacos[1]) if len(pedacos) > 1 else []
     extra = {n.lstrip("0") for x in pedacos[1:] for n in re.findall(r"\d{3,}", x)}
     palavras = [t for t in re.split(r"[^A-Z0-9]+", rua)
                 if len(t) >= 3 and t not in LIGACAO and not t.isdigit()]
-    return (nums[0].lstrip("0") if nums else ""), extra, (palavras[-1] if palavras else "")
+    return (nums[0].lstrip("0") if nums else ""), extra, (palavras[-1] if palavras else ""), frozenset(palavras)
 
 
 def mesmo_endereco(a, b):
     """Mesmo numero e mesma rua. O numero pode vir repetido no complemento, com a
     faixa do predio ("7907, 7911/8 e 9" e o mesmo predio que "7911 LJ 09"). A Bradesco
-    escreve faixas de numeracao na rua ("R X - ATE 2209/2210"), ignoradas aqui."""
+    escreve faixas de numeracao na rua ("R X - ATE 2209/2210"), ignoradas aqui, e as
+    vezes o bairro colado ao nome da rua ("AV REPUBLICA ARGENTINA AGUA VERDE")."""
     if not a or not b:
         return False
-    na, xa, ra = _partes_endereco(a)
-    nb, xb, rb = _partes_endereco(b)
-    if not (na and nb and ra and ra == rb):
+    na, xa, ra, pa = _partes_endereco(a)
+    nb, xb, rb, pb = _partes_endereco(b)
+    if not (na and nb and ra and rb and (ra == rb or mesma_rua(pa, pb))):
         return False
     return na == nb or (len(na) >= 3 and na in xb) or (len(nb) >= 3 and nb in xa)
+
+
+TIPO_RUA = {"RUA", "AVENIDA", "AVE", "TRAVESSA", "ALAMEDA", "ROD", "RODOVIA", "PRACA",
+            "ESTRADA", "EST", "LARGO", "VIA", "VIELA", "BECO", "LADEIRA", "TRV", "ALM"}
+
+
+def mesma_rua(pa, pb):
+    """Todas as palavras da rua mais curta (sem "RUA", "AVENIDA") estao na outra:
+    "REPUBLICA ARGENTINA" e "REPUBLICA ARGENTINA AGUA VERDE", mas nao "SAO PAULO" e
+    "PAULO GORSKI"."""
+    pa, pb = pa - TIPO_RUA, pb - TIPO_RUA
+    curta, longa = (pa, pb) if len(pa) <= len(pb) else (pb, pa)
+    return bool(curta) and max(map(len, curta)) >= 4 and all(any(casa(x, y) for y in longa) for x in curta)
+
+
+def mesmo_cep(a, b):
+    """Mesmo CEP e mesmo numero: o mesmo lugar, ainda que a rua venha escrita de
+    outro jeito (abreviada, com o nome antigo)."""
+    if not (len(a.get("cep") or "") == 8 and a.get("cep") == b.get("cep")):
+        return False
+    na, xa, _, _ = _partes_endereco(a["end"] or "")
+    nb, xb, _, _ = _partes_endereco(b["end"] or "")
+    return bool(na and nb) and (na == nb or (len(na) >= 3 and na in xb) or (len(nb) >= 3 and nb in xa))
 
 
 def periodo(datas):
@@ -230,6 +256,46 @@ def unidades_amil(d, uf):
     return out
 
 
+SELOS_AMIL = {"a": "ACRED", "e": "TE", "p": "ESP", "r": "RES", "d": "DOUT", "q": "Q", "i": "ISO",
+              "n": "N", "g": "G"}
+
+
+def unidades_amil_coletadas():
+    """({(uf, cidade): [unidades]}, {(uf, cidade): data}) de ferramentas/amil/<UF>/<CIDADE>.json.
+    So quem tem CNPJ (medico pessoa fisica fica de fora, como na Bradesco)."""
+    out, datas = {}, {}
+    for arq in sorted((RAIZ / "ferramentas" / "amil").glob("*/*.json")):
+        d = json.loads(arq.read_text(encoding="utf-8"))
+        uf, cidade = d["uf"], sem_acento(d["cidade"])
+        datas[(uf, cidade)] = "/".join(reversed(d["data"].split("-")))
+        lista = []
+        por_credenciado = {}
+        for u in d["unidades"]:
+            por_credenciado[u["cod"]] = por_credenciado.get(u["cod"], 0) + 1
+        for u in d["unidades"]:
+            if len(u.get("cnpj") or "") != 14:
+                continue
+            tipos = set(u.get("tipos") or [])
+            esp = " ".join(sem_acento(e) for es in (u.get("esp") or {}).values() for e in es)
+            if tipos & {"HOSPITAIS PARA INTERNACAO", "PRONTO-SOCORRO 24H (URGENCIA E EMERGENCIA)",
+                        "PRONTO ATENDIMENTO - HORARIO COMERCIAL"}:
+                tipo = 0
+            elif tipos == {"LABORATORIOS E EXAMES"}:
+                tipo = 3 if IMAGEM_ESP.search(esp) and not LAB_ESP.search(esp) else 2
+            else:
+                tipo = 1
+            end = u["end"] + (" " + u["compl"] if u.get("compl") else "")
+            lista.append({"uf": uf, "cidade": cidade, "certo": True, "cands": [cidade],
+                          "rede": por_credenciado[u["cod"]] > 1, "nome": u["nome"],
+                          "bairro": u.get("bairro", ""), "end": end,
+                          "tel": (u.get("tel") or [""])[0], "fones": fones(u.get("tel") or []),
+                          "cnpj": u["cnpj"], "tipo": tipo, "p": sorted(u.get("produtos") or []),
+                          "tok": tokens(u["nome"]), "cep": u.get("cep", ""),
+                          "acred": " · ".join(SELOS_AMIL.get(x, x.upper()) for x in u.get("selos") or [])})
+        out[(uf, cidade)] = lista
+    return out, datas
+
+
 def chave_endereco(end):
     """(numero, rua) para dizer que dois enderecos sao o mesmo; None sem numero."""
     pedacos = [x.strip() for x in sem_acento(end or "").split(",")]
@@ -274,20 +340,25 @@ def nota_par(a, b):
     nome diferente e outro consultorio."""
     mesmo_cnpj = bool(a["cnpj"] and a["cnpj"] == b["cnpj"])
     mesma_raiz = bool(a["cnpj"] and b["cnpj"] and a["cnpj"][:8] == b["cnpj"][:8])
-    mesmo_end = mesmo_endereco(a["end"], b["end"])
+    mesmo_end = mesmo_endereco(a["end"], b["end"]) or mesmo_cep(a, b)
     mesmo_fone = bool(a["fones"] & b["fones"])
     nome = parecido(a["tok"], b["tok"])
+    # a mesma unidade de rede com o numero diferente de um lado (a esquina, a outra
+    # entrada): mesmo nome, mesma empresa ou telefone e o mesmo CEP de trecho de rua
+    # (CEP terminado em 000 e o da cidade ou da avenida inteira e nao conta)
+    mesma_quadra = bool(not mesmo_end and len(a.get("cep") or "") == 8 and a["cep"] == b.get("cep")
+                        and not a["cep"].endswith("000") and nome >= 0.9 and (mesma_raiz or mesmo_fone))
     # rede com varias unidades: o telefone e a central e, na Amil, o CNPJ costuma ser o
     # da matriz para todas; a unidade so e a mesma no mesmo endereco. Excecoes pelo
     # CNPJ exato: o hospital de esquina com dois enderecos na Amil (Bradesco com uma
     # unidade so) e a unidade da Amil com o CNPJ da filial que a Bradesco lista.
-    if not mesmo_end:
+    if not (mesmo_end or mesma_quadra):
         if a.get("rede") and not (mesmo_cnpj and not b.get("rede")):
             return 0.0
         if b.get("rede") and not a.get("rede") and not mesmo_cnpj:
             return 0.0
     if a["cnpj"] and b["cnpj"] and not mesmo_cnpj:
-        if not mesmo_end and not (mesmo_fone and nome > 0.5):
+        if not (mesmo_end or mesma_quadra) and not (mesmo_fone and nome > 0.5):
             return 0.0
         if not mesma_raiz and not mesmo_fone and nome < 0.4:
             return 0.0
@@ -300,6 +371,8 @@ def nota_par(a, b):
         s += 0.8
     if mesmo_end:
         s += 0.5
+    elif mesma_quadra:
+        s += 0.3
     if mesmo_fone:
         s += 0.3
     if a["bairro"] and b["bairro"] and chave_bairro(a["bairro"])[:4] == chave_bairro(b["bairro"])[:4]:
@@ -391,12 +464,19 @@ def montar():
                    "bairro": bai_b[p[2]] if p[2] is not None and p[2] >= 0 else "",
                    "end": extra[0] or "", "tel": (extra[1] or "").split(" · ")[0],
                    "fones": fones([extra[1]]), "cnpj": cnpj, "tipo": TIPO_BRAD.get(p[4], 1),
+                   "cep": extra[4] if len(extra) > 4 else "",
                    "m": marcas_brad(mask), "tok": tokens(nom_b[p[0]])})
 
-    # Amil: um registro por CNPJ pode ter varios enderecos (uma rede de laboratorios
-    # com 31 unidades); cada endereco vira uma unidade, na cidade dele
+    # Amil: nas cidades coletadas unidade a unidade na busca avancada (coletar_amil.py),
+    # as unidades de la, cada uma com os produtos dela. Nas outras, a pagina da Amil:
+    # um registro por CNPJ pode ter varios enderecos (uma rede de laboratorios com 31
+    # unidades); cada endereco vira uma unidade, na cidade dele
+    coletadas, datas_a = unidades_amil_coletadas()
     au = [u for uf in A for u in unidades_amil(A[uf], uf)]
     resolver_cidades(au, bu)
+    au = [u for u in au if (u["uf"], u["cidade"]) not in coletadas]
+    for lista in coletadas.values():
+        au += lista
     # rede com varias unidades (do lado da Bradesco: varias unidades com a mesma raiz
     # de CNPJ no estado): unidade so casa com unidade no mesmo endereco
     raizes = {}
@@ -520,6 +600,8 @@ def montar():
     dados = {
         "gerado": date.today().strftime("%d/%m/%Y"),
         "baseAmil": {uf: d.get("gerado_em", "") for uf, d in A.items()},
+        # cidades conferidas unidade a unidade na busca avancada (coletar_amil.py)
+        "baseAmilCid": {uf + "|" + c: dt for (uf, c), dt in datas_a.items()},
         # consulta oficial de rede referenciada (dia ou periodo); sem ela, a base do buscador
         "baseBradesco": periodo(datas_b) or B.get("ref", ""),
         "fonteBradesco": "consulta" if datas_b else "buscador",

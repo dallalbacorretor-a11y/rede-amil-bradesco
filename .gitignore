@@ -5,3 +5,5 @@
 *.log
 *.xlsx
 *.pdf
+ferramentas/.cache-amil/
+__pycache__/
