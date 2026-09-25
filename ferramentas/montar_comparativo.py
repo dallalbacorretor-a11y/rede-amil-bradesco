@@ -246,6 +246,7 @@ def montar():
         brad.setdefault((uf, cidade), []).append({
             "nome": nom_b[p[0]], "bairro": bai_b[p[2]] if p[2] is not None and p[2] >= 0 else "",
             "end": extra[0] or "", "tel": (extra[1] or "").split(" · ")[0],
+            "cnpj": extra[3] if len(extra) > 3 else "",
             "tipo": TIPO_BRAD[tipo], "m": marcas_brad(mask), "tok": tokens(nom_b[p[0]])})
 
     # Amil por cidade onde o prestador fica
@@ -264,6 +265,7 @@ def montar():
                 "nome": p["n"], "bairro": (p.get("b") or [""])[0],
                 "end": (p.get("e") or [""])[0], "tel": (p.get("t") or [""])[0],
                 "tipo": tipo_amil(p), "p": prods, "tok": tokens(p["n"]),
+                "cnpj": re.sub(r"\D", "", p.get("c") or ""),
                 "acred": " · ".join(p.get("s") or [])})
 
     cidades, linhas_por_cidade, casados_total = [], {}, 0
@@ -277,6 +279,16 @@ def montar():
         for i, a in enumerate(la):
             for j, b in enumerate(lb):
                 s = parecido(a["tok"], b["tok"])
+                # CNPJ dos dois lados (a Bradesco traz nas cidades da consulta oficial):
+                # o mesmo CNPJ e o mesmo lugar, ainda que o nome mude; CNPJ diferente em
+                # outro endereco e outra empresa ou outra unidade, que tem planos proprios
+                # (o hospital do INC e a clinica do INC em outro bairro)
+                mesmo_cnpj = bool(a["cnpj"] and a["cnpj"] == b.get("cnpj"))
+                if a["cnpj"] and b.get("cnpj") and not mesmo_cnpj and \
+                   not mesmo_endereco(a["end"], b.get("end")):
+                    continue
+                if mesmo_cnpj:
+                    s = max(s, 0) + 0.8
                 if s <= 0:
                     continue
                 s += 0.05 if a["tipo"] == b["tipo"] else -0.1
