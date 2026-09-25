@@ -335,6 +335,112 @@ def mesmo_predio_amil(a, b):
             or _partes_endereco(a["end"])[0] == _partes_endereco(b["end"])[0] != "")
 
 
+SULA_LAB = {2820, 2110, 2120, 2121, 2823}
+SULA_IMAGEM = {3121, 3320, 3620, 3420, 3220, 3920, 2020}
+PLANOS_SULA = [("classico100", "Clássico 100 Enfermaria", "#c2560c"), ("especial100", "Especial 100", "#1d5089")]
+
+
+def unidades_sulamerica():
+    """(unidades, datas) de ferramentas/sulamerica/<UF>/<CIDADE>.json (coletar_sulamerica.py), no
+    formato das unidades da Amil. Medico pessoa fisica vem marcado "pf" (so casa com o
+    consultorio cadastrado como empresa na outra operadora)."""
+    out, datas = [], {}
+    for arq in sorted((RAIZ / "ferramentas" / "sulamerica").glob("*/*.json")):
+        d = json.loads(arq.read_text(encoding="utf-8"))
+        uf, cidade = d["uf"], sem_acento(d["cidade"])
+        datas[(uf, cidade)] = "/".join(reversed(d["data"].split("-")))
+        for u in d["unidades"]:
+            cats = {c for cs in u["cats"].values() for c in cs}
+            esps = {e for es in u["esp"].values() for e in es}
+            if cats & {1, 2, 7}:
+                tipo = 0
+            elif esps and esps <= SULA_LAB | SULA_IMAGEM and not u["pf"]:
+                tipo = 2 if esps & SULA_LAB else 3
+            else:
+                tipo = 1
+            end = u["end"].strip().title() + (", " + u["num"] if u.get("num") else "") + \
+                (" " + u["compl"].strip().title() if u.get("compl") else "")
+            try:
+                xy = (float(u["lat"]), float(u["lon"]))
+            except (TypeError, ValueError):
+                xy = None
+            out.append({"uf": uf, "cidade": cidade, "certo": True, "cands": [cidade], "pf": u["pf"],
+                        "nome": u["nome"], "bairro": u.get("bairro", ""), "end": end,
+                        "tel": (u.get("tel") or [""])[0], "fones": fones(u.get("tel") or []),
+                        "cnpj": u.get("cnpj") or "", "tipo": tipo, "p": sorted(u["produtos"]),
+                        "tok": tokens(u["nome"]), "cep": re.sub(r"\D", "", u.get("cep") or ""), "xy": xy,
+                        "acred": ""})
+    # rede com varias unidades: mais de uma com a mesma raiz de CNPJ no estado
+    raizes = {}
+    for u in out:
+        if u["cnpj"]:
+            raizes[(u["uf"], u["cnpj"][:8])] = raizes.get((u["uf"], u["cnpj"][:8]), 0) + 1
+    for u in out:
+        u["rede"] = bool(u["cnpj"]) and raizes[(u["uf"], u["cnpj"][:8])] > 1
+    return out, datas
+
+
+def casar_sulamerica(por_cidade, su):
+    """Poe cada unidade da SulAmerica na linha (Amil, Bradesco ou as duas) do mesmo lugar;
+    a que nao casa vira linha propria. Mesmas regras do par Amil x Bradesco (nota_par),
+    contra cada unidade da linha."""
+    def chaves(u):
+        k = set()
+        if len(u["cnpj"]) == 14:
+            k.add(("r", u["cnpj"][:8]))
+        for f in u["fones"]:
+            k.add(("f", f))
+        num, _, rua, _ = _partes_endereco(u["end"] or "")
+        if num and rua:
+            k.add(("e", num, rua))
+        if len(u.get("cep") or "") == 8 and not u["cep"].endswith("000"):
+            k.add(("c", u["cep"]))
+        return k
+    pares = []
+    for chave, c in por_cidade.items():
+        idx = {}
+        for n, l in enumerate(c["linhas"]):
+            for u in l["_ua"] + l["_ub"]:
+                for k in chaves(u):
+                    idx.setdefault(k, set()).add(n)
+        for k_su, x in enumerate(su):
+            if (x["uf"], x["cidade"]) != chave:
+                continue
+            cands = set()
+            for k in chaves(x):
+                cands |= idx.get(k, set())
+            for n in cands:
+                l = c["linhas"][n]
+                s = max([nota_par(x, ub) for ub in l["_ub"]] + [nota_par(ua, x) for ua in l["_ua"]] + [0])
+                if s >= 0.72:
+                    pares.append((s, k_su, chave, n))
+    pares.sort(key=lambda t: -t[0])
+    usada_su, usada_l = set(), set()
+    for s, k_su, chave, n in pares:
+        if k_su in usada_su or (chave, n) in usada_l:
+            continue
+        usada_su.add(k_su)
+        usada_l.add((chave, n))
+        l, x = por_cidade[chave]["linhas"][n], su[k_su]
+        l["u"] = x["p"]
+        if sem_acento(x["nome"]) not in {sem_acento(l["n"]), sem_acento(l["al"])}:
+            l["nu"] = bonito(x["nome"])
+        if len(x["cnpj"]) == 14:
+            l["_c"].add(x["cnpj"])
+        l["_n"].append(x["nome"])
+        l["_e"].append(x["end"])
+        l["_l"] += "u"
+    for k_su, x in enumerate(su):
+        if k_su in usada_su or x.get("pf"):
+            continue
+        c = por_cidade.setdefault((x["uf"], x["cidade"]), {"amil": 0, "brad": 0, "ambos": 0, "linhas": []})
+        c["linhas"].append({"n": bonito(x["nome"]), "al": "", "t": x["tipo"], "b": bonito(x["bairro"]),
+                            "e": bonito(x["end"]), "f": x["tel"], "s": "", "a": [], "m": "", "u": x["p"],
+                            "_c": {x["cnpj"]} if len(x["cnpj"]) == 14 else set(), "_n": [x["nome"]],
+                            "_e": [x["end"]], "_l": "u", "_ua": [], "_ub": []})
+    return len(usada_su)
+
+
 def chave_endereco(end):
     """(numero, rua) para dizer que dois enderecos sao o mesmo; None sem numero."""
     pedacos = [x.strip() for x in sem_acento(end or "").split(",")]
@@ -369,6 +475,9 @@ def resolver_cidades(au, bu):
             u["cidade"] = ordem[0]
             u["certo"] = len(ordem) == 1 or opc[ordem[0]] > opc[ordem[1]]
             u["p"] = u["pp"].get(u["cidade"]) or u["p"]
+
+
+OPERADORA = {"a": "Amil", "b": "Bradesco", "u": "SulAmérica"}
 
 
 def juntar_empresa(linhas, juntar_marcas):
@@ -417,31 +526,42 @@ def juntar_empresa(linhas, juntar_marcas):
         if len(g) == 1:
             out.append(g[0])
             continue
-        g.sort(key=lambda l: ("ab", "a", "b").index(l["_l"]))
-        lados = {l["_l"] for l in g}
-        so = {"ab": "", "a": " (só Amil)", "b": " (só Bradesco)"}
+        # quem esta em mais operadoras primeiro; a marca diz o que so parte delas lista
+        g.sort(key=lambda l: (-len(l["_l"]), l["_l"]))
+        todas = set("".join(l["_l"] for l in g))
         ends, vistos = [], []
         for l in g:
             if not l["e"] or any(l["e"] == v or mesmo_endereco(l["e"], v) for v in vistos):
                 continue                  # o mesmo endereco escrito de outro jeito
             vistos.append(l["e"])
-            ends.append(l["e"] + (so[l["_l"]] if len(lados) > 1 else ""))
+            ops = [OPERADORA[k] for k in "abu" if k in l["_l"]]
+            marca = "" if set(l["_l"]) == todas else \
+                " (só " + ops[0] + ")" if len(ops) == 1 else " (" + " e ".join(ops) + ")"
+            ends.append(l["e"] + marca)
         e = " / ".join(ends[:3]) + (" e mais " + str(len(ends) - 3) + " endereços" if len(ends) > 3 else "")
         n = g[0]["n"]
-        nomes_b = []
+        nomes_b, nomes_u = [], []
         for l in g:
-            nb = l["al"] or (l["n"] if l["_l"] != "a" else "")
-            if l["_l"] != "a" and nb and sem_acento(nb) != sem_acento(n) and nb not in nomes_b:
+            nb = l["al"] or (l["n"] if "b" in l["_l"] and "a" not in l["_l"] else "")
+            if "b" in l["_l"] and nb and sem_acento(nb) != sem_acento(n) and nb not in nomes_b:
                 nomes_b.append(nb)
+            nu = l.get("nu") or (l["n"] if l["_l"] == "u" else "")
+            if nu and sem_acento(nu) != sem_acento(n) and nu not in nomes_u:
+                nomes_u.append(nu)
         m = ""
         for l in g:
             if l["m"]:
                 m = juntar_marcas(m, l["m"]) if m else l["m"]
         a = sorted({x for l in g for x in l["a"]})
+        u = sorted({x for l in g for x in l.get("u", [])})
         linha = {"n": n, "al": " · ".join(nomes_b[:2]), "t": min(l["t"] for l in g),
                  "b": next((l["b"] for l in g if l["b"]), ""), "e": e,
                  "f": next((l["f"] for l in g if l["f"]), ""), "s": next((l["s"] for l in g if l["s"]), ""),
                  "a": a, "m": m}
+        if u:
+            linha["u"] = u
+        if nomes_u:
+            linha["nu"] = " · ".join(nomes_u[:2])
         o = next((l["o"] for l in g if l.get("o")), "")
         if o and not (a and m):
             linha["o"] = o
@@ -821,7 +941,9 @@ def montar():
             "t": b["tipo"] if b else a["tipo"], "b": bonito(a["bairro"] or (b or {}).get("bairro", "")),
             "e": bonito(a["end"] or (b or {}).get("end", "")), "f": a["tel"] or (b or {}).get("tel", ""),
             "s": a["acred"], "a": a["p"], "m": b["m"] if b else "",
-            "_c": {x for x in cnpjs if len(x) == 14}, "_n": nomes_l, "_e": ends_l, "_l": "ab" if b else "a"})
+            "_c": {x for x in cnpjs if len(x) == 14}, "_n": nomes_l, "_e": ends_l, "_l": "ab" if b else "a",
+            "_ua": [au[i]] + [au[x] for x in junto_a.get(i, [])],
+            "_ub": ([bu[par_a[i]]] + [bu[y] for y in junto_b.get(i, [])]) if b else []})
         if not b:
             nota = em_outro_endereco(a, raiz_b, bu, "Bradesco")
             if nota:
@@ -837,7 +959,7 @@ def montar():
                             "b": bonito(b["bairro"]), "e": bonito(b.get("end", "")),
                             "f": b.get("tel", ""), "s": "", "a": [], "m": b["m"],
                             "_c": {b["cnpj"]} if len(b["cnpj"]) == 14 else set(), "_n": [b["nome"]],
-                            "_e": [b["end"]], "_l": "b"})
+                            "_e": [b["end"]], "_l": "b", "_ua": [], "_ub": [b]})
         nota = em_outro_endereco(b, raiz_a, au, "Amil")
         if nota:
             c["linhas"][-1]["o"] = nota
@@ -845,22 +967,29 @@ def montar():
     # a mesma empresa em varios enderecos na cidade vira uma linha so (Medicos de
     # Olhos na R. Benjamin Lins, so na Amil, e na R. Josepha Deren Destefani, nas duas):
     # nas duas operadoras se estiver nas duas, em qualquer endereco
+    # SulAmerica (coletar_sulamerica.py): cada unidade na linha do mesmo lugar
+    su, datas_su = unidades_sulamerica()
+    casadas_su = casar_sulamerica(por_cidade, su) if su else 0
     for c in por_cidade.values():
+        for l in c["linhas"]:
+            l.pop("_ua", None)
+            l.pop("_ub", None)
         c["linhas"] = juntar_empresa(c["linhas"], juntar_marcas)
         c["amil"] = sum(1 for l in c["linhas"] if l["a"])
         c["brad"] = sum(1 for l in c["linhas"] if l["m"])
+        c["sula"] = sum(1 for l in c["linhas"] if l.get("u"))
         c["ambos"] = sum(1 for l in c["linhas"] if l["a"] and l["m"])
 
     cidades, linhas_por_cidade, casados_total = [], {}, 0
     for (uf, cidade), c in sorted(por_cidade.items()):
-        if not c["amil"] or not c["brad"]:
-            continue                      # so interessa onde as duas operadoras tem rede
+        if sum(1 for k in ("amil", "brad", "sula") if c[k]) < 2:
+            continue                      # so interessa onde ha rede de pelo menos duas operadoras
         c["linhas"].sort(key=lambda l: (l["t"], sem_acento(l["n"])))
         casados_total += c["ambos"]
         chave_txt = uf + "|" + cidade
         linhas_por_cidade[chave_txt] = c["linhas"]
         cidades.append({"k": chave_txt, "uf": uf, "nome": bonito(cidade),
-                        "amil": c["amil"], "brad": c["brad"], "ambos": c["ambos"]})
+                        "amil": c["amil"], "brad": c["brad"], "ambos": c["ambos"], "sula": c["sula"]})
 
     produtos_amil = {uf: [{"c": p["codigo"], "r": (p["rotulo"] + " " + (p.get("acomodacao") or "")).strip(),
                            "l": p["linha"], "cor": p.get("cor") or "#2733c4"}
@@ -877,6 +1006,9 @@ def montar():
         "amil": produtos_amil,
         "bradesco": [{"r": g["rot"], "cor": cores_b[i % len(cores_b)],
                       "sub": g.get("sub")} for i, g in enumerate(grupos)],
+        # SulAmerica: planos e as cidades coletadas (so nelas os planos aparecem)
+        "sulamerica": [{"c": c, "r": r, "cor": cor} for c, r, cor in PLANOS_SULA],
+        "sulaCid": {uf + "|" + c: dt for (uf, c), dt in datas_su.items()},
         "cidades": sorted(cidades, key=lambda c: -(c["amil"] + c["brad"])),
         "rede": linhas_por_cidade,
     }
@@ -886,6 +1018,7 @@ def montar():
                        "window.COMPARATIVO=" + json.dumps(dados, ensure_ascii=False,
                                                           separators=(",", ":")) + ";\n",
                        encoding="utf-8")
+    print(f"SulAmerica: {len(su)} unidades, {casadas_su} na linha de Amil ou Bradesco")
     print(f"{len(cidades)} cidades, {casados_total} prestadores nas duas redes, "
           f"{destino.stat().st_size // 1024} KB")
     return dados
