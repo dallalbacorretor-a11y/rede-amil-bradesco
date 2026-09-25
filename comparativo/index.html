@@ -341,8 +341,9 @@ td.onde{white-space:nowrap}
             ["hospitais", true], [", ", false], ["clínicas", true], [", ", false], ["laboratórios", true],
             [" e ", false], ["centros de imagem", true], [". Primeiro vêm os que estão em mais planos. " +
              "Médicos pessoa física não entram.", false]] },
-        { titulo: "De onde vêm os dados", texto: [["Amil", true], [": busca avançada oficial, base de " +
-            (C.baseAmil[c.uf] || "") + ". ", false], ["Bradesco Saúde", true], [(C.fonteBradesco === "consulta" ?
+        { titulo: "De onde vêm os dados", texto: [["Amil", true], [(C.baseAmilCid && C.baseAmilCid[c.k] ?
+            ": busca avançada oficial, conferida unidade a unidade em " + C.baseAmilCid[c.k] :
+            ": busca avançada oficial, base de " + (C.baseAmil[c.uf] || "")) + ". ", false], ["Bradesco Saúde", true], [(C.fonteBradesco === "consulta" ?
             ": consulta oficial de rede referenciada, " : ": buscador oficial, base ") +
             C.baseBradesco + ". O mesmo estabelecimento com nomes diferentes em cada operadora foi " +
             "unificado pelo nome, pela cidade e pelo endereço.", false]] }
@@ -431,9 +432,19 @@ td.onde{white-space:nowrap}
   };
   $("mais").onclick = function () { st.teto += POR_VEZ; desenhar(); };
 
+  // cidades em que a Amil foi conferida unidade a unidade: "; Curitiba e mais 12 cidades, unidade a unidade em 25/09/2026"
+  function unidadeAUnidade() {
+    var cs = C.cidades.filter(function (c) { return C.baseAmilCid && C.baseAmilCid[c.k]; });
+    if (!cs.length) return "";
+    var datas = cs.map(function (c) { return C.baseAmilCid[c.k]; })
+                  .filter(function (d, i, a) { return a.indexOf(d) === i; });
+    var nomes = cs.length <= 4 ? juntar(cs.map(function (c) { return c.nome; }))
+              : cs[0].nome + " e mais " + (cs.length - 1) + " cidades";
+    return "; " + nomes + ", unidade a unidade em " + juntar(datas);
+  }
   $("fonte").innerHTML = "<b>Fontes:</b> Amil — busca avançada oficial (base " +
     Object.keys(C.baseAmil).map(function (uf) { return uf + " " + C.baseAmil[uf]; }).join(", ") +
-    "). Bradesco Saúde — " + (C.fonteBradesco === "consulta" ? "consulta oficial de rede referenciada (" :
+    unidadeAUnidade() + "). Bradesco Saúde — " + (C.fonteBradesco === "consulta" ? "consulta oficial de rede referenciada (" :
     "buscador oficial (base ") + esc(C.baseBradesco) + "). Somente estabelecimentos; " +
     "médicos pessoa física não entram. O mesmo prestador com nomes diferentes foi unificado pelo nome, pela " +
     "cidade e pelo endereço — quando o nome difere, a linha mostra também o nome da Bradesco. <b>A rede é definida e alterada " +
