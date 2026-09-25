@@ -342,7 +342,9 @@ td.onde{white-space:nowrap}
         { titulo: "Como ler o comparativo", texto: [["Cada bloco é um tipo de estabelecimento: ", false],
             ["hospitais", true], [", ", false], ["clínicas", true], [", ", false], ["laboratórios", true],
             [" e ", false], ["centros de imagem", true], [". Primeiro vêm os que estão em mais planos. " +
-             "Médicos pessoa física não entram.", false]] },
+             "Médicos pessoa física não entram. O prestador com vários endereços na cidade aparece numa " +
+             "linha só, com os endereços; \"(só Amil)\" ou \"(só Bradesco)\" marca o endereço que só uma " +
+             "operadora lista.", false]] },
         { titulo: "De onde vêm os dados", texto: [["Amil", true], [(C.baseAmilCid && C.baseAmilCid[c.k] ?
             ": busca avançada oficial, conferida unidade a unidade em " + C.baseAmilCid[c.k] :
             ": busca avançada oficial, base de " + (C.baseAmil[c.uf] || "")) + ". ", false], ["Bradesco Saúde", true], [(C.fonteBradesco === "consulta" ?
@@ -449,8 +451,10 @@ td.onde{white-space:nowrap}
     Object.keys(C.baseAmil).map(function (uf) { return uf + " " + C.baseAmil[uf]; }).join(", ") +
     unidadeAUnidade() + "). Bradesco Saúde — " + (C.fonteBradesco === "consulta" ? "consulta oficial de rede referenciada (" :
     "buscador oficial (base ") + esc(C.baseBradesco) + "). Somente estabelecimentos; " +
-    "médicos pessoa física não entram. O mesmo prestador com nomes diferentes foi unificado pelo nome, pela " +
-    "cidade e pelo endereço — quando o nome difere, a linha mostra também o nome da Bradesco. <b>A rede é definida e alterada " +
+    "médicos pessoa física não entram. O mesmo prestador com nomes diferentes foi unificado pelo CNPJ, pelo nome, " +
+    "pela cidade e pelo endereço — quando o nome difere, a linha mostra também o nome da Bradesco. O prestador " +
+    "com vários endereços na cidade aparece numa linha só; \"(só Amil)\" ou \"(só Bradesco)\" marca o endereço " +
+    "que só uma operadora lista. <b>A rede é definida e alterada " +
     "exclusivamente pelas operadoras: confirme no portal antes de contratar.</b>";
 
   // ------------------------------------------------------------ inicio
