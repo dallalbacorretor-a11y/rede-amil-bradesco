@@ -138,6 +138,30 @@ def parecido(ta, tb):
     return s
 
 
+def mesmo_endereco(a, b):
+    """Mesmo numero e mesma rua: so ajuda a casar a mesma clinica com nomes bem
+    diferentes em cada operadora, nunca separa (a Bradesco escreve faixas de
+    numeracao na rua, "R X - ATE 2209/2210", e ha erro de digitacao no numero)."""
+    def partes(e):
+        pedacos = [x.strip() for x in sem_acento(e).split(",")]
+        rua = re.split(r"\s+-\s+", pedacos[0])[0]
+        num = re.findall(r"\d+", pedacos[1]) if len(pedacos) > 1 else []
+        palavras = [t for t in re.split(r"[^A-Z0-9]+", rua)
+                    if len(t) >= 3 and t not in LIGACAO and not t.isdigit()]
+        return (num[0] if num else ""), (palavras[-1] if palavras else "")
+    if not a or not b:
+        return False
+    na, ra = partes(a)
+    nb, rb = partes(b)
+    return bool(na and ra and na == nb and ra == rb)
+
+
+def periodo(datas):
+    """{'24/09/2026', '25/09/2026'} -> '24/09/2026 a 25/09/2026'"""
+    ds = sorted(datas, key=lambda d: d.split("/")[::-1])
+    return "" if not ds else ds[0] if len(ds) == 1 else ds[0] + " a " + ds[-1]
+
+
 # --------------------------------------------------------------- tipos
 IMAGEM_ESP = re.compile(r"RESSONAN|TOMOGRAF|ULTRASS|ULTRA-SS|RAIO|RADIOLOG|MAMOGRAF|"
                         r"DENSITOMET|IMAGEM|ECOGRAF|DOPPLER|MEDICINA NUCLEAR|PET|"
@@ -197,9 +221,11 @@ def montar():
                 out += str(2 + g["bits"].index(on[0]))   # 2 = so enf, 3 = so apto
         return out
 
-    # Bradesco por cidade (so estabelecimentos)
+    # Bradesco por cidade (so estabelecimentos). Nas cidades da consulta oficial o
+    # 8o campo traz [endereco, telefones]; quem esta marcado "fora da busca oficial"
+    # (estava na base antiga e nao aparece na consulta) nao entra no comparativo.
     uf_b, cid_b, bai_b, nom_b = B["uf"], B["cid"], B["bai"], B["nom"]
-    brad = {}
+    brad, datas_b = {}, set()
     for p in B["pr"]:
         tipo = p[4]
         if tipo not in TIPO_BRAD:
@@ -207,12 +233,19 @@ def montar():
         uf, cidade = uf_b[cid_b[p[1]][0]], sem_acento(cid_b[p[1]][1])
         if uf not in A:
             continue
+        if len(p) > 6 and p[6] and p[6][2] == 2:
+            continue
+        data = (B.get("consulta") or {}).get(str(p[1]))
+        if data:
+            datas_b.add(data)
         mask = 0
         e = p[5]
         for k in range(1, len(e), 2):
             mask |= e[k]
+        extra = p[7] if len(p) > 7 and p[7] else ["", ""]
         brad.setdefault((uf, cidade), []).append({
             "nome": nom_b[p[0]], "bairro": bai_b[p[2]] if p[2] is not None and p[2] >= 0 else "",
+            "end": extra[0] or "", "tel": (extra[1] or "").split(" · ")[0],
             "tipo": TIPO_BRAD[tipo], "m": marcas_brad(mask), "tok": tokens(nom_b[p[0]])})
 
     # Amil por cidade onde o prestador fica
@@ -250,6 +283,8 @@ def montar():
                 if a["bairro"] and b["bairro"] and \
                    sem_acento(a["bairro"])[:4] == sem_acento(b["bairro"])[:4]:
                     s += 0.1
+                if mesmo_endereco(a["end"], b.get("end")):
+                    s += 0.1
                 if s >= 0.72:
                     pares.append((s, i, j))
         pares.sort(reverse=True)
@@ -283,14 +318,14 @@ def montar():
                 "n": bonito(a["nome"]), "al": bonito(b["nome"]) if b and
                      sem_acento(b["nome"]) != sem_acento(a["nome"]) else "",
                 "t": b["tipo"] if b else a["tipo"], "b": bonito(a["bairro"] or (b or {}).get("bairro", "")),
-                "e": bonito(a["end"]), "f": a["tel"], "s": a["acred"],
-                "a": a["p"], "m": b["m"] if b else ""})
+                "e": bonito(a["end"] or (b or {}).get("end", "")), "f": a["tel"] or (b or {}).get("tel", ""),
+                "s": a["acred"], "a": a["p"], "m": b["m"] if b else ""})
         for j, b in enumerate(lb):
             if j in par_b:
                 continue
             linhas.append({"n": bonito(b["nome"]), "al": "", "t": b["tipo"],
-                           "b": bonito(b["bairro"]), "e": "", "f": "", "s": "",
-                           "a": [], "m": b["m"]})
+                           "b": bonito(b["bairro"]), "e": bonito(b.get("end", "")),
+                           "f": b.get("tel", ""), "s": "", "a": [], "m": b["m"]})
         linhas.sort(key=lambda l: (l["t"], sem_acento(l["n"])))
         casados = len(set(par_a))
         casados_total += casados
@@ -305,7 +340,9 @@ def montar():
     dados = {
         "gerado": date.today().strftime("%d/%m/%Y"),
         "baseAmil": {uf: d.get("gerado_em", "") for uf, d in A.items()},
-        "baseBradesco": B.get("ref", ""),
+        # consulta oficial de rede referenciada (dia ou periodo); sem ela, a base do buscador
+        "baseBradesco": periodo(datas_b) or B.get("ref", ""),
+        "fonteBradesco": "consulta" if datas_b else "buscador",
         "tipos": TIPOS,
         "amil": produtos_amil,
         "bradesco": [{"r": g["rot"], "cor": cores_b[i % len(cores_b)],

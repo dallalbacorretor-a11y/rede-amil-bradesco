@@ -342,9 +342,10 @@ td.onde{white-space:nowrap}
             [" e ", false], ["centros de imagem", true], [". Primeiro vêm os que estão em mais planos. " +
              "Médicos pessoa física não entram.", false]] },
         { titulo: "De onde vêm os dados", texto: [["Amil", true], [": busca avançada oficial, base de " +
-            (C.baseAmil[c.uf] || "") + ". ", false], ["Bradesco Saúde", true], [": buscador oficial, base " +
+            (C.baseAmil[c.uf] || "") + ". ", false], ["Bradesco Saúde", true], [(C.fonteBradesco === "consulta" ?
+            ": consulta oficial de rede referenciada, " : ": buscador oficial, base ") +
             C.baseBradesco + ". O mesmo estabelecimento com nomes diferentes em cada operadora foi " +
-            "unificado pelo nome e pela cidade.", false]] }
+            "unificado pelo nome, pela cidade e pelo endereço.", false]] }
       ],
       aviso: [["Antes de contratar. ", true], ["A rede é definida e alterada exclusivamente por cada " +
               "operadora, a qualquer tempo. Este comparativo reproduz as bases oficiais nas datas indicadas e " +
@@ -432,9 +433,10 @@ td.onde{white-space:nowrap}
 
   $("fonte").innerHTML = "<b>Fontes:</b> Amil — busca avançada oficial (base " +
     Object.keys(C.baseAmil).map(function (uf) { return uf + " " + C.baseAmil[uf]; }).join(", ") +
-    "). Bradesco Saúde — buscador oficial (base " + esc(C.baseBradesco) + "). Somente estabelecimentos; " +
-    "médicos pessoa física não entram. O mesmo prestador com nomes diferentes foi unificado pelo nome e pela " +
-    "cidade — quando o nome difere, a linha mostra também o nome da Bradesco. <b>A rede é definida e alterada " +
+    "). Bradesco Saúde — " + (C.fonteBradesco === "consulta" ? "consulta oficial de rede referenciada (" :
+    "buscador oficial (base ") + esc(C.baseBradesco) + "). Somente estabelecimentos; " +
+    "médicos pessoa física não entram. O mesmo prestador com nomes diferentes foi unificado pelo nome, pela " +
+    "cidade e pelo endereço — quando o nome difere, a linha mostra também o nome da Bradesco. <b>A rede é definida e alterada " +
     "exclusivamente pelas operadoras: confirme no portal antes de contratar.</b>";
 
   // ------------------------------------------------------------ inicio
