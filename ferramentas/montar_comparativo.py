@@ -11,6 +11,7 @@ e comparado palavra a palavra (uma palavra casa com o comeco da outra).
 Uso: python3 ferramentas/montar_comparativo.py
 """
 import json
+from functools import lru_cache
 import re
 import unicodedata
 from datetime import date
@@ -138,28 +139,173 @@ def parecido(ta, tb):
     return s
 
 
+@lru_cache(maxsize=None)
+def _partes_endereco(e):
+    pedacos = [x.strip() for x in sem_acento(e).split(",")]
+    rua = re.split(r"\s+-\s+", pedacos[0])[0]
+    nums = re.findall(r"\d+", pedacos[1]) if len(pedacos) > 1 else []
+    extra = {n.lstrip("0") for x in pedacos[1:] for n in re.findall(r"\d{3,}", x)}
+    palavras = [t for t in re.split(r"[^A-Z0-9]+", rua)
+                if len(t) >= 3 and t not in LIGACAO and not t.isdigit()]
+    return (nums[0].lstrip("0") if nums else ""), extra, (palavras[-1] if palavras else "")
+
+
 def mesmo_endereco(a, b):
-    """Mesmo numero e mesma rua: so ajuda a casar a mesma clinica com nomes bem
-    diferentes em cada operadora, nunca separa (a Bradesco escreve faixas de
-    numeracao na rua, "R X - ATE 2209/2210", e ha erro de digitacao no numero)."""
-    def partes(e):
-        pedacos = [x.strip() for x in sem_acento(e).split(",")]
-        rua = re.split(r"\s+-\s+", pedacos[0])[0]
-        num = re.findall(r"\d+", pedacos[1]) if len(pedacos) > 1 else []
-        palavras = [t for t in re.split(r"[^A-Z0-9]+", rua)
-                    if len(t) >= 3 and t not in LIGACAO and not t.isdigit()]
-        return (num[0] if num else ""), (palavras[-1] if palavras else "")
+    """Mesmo numero e mesma rua. O numero pode vir repetido no complemento, com a
+    faixa do predio ("7907, 7911/8 e 9" e o mesmo predio que "7911 LJ 09"). A Bradesco
+    escreve faixas de numeracao na rua ("R X - ATE 2209/2210"), ignoradas aqui."""
     if not a or not b:
         return False
-    na, ra = partes(a)
-    nb, rb = partes(b)
-    return bool(na and ra and na == nb and ra == rb)
+    na, xa, ra = _partes_endereco(a)
+    nb, xb, rb = _partes_endereco(b)
+    if not (na and nb and ra and ra == rb):
+        return False
+    return na == nb or (len(na) >= 3 and na in xb) or (len(nb) >= 3 and nb in xa)
 
 
 def periodo(datas):
     """{'24/09/2026', '25/09/2026'} -> '24/09/2026 a 25/09/2026'"""
     ds = sorted(datas, key=lambda d: d.split("/")[::-1])
     return "" if not ds else ds[0] if len(ds) == 1 else ds[0] + " a " + ds[-1]
+
+
+def fones(textos):
+    """Telefones so com os digitos que identificam: DDD + numero."""
+    out = set()
+    for t in textos:
+        for x in re.split(r"[·|/]", t or ""):
+            d = re.sub(r"\D", "", x)
+            if len(d) >= 10:
+                out.add(d[-10:])
+            elif len(d) >= 8:
+                out.add(d[-8:])
+    return out
+
+
+def chave_bairro(b):
+    return re.sub(r"[^A-Z]", "", sem_acento(b or ""))
+
+
+def unidades_amil(d, uf):
+    """Uma unidade por endereco. A cidade de cada endereco vem da lista de cidades
+    reais quando ela acompanha os enderecos; quando nao acompanha (uma rede em varias
+    cidades), sai do bairro, aprendido dos registros em que endereco e cidade vem
+    juntos. Sem jeito de saber, a unidade fica "incerta" e pode casar em qualquer
+    das cidades do registro."""
+    regs = [p for p in d["prestadores"] if len(re.sub(r"\D", "", p.get("c") or "")) == 14]
+    bairro_cidade = {}
+    for p in regs:
+        es, cr, bs = p.get("e") or [], p.get("cr") or [], p.get("b") or []
+        if len(es) == len(cr) == len(bs):
+            for b, c in zip(bs, cr):
+                cont = bairro_cidade.setdefault(chave_bairro(b), {})
+                cont[sem_acento(c)] = cont.get(sem_acento(c), 0) + 1
+    out = []
+    for p in regs:
+        es = p.get("e") or [""]
+        cr = [sem_acento(c) for c in (p.get("cr") or p.get("cid") or [])]
+        if not cr:
+            continue
+        bs, ts = p.get("b") or [""], p.get("t") or [""]
+        pp = p.get("pp") or {}
+        pp = {sem_acento(k): v for k, v in pp.items()}
+        for k, e in enumerate(es):
+            b = bs[k] if len(bs) == len(es) else (bs[0] if len(bs) == 1 else "")
+            if len(cr) == len(es):
+                cidade, certo = cr[k], True
+            elif len(cr) == 1:
+                cidade, certo = cr[0], True
+            else:
+                opc = bairro_cidade.get(chave_bairro(b), {})
+                opc = sorted((c for c in opc if c in cr), key=lambda c: -opc[c])
+                cidade, certo = (opc[0], True) if opc else (cr[0], False)
+            out.append({"uf": uf, "cidade": cidade, "certo": certo, "cands": cr, "rede": len(es) > 1,
+                        "nome": p["n"], "bairro": b, "end": e,
+                        "tel": ts[k] if len(ts) == len(es) else ts[0],
+                        "fones": fones(p.get("t") or []),
+                        "cnpj": re.sub(r"\D", "", p["c"]), "tipo": tipo_amil(p),
+                        "p": sorted(set(pp.get(cidade) or p.get("p") or [])),
+                        "pp": {c: sorted(set(v)) for c, v in pp.items()},
+                        "tok": tokens(p["n"]), "acred": " · ".join(p.get("s") or [])})
+    return out
+
+
+def chave_endereco(end):
+    """(numero, rua) para dizer que dois enderecos sao o mesmo; None sem numero."""
+    pedacos = [x.strip() for x in sem_acento(end or "").split(",")]
+    num = re.findall(r"\d+", pedacos[1]) if len(pedacos) > 1 else []
+    rua = chave_rua(end)
+    return (num[0], rua) if num and rua else None
+
+
+def chave_rua(end):
+    """A palavra que identifica a rua: 'AVENIDA MANOEL RIBAS, 5875' -> 'RIBAS'."""
+    rua = re.split(r"\s+-\s+", sem_acento((end or "").split(",")[0]))[0]
+    palavras = [t for t in re.split(r"[^A-Z0-9]+", rua)
+                if len(t) >= 3 and t not in LIGACAO and not t.isdigit()]
+    return palavras[-1] if palavras else ""
+
+
+def resolver_cidades(au, bu):
+    """Unidade da Amil sem cidade certa (rede sem bairro): a cidade sai da rua, pelos
+    enderecos de cidade conhecida (Bradesco e Amil), entre as cidades do registro."""
+    ruas = {}
+    for u in bu + [u for u in au if u["certo"]]:
+        k = (u["uf"], chave_rua(u["end"]))
+        if k[1]:
+            ruas.setdefault(k, {}).setdefault(u["cidade"], 0)
+            ruas[k][u["cidade"]] += 1
+    for u in au:
+        if u["certo"]:
+            continue
+        opc = {c: n for c, n in ruas.get((u["uf"], chave_rua(u["end"])), {}).items() if c in u["cands"]}
+        if opc:
+            ordem = sorted(opc, key=lambda c: -opc[c])
+            u["cidade"] = ordem[0]
+            u["certo"] = len(ordem) == 1 or opc[ordem[0]] > opc[ordem[1]]
+            u["p"] = u["pp"].get(u["cidade"]) or u["p"]
+
+
+def nota_par(a, b):
+    """Quanto a unidade da Amil e a da Bradesco parecem o mesmo lugar (0 = nao sao).
+    O mesmo CNPJ e o mesmo lugar, ainda que o nome mude. CNPJ diferente so casa no
+    mesmo endereco (a Amil cadastra as unidades de uma rede com o CNPJ da matriz) ou
+    com o mesmo telefone e nome parecido; num predio medico, o mesmo endereco com
+    nome diferente e outro consultorio."""
+    mesmo_cnpj = bool(a["cnpj"] and a["cnpj"] == b["cnpj"])
+    mesma_raiz = bool(a["cnpj"] and b["cnpj"] and a["cnpj"][:8] == b["cnpj"][:8])
+    mesmo_end = mesmo_endereco(a["end"], b["end"])
+    mesmo_fone = bool(a["fones"] & b["fones"])
+    nome = parecido(a["tok"], b["tok"])
+    # rede com varias unidades: o telefone e a central e, na Amil, o CNPJ costuma ser o
+    # da matriz para todas; a unidade so e a mesma no mesmo endereco. Excecoes pelo
+    # CNPJ exato: o hospital de esquina com dois enderecos na Amil (Bradesco com uma
+    # unidade so) e a unidade da Amil com o CNPJ da filial que a Bradesco lista.
+    if not mesmo_end:
+        if a.get("rede") and not (mesmo_cnpj and not b.get("rede")):
+            return 0.0
+        if b.get("rede") and not a.get("rede") and not mesmo_cnpj:
+            return 0.0
+    if a["cnpj"] and b["cnpj"] and not mesmo_cnpj:
+        if not mesmo_end and not (mesmo_fone and nome > 0.5):
+            return 0.0
+        if not mesma_raiz and not mesmo_fone and nome < 0.4:
+            return 0.0
+    # outra cidade: so a mesma unidade cadastrada na cidade vizinha
+    if a["cidade"] != b["cidade"] and not (not a["certo"] and b["cidade"] in a["cands"]):
+        if not (mesmo_end and (mesmo_cnpj or mesma_raiz or mesmo_fone or nome >= 0.8)):
+            return 0.0
+    s = nome
+    if mesmo_cnpj:
+        s += 0.8
+    if mesmo_end:
+        s += 0.5
+    if mesmo_fone:
+        s += 0.3
+    if a["bairro"] and b["bairro"] and chave_bairro(a["bairro"])[:4] == chave_bairro(b["bairro"])[:4]:
+        s += 0.1
+    s += 0.05 if a["tipo"] == b["tipo"] else -0.1
+    return s
 
 
 # --------------------------------------------------------------- tipos
@@ -221,130 +367,152 @@ def montar():
                 out += str(2 + g["bits"].index(on[0]))   # 2 = so enf, 3 = so apto
         return out
 
-    # Bradesco por cidade (so estabelecimentos). Nas cidades da consulta oficial o
-    # 8o campo traz [endereco, telefones]; quem esta marcado "fora da busca oficial"
-    # (estava na base antiga e nao aparece na consulta) nao entra no comparativo.
+    # Bradesco: uma unidade por prestador (estabelecimentos e medico com CNPJ, que a
+    # Amil tambem lista). Nas cidades da consulta oficial o 8o campo traz
+    # [endereco, telefones, "", cnpj]; quem esta marcado "fora da busca oficial"
+    # (estava na base antiga e nao aparece na consulta) nao entra.
     uf_b, cid_b, bai_b, nom_b = B["uf"], B["cid"], B["bai"], B["nom"]
-    brad, datas_b = {}, set()
+    bu, datas_b = [], set()
     for p in B["pr"]:
-        tipo = p[4]
-        if tipo not in TIPO_BRAD:
-            continue
         uf, cidade = uf_b[cid_b[p[1]][0]], sem_acento(cid_b[p[1]][1])
-        if uf not in A:
+        if uf not in A or (len(p) > 6 and p[6] and p[6][2] == 2):
             continue
-        if len(p) > 6 and p[6] and p[6][2] == 2:
+        extra = p[7] if len(p) > 7 and p[7] else ["", ""]
+        cnpj = extra[3] if len(extra) > 3 else ""
+        if p[4] not in TIPO_BRAD and not (p[4] == 3 and cnpj):
             continue
         data = (B.get("consulta") or {}).get(str(p[1]))
         if data:
             datas_b.add(data)
         mask = 0
-        e = p[5]
-        for k in range(1, len(e), 2):
-            mask |= e[k]
-        extra = p[7] if len(p) > 7 and p[7] else ["", ""]
-        brad.setdefault((uf, cidade), []).append({
-            "nome": nom_b[p[0]], "bairro": bai_b[p[2]] if p[2] is not None and p[2] >= 0 else "",
-            "end": extra[0] or "", "tel": (extra[1] or "").split(" · ")[0],
-            "cnpj": extra[3] if len(extra) > 3 else "",
-            "tipo": TIPO_BRAD[tipo], "m": marcas_brad(mask), "tok": tokens(nom_b[p[0]])})
+        for k in range(1, len(p[5]), 2):
+            mask |= p[5][k]
+        bu.append({"uf": uf, "cidade": cidade, "nome": nom_b[p[0]],
+                   "bairro": bai_b[p[2]] if p[2] is not None and p[2] >= 0 else "",
+                   "end": extra[0] or "", "tel": (extra[1] or "").split(" · ")[0],
+                   "fones": fones([extra[1]]), "cnpj": cnpj, "tipo": TIPO_BRAD.get(p[4], 1),
+                   "m": marcas_brad(mask), "tok": tokens(nom_b[p[0]])})
 
-    # Amil por cidade onde o prestador fica
-    amil = {}
-    for uf, d in A.items():
-        for p in d["prestadores"]:
-            if len(re.sub(r"\D", "", p.get("c") or "")) != 14:
-                continue                      # sem CNPJ: medico pessoa fisica
-            cidades = p.get("cr") or p.get("cid") or []
-            if not cidades:
-                continue
-            cidade = sem_acento(cidades[0])
-            pp = p.get("pp") or {}
-            prods = sorted(set(pp.get(cidades[0]) or p.get("p") or []))
-            amil.setdefault((uf, cidade), []).append({
-                "nome": p["n"], "bairro": (p.get("b") or [""])[0],
-                "end": (p.get("e") or [""])[0], "tel": (p.get("t") or [""])[0],
-                "tipo": tipo_amil(p), "p": prods, "tok": tokens(p["n"]),
-                "cnpj": re.sub(r"\D", "", p.get("c") or ""),
-                "acred": " · ".join(p.get("s") or [])})
+    # Amil: um registro por CNPJ pode ter varios enderecos (uma rede de laboratorios
+    # com 31 unidades); cada endereco vira uma unidade, na cidade dele
+    au = [u for uf in A for u in unidades_amil(A[uf], uf)]
+    resolver_cidades(au, bu)
+    # rede com varias unidades (do lado da Bradesco: varias unidades com a mesma raiz
+    # de CNPJ no estado): unidade so casa com unidade no mesmo endereco
+    raizes = {}
+    for b in bu:
+        if b["cnpj"]:
+            raizes[(b["uf"], b["cnpj"][:8])] = raizes.get((b["uf"], b["cnpj"][:8]), 0) + 1
+    for b in bu:
+        b["rede"] = raizes.get((b["uf"], b["cnpj"][:8]), 0) > 1 if b["cnpj"] else False
+
+    # candidatos: a mesma cidade; as cidades possiveis de quem a Amil nao diz onde
+    # fica; e, em qualquer cidade do estado, o mesmo CNPJ, raiz de CNPJ ou telefone
+    # (a mesma unidade cadastrada numa cidade vizinha)
+    por_cid, por_cnpj, por_raiz, por_fone = {}, {}, {}, {}
+    for j, b in enumerate(bu):
+        por_cid.setdefault((b["uf"], b["cidade"]), []).append(j)
+        if b["cnpj"]:
+            por_cnpj.setdefault(b["cnpj"], []).append(j)
+            por_raiz.setdefault((b["uf"], b["cnpj"][:8]), []).append(j)
+        for f in b["fones"]:
+            por_fone.setdefault((b["uf"], f), []).append(j)
+    pares = []
+    for i, a in enumerate(au):
+        cands = set(por_cid.get((a["uf"], a["cidade"]), []))
+        if not a["certo"]:
+            for c in a["cands"]:
+                cands.update(por_cid.get((a["uf"], c), []))
+        cands.update(j for j in por_cnpj.get(a["cnpj"], []) if bu[j]["uf"] == a["uf"])
+        cands.update(por_raiz.get((a["uf"], a["cnpj"][:8]), []))
+        for f in a["fones"]:
+            cands.update(por_fone.get((a["uf"], f), []))
+        for j in cands:
+            s = nota_par(a, bu[j])
+            if s >= 0.72:
+                pares.append((s, i, j))
+    # um para um, melhor evidencia primeiro
+    pares.sort(key=lambda x: -x[0])
+    par_a, par_b = {}, {}
+    for s, i, j in pares:
+        if i not in par_a and j not in par_b:
+            par_a[i], par_b[j] = j, i
+
+    # hospital repetido do mesmo lado no mesmo endereco (a mantenedora e o hospital:
+    # "Liga Paranaense de Combate ao Cancer" e o Erasto Gaertner; o "Hospital Espirita
+    # de Psiquiatria" e o Uniica Bom Retiro): entra na linha do hospital ja casado
+    hosp_par = {}
+    for i, j in par_a.items():
+        a, b = au[i], bu[j]
+        if a["tipo"] == 0 and b["tipo"] == 0 and chave_endereco(a["end"]):
+            hosp_par.setdefault((a["uf"], chave_endereco(a["end"])), i)
+            hosp_par.setdefault((b["uf"], chave_endereco(b["end"])), i)
+    junto_a, junto_b = {}, {}
+    for i, a in enumerate(au):
+        k = (a["uf"], chave_endereco(a["end"]))
+        if i not in par_a and a["tipo"] == 0 and k in hosp_par:
+            junto_a.setdefault(hosp_par[k], []).append(i)
+    for j, b in enumerate(bu):
+        k = (b["uf"], chave_endereco(b["end"]))
+        if j not in par_b and b["tipo"] == 0 and k in hosp_par:
+            junto_b.setdefault(hosp_par[k], []).append(j)
+            par_b[j] = hosp_par[k]
+    ja_juntos = {x for v in junto_a.values() for x in v}
+
+    def juntar_marcas(m1, m2):
+        return "".join(max(x, y, key=lambda c: (c == "1", c != "0")) for x, y in zip(m1, m2))
+
+    # linhas por cidade: a do par fica na cidade da Bradesco (a da consulta oficial)
+    por_cidade = {}
+    for i, a in enumerate(au):
+        if i in ja_juntos:
+            continue
+        b = bu[par_a[i]] if i in par_a else None
+        if b and (junto_a.get(i) or junto_b.get(i)):
+            prods = set(a["p"])
+            for x in junto_a.get(i, []):
+                prods |= set(au[x]["p"])
+            m, nomes_b = b["m"], [b["nome"]]
+            for y in junto_b.get(i, []):
+                m = juntar_marcas(m, bu[y]["m"])
+                nomes_b.append(bu[y]["nome"])
+            a = dict(a, p=sorted(prods))
+            nomes_b = [n for n in nomes_b if sem_acento(n) != sem_acento(a["nome"])] or [a["nome"]]
+            b = dict(b, m=m, nome=" · ".join(nomes_b))
+        chave = (b["uf"], b["cidade"]) if b else (a["uf"], a["cidade"])
+        por_cidade.setdefault(chave, {"amil": 0, "brad": 0, "ambos": 0, "linhas": []})
+        c = por_cidade[chave]
+        c["amil"] += 1
+        if b:
+            c["brad"] += 1
+            c["ambos"] += 1
+        c["linhas"].append({
+            "n": bonito(a["nome"]), "al": bonito(b["nome"]) if b and
+                 sem_acento(b["nome"]) != sem_acento(a["nome"]) else "",
+            "t": b["tipo"] if b else a["tipo"], "b": bonito(a["bairro"] or (b or {}).get("bairro", "")),
+            "e": bonito(a["end"] or (b or {}).get("end", "")), "f": a["tel"] or (b or {}).get("tel", ""),
+            "s": a["acred"], "a": a["p"], "m": b["m"] if b else ""})
+    for j, b in enumerate(bu):
+        if j in par_b:
+            continue
+        chave = (b["uf"], b["cidade"])
+        por_cidade.setdefault(chave, {"amil": 0, "brad": 0, "ambos": 0, "linhas": []})
+        c = por_cidade[chave]
+        c["brad"] += 1
+        c["linhas"].append({"n": bonito(b["nome"]), "al": "", "t": b["tipo"],
+                            "b": bonito(b["bairro"]), "e": bonito(b.get("end", "")),
+                            "f": b.get("tel", ""), "s": "", "a": [], "m": b["m"]})
 
     cidades, linhas_por_cidade, casados_total = [], {}, 0
-    for chave in sorted(amil):
-        uf, cidade = chave
-        la, lb = amil[chave], brad.get(chave, [])
-        if not lb:
-            continue
-        # pares candidatos, melhor primeiro
-        pares = []
-        for i, a in enumerate(la):
-            for j, b in enumerate(lb):
-                s = parecido(a["tok"], b["tok"])
-                # CNPJ dos dois lados (a Bradesco traz nas cidades da consulta oficial):
-                # o mesmo CNPJ e o mesmo lugar, ainda que o nome mude; CNPJ diferente em
-                # outro endereco e outra empresa ou outra unidade, que tem planos proprios
-                # (o hospital do INC e a clinica do INC em outro bairro)
-                mesmo_cnpj = bool(a["cnpj"] and a["cnpj"] == b.get("cnpj"))
-                if a["cnpj"] and b.get("cnpj") and not mesmo_cnpj and \
-                   not mesmo_endereco(a["end"], b.get("end")):
-                    continue
-                if mesmo_cnpj:
-                    s = max(s, 0) + 0.8
-                if s <= 0:
-                    continue
-                s += 0.05 if a["tipo"] == b["tipo"] else -0.1
-                if a["bairro"] and b["bairro"] and \
-                   sem_acento(a["bairro"])[:4] == sem_acento(b["bairro"])[:4]:
-                    s += 0.1
-                if mesmo_endereco(a["end"], b.get("end")):
-                    s += 0.1
-                if s >= 0.72:
-                    pares.append((s, i, j))
-        pares.sort(reverse=True)
-        par_a, par_b, extra_b = {}, {}, {}
-        for s, i, j in pares:
-            if i in par_a and j in par_b:
-                continue
-            if i not in par_a and j not in par_b:
-                par_a[i] = j
-                par_b[j] = i
-            elif s >= 0.9:
-                # outra unidade da mesma instituicao, de um lado ou do outro:
-                # junta na linha que ja existe em vez de aparecer como exclusiva
-                if i not in par_a:
-                    par_a[i] = j
-                else:
-                    extra_b.setdefault(par_a[i], []).append(j)
-                    par_b[j] = i
-        linhas = []
-        def juntar_marcas(m1, m2):
-            return "".join(max(x, y, key=lambda c: (c == "1", c != "0"))
-                           for x, y in zip(m1, m2))
-        for i, a in enumerate(la):
-            b = lb[par_a[i]] if i in par_a else None
-            if b:
-                m = b["m"]
-                for j in extra_b.get(i, []):
-                    m = juntar_marcas(m, lb[j]["m"])
-                b = dict(b, m=m)
-            linhas.append({
-                "n": bonito(a["nome"]), "al": bonito(b["nome"]) if b and
-                     sem_acento(b["nome"]) != sem_acento(a["nome"]) else "",
-                "t": b["tipo"] if b else a["tipo"], "b": bonito(a["bairro"] or (b or {}).get("bairro", "")),
-                "e": bonito(a["end"] or (b or {}).get("end", "")), "f": a["tel"] or (b or {}).get("tel", ""),
-                "s": a["acred"], "a": a["p"], "m": b["m"] if b else ""})
-        for j, b in enumerate(lb):
-            if j in par_b:
-                continue
-            linhas.append({"n": bonito(b["nome"]), "al": "", "t": b["tipo"],
-                           "b": bonito(b["bairro"]), "e": bonito(b.get("end", "")),
-                           "f": b.get("tel", ""), "s": "", "a": [], "m": b["m"]})
-        linhas.sort(key=lambda l: (l["t"], sem_acento(l["n"])))
-        casados = len(set(par_a))
-        casados_total += casados
+    for (uf, cidade), c in sorted(por_cidade.items()):
+        if not c["amil"] or not c["brad"]:
+            continue                      # so interessa onde as duas operadoras tem rede
+        c["linhas"].sort(key=lambda l: (l["t"], sem_acento(l["n"])))
+        casados_total += c["ambos"]
         chave_txt = uf + "|" + cidade
-        linhas_por_cidade[chave_txt] = linhas
+        linhas_por_cidade[chave_txt] = c["linhas"]
         cidades.append({"k": chave_txt, "uf": uf, "nome": bonito(cidade),
-                        "amil": len(la), "brad": len(lb), "ambos": casados})
+                        "amil": c["amil"], "brad": c["brad"], "ambos": c["ambos"]})
 
     produtos_amil = {uf: [{"c": p["codigo"], "r": (p["rotulo"] + " " + (p.get("acomodacao") or "")).strip(),
                            "l": p["linha"], "cor": p.get("cor") or "#2733c4"}
