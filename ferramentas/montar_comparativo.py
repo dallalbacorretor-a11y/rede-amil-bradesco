@@ -12,6 +12,7 @@ Uso: python3 ferramentas/montar_comparativo.py
 """
 import json
 from functools import lru_cache
+import math
 import re
 import unicodedata
 from datetime import date
@@ -189,6 +190,10 @@ def mesmo_cep(a, b):
     return bool(na and nb) and (na == nb or (len(na) >= 3 and na in xb) or (len(nb) >= 3 and nb in xa))
 
 
+def junto_ids(juntos):
+    return {x for v in juntos.values() for x in v}
+
+
 def periodo(datas):
     """{'24/09/2026', '25/09/2026'} -> '24/09/2026 a 25/09/2026'"""
     ds = sorted(datas, key=lambda d: d.split("/")[::-1])
@@ -291,9 +296,33 @@ def unidades_amil_coletadas():
                           "tel": (u.get("tel") or [""])[0], "fones": fones(u.get("tel") or []),
                           "cnpj": u["cnpj"], "tipo": tipo, "p": sorted(u.get("produtos") or []),
                           "tok": tokens(u["nome"]), "cep": u.get("cep", ""),
+                          "xy": coordenadas(u),
                           "acred": " · ".join(SELOS_AMIL.get(x, x.upper()) for x in u.get("selos") or [])})
         out[(uf, cidade)] = lista
     return out, datas
+
+
+def coordenadas(u):
+    try:
+        return float(u["lat"]), float(u["lon"])
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def perto(p, q, metros=120):
+    """Dois pontos (lat, lon) a menos de tantos metros."""
+    if not p or not q:
+        return False
+    dy = math.radians(q[0] - p[0])
+    dx = math.radians(q[1] - p[1]) * math.cos(math.radians(p[0]))
+    return 6371000 * math.hypot(dx, dy) < metros
+
+
+def mesmo_predio_amil(a, b):
+    if not perto(a["xy"], b["xy"], 120):
+        return False
+    return (a["tipo"] == 0 and b["tipo"] == 0 or perto(a["xy"], b["xy"], 30)
+            or _partes_endereco(a["end"])[0] == _partes_endereco(b["end"])[0] != "")
 
 
 def chave_endereco(end):
@@ -537,7 +566,25 @@ def montar():
         if j not in par_b and b["tipo"] == 0 and k in hosp_par:
             junto_b.setdefault(hosp_par[k], []).append(j)
             par_b[j] = hosp_par[k]
-    ja_juntos = {x for v in junto_a.values() for x in v}
+    # o mesmo predio com dois enderecos na Amil (a esquina, a outra entrada: Hospital
+    # de Olhos do Parana na Al. Pres. Taunay, 483 e na R. Cel. Dulcidio, 199): mesmo
+    # CNPJ e, perto um do outro, hospital, o mesmo numero ou a menos de 30 m. Vira uma
+    # linha so, a do endereco que casou com a Bradesco. Unidades de rede com o CNPJ da
+    # matriz ficam a quarteiroes umas das outras; a clinica com salas em dois predios
+    # da mesma rua continua com duas linhas
+    mesmo_predio = {}
+    for i, a in enumerate(au):
+        if a.get("xy") and len(a["cnpj"]) == 14:
+            mesmo_predio.setdefault((a["uf"], a["cidade"], a["cnpj"]), []).append(i)
+    for grupo in mesmo_predio.values():
+        soltos = [i for i in grupo if i not in par_a and i not in junto_ids(junto_a)]
+        for i in soltos:
+            alvo = [k for k in grupo if k != i and k not in junto_ids(junto_a)
+                    and mesmo_predio_amil(au[i], au[k]) and (k in par_a or k < i)]
+            if alvo:
+                k = min(alvo, key=lambda k: (k not in par_a, k))
+                junto_a.setdefault(k, []).append(i)
+    ja_juntos = junto_ids(junto_a)
 
     def juntar_marcas(m1, m2):
         return "".join(max(x, y, key=lambda c: (c == "1", c != "0")) for x, y in zip(m1, m2))
@@ -548,15 +595,19 @@ def montar():
         if i in ja_juntos:
             continue
         b = bu[par_a[i]] if i in par_a else None
-        if b and (junto_a.get(i) or junto_b.get(i)):
-            prods = set(a["p"])
-            for x in junto_a.get(i, []):
+        if junto_a.get(i):
+            prods, ends = set(a["p"]), [a["end"]]
+            for x in junto_a[i]:
                 prods |= set(au[x]["p"])
+                e = au[x]["end"]
+                if e and not any(mesmo_endereco(e, f) or sem_acento(e) == sem_acento(f) for f in ends):
+                    ends.append(e)
+            a = dict(a, p=sorted(prods), end=" / ".join(ends))
+        if b and (junto_a.get(i) or junto_b.get(i)):
             m, nomes_b = b["m"], [b["nome"]]
             for y in junto_b.get(i, []):
                 m = juntar_marcas(m, bu[y]["m"])
                 nomes_b.append(bu[y]["nome"])
-            a = dict(a, p=sorted(prods))
             nomes_b = [n for n in nomes_b if sem_acento(n) != sem_acento(a["nome"])] or [a["nome"]]
             b = dict(b, m=m, nome=" · ".join(nomes_b))
         chave = (b["uf"], b["cidade"]) if b else (a["uf"], a["cidade"])
