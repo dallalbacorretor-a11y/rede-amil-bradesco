@@ -335,26 +335,49 @@ def mesmo_predio_amil(a, b):
             or _partes_endereco(a["end"])[0] == _partes_endereco(b["end"])[0] != "")
 
 
+# empresa, nao pessoa (o mesmo criterio do montar.py do rede-bradesco)
+EMPRESA = re.compile(r"CLIN|CENTRO|CTO\b|INST|SERV|MEDIC|SAUDE|LTDA|ASSOC|GRUPO|NUCLEO|"
+                     r"ESPACO|CONSULT|ODONTO|FISIO|PSICO|LAB|HOSP|DIAG|IMAG|CARDIO|ORTO|"
+                     r"OFTALM|OLHOS|UROL|GASTRO|DERM|NEURO|ONCO|NEFRO|PEDIAT|GINEC|MULHER|"
+                     r"CRIANCA|VIDA|CORPO|SORRISO|TERAPIA|REABILIT|UNIDADE|S/?S\b|EIRELI|"
+                     r"\bME\b|&|\bE\b|CIA")
+
+
+def parece_pessoa(nome, prenomes):
+    """Nome de gente: comeca por um prenome que as operadoras usam para medico pessoa
+    fisica e nao tem palavra de empresa ("LUZIA DO ROCIO PINTO CORDEIRO", nao "CISABEM")."""
+    palavras = sem_acento(nome).split()
+    return len(palavras) >= 2 and palavras[0] in prenomes and not EMPRESA.search(sem_acento(nome))
+
+
 SULA_LAB = {2820, 2110, 2120, 2121, 2823}
 SULA_IMAGEM = {3121, 3320, 3620, 3420, 3220, 3920, 2020}
 PLANOS_SULA = [("classico100", "Clássico 100 Enfermaria", "#c2560c"), ("especial100", "Especial 100", "#1d5089")]
 
 
-def unidades_sulamerica():
+def unidades_sulamerica(prenomes=frozenset()):
     """(unidades, datas) de ferramentas/sulamerica/<UF>/<CIDADE>.json (coletar_sulamerica.py), no
     formato das unidades da Amil. Medico pessoa fisica vem marcado "pf" (so casa com o
-    consultorio cadastrado como empresa na outra operadora)."""
+    consultorio cadastrado como empresa na outra operadora): o de codigo com CRM e o
+    consultorio com nome de gente e sem CNPJ (codigo interno "1000000..."), a mesma regra
+    da Amil (sem CNPJ e medico) e da Bradesco (medico sem CNPJ)."""
     out, datas = [], {}
-    for arq in sorted((RAIZ / "ferramentas" / "sulamerica").glob("*/*.json")):
-        d = json.loads(arq.read_text(encoding="utf-8"))
+    arquivos = [json.loads(a.read_text(encoding="utf-8"))
+                for a in sorted((RAIZ / "ferramentas" / "sulamerica").glob("*/*.json"))]
+    # e os de quem a propria SulAmerica cadastra com CRM
+    prenomes = set(prenomes) | {sem_acento(u["nome"]).split()[0] for d in arquivos for u in d["unidades"]
+                                if u["pf"] and u["nome"].split() and len(u["nome"].split()[0]) >= 3}
+    for d in arquivos:
         uf, cidade = d["uf"], sem_acento(d["cidade"])
         datas[(uf, cidade)] = "/".join(reversed(d["data"].split("-")))
         for u in d["unidades"]:
             cats = {c for cs in u["cats"].values() for c in cs}
             esps = {e for es in u["esp"].values() for e in es}
+            pf = u["pf"] or (not u.get("cnpj") and not cats & {1, 2, 7} and
+                             parece_pessoa(u["nome"], prenomes))
             if cats & {1, 2, 7}:
                 tipo = 0
-            elif esps and esps <= SULA_LAB | SULA_IMAGEM and not u["pf"]:
+            elif esps and esps <= SULA_LAB | SULA_IMAGEM and not pf:
                 tipo = 2 if esps & SULA_LAB else 3
             else:
                 tipo = 1
@@ -364,7 +387,7 @@ def unidades_sulamerica():
                 xy = (float(u["lat"]), float(u["lon"]))
             except (TypeError, ValueError):
                 xy = None
-            out.append({"uf": uf, "cidade": cidade, "certo": True, "cands": [cidade], "pf": u["pf"],
+            out.append({"uf": uf, "cidade": cidade, "certo": True, "cands": [cidade], "pf": pf,
                         "nome": u["nome"], "bairro": u.get("bairro", ""), "end": end,
                         "tel": (u.get("tel") or [""])[0], "fones": fones(u.get("tel") or []),
                         "cnpj": u.get("cnpj") or "", "tipo": tipo, "p": sorted(u["produtos"]),
@@ -380,10 +403,12 @@ def unidades_sulamerica():
     return out, datas
 
 
-def casar_sulamerica(por_cidade, su):
+def casar_sulamerica(por_cidade, su, soltos=()):
     """Poe cada unidade da SulAmerica na linha (Amil, Bradesco ou as duas) do mesmo lugar;
     a que nao casa vira linha propria. Mesmas regras do par Amil x Bradesco (nota_par),
-    contra cada unidade da linha."""
+    contra cada unidade da linha. `soltos`: medicos pessoa fisica da Amil e da Bradesco que
+    nao casaram com ninguem ("a" ou "b", unidade); o consultorio que a SulAmerica cadastra
+    como empresa casa com eles no mesmo endereco e vira linha das duas operadoras."""
     def chaves(u):
         k = set()
         if len(u["cnpj"]) == 14:
@@ -430,6 +455,57 @@ def casar_sulamerica(por_cidade, su):
         l["_n"].append(x["nome"])
         l["_e"].append(x["end"])
         l["_l"] += "u"
+    # consultorio da SulAmerica x medico pessoa fisica da Amil ou da Bradesco que ficou fora
+    idx_s = {}
+    for n, (lado, u) in enumerate(soltos):
+        for k in chaves(u):
+            idx_s.setdefault((u["uf"], u["cidade"], k), set()).add(n)
+    pares = []
+    for k_su, x in enumerate(su):
+        if k_su in usada_su or x.get("pf"):
+            continue
+        cands = set()
+        for k in chaves(x):
+            cands |= idx_s.get((x["uf"], x["cidade"], k), set())
+        for n in cands:
+            lado, u = soltos[n]
+            s = nota_par(u, x) if lado == "a" else nota_par(x, u)
+            if s >= 0.72:
+                pares.append((s, k_su, n))
+    # o melhor medico de cada operadora para cada consultorio: o mesmo medico pode estar na
+    # Amil e na Bradesco como pessoa fisica, e a linha e das tres
+    pares.sort(key=lambda t: -t[0])
+    usado_s, escolha = set(), {}
+    for s, k_su, n in pares:
+        lado = soltos[n][0]
+        if n in usado_s or lado in escolha.get(k_su, {}):
+            continue
+        usado_s.add(n)
+        escolha.setdefault(k_su, {})[lado] = soltos[n][1]
+    for k_su, lados in escolha.items():
+        usada_su.add(k_su)
+        x = su[k_su]
+        ua, ub = lados.get("a"), lados.get("b")
+        c = por_cidade.setdefault((x["uf"], x["cidade"]), {"amil": 0, "brad": 0, "ambos": 0, "linhas": []})
+        # o nome da linha e o da Amil, se tiver, senao o do consultorio (SulAmerica); o
+        # nome do medico na Bradesco vai no "na Bradesco"
+        n = ua["nome"] if ua else x["nome"]
+        linha = {"n": bonito(n), "al": "", "t": x["tipo"], "b": bonito(x["bairro"] or (ua or ub)["bairro"]),
+                 "e": bonito(x["end"]), "f": x["tel"] or (ua or ub).get("tel", ""), "s": "", "a": [],
+                 "m": "", "u": x["p"], "_c": {x["cnpj"]} if len(x["cnpj"]) == 14 else set(),
+                 "_n": [x["nome"]] + [u["nome"] for u in (ua, ub) if u],
+                 "_e": [x["end"]] + [u["end"] for u in (ua, ub) if u],
+                 "_l": ("a" if ua else "") + ("b" if ub else "") + "u",
+                 "_ua": [ua] if ua else [], "_ub": [ub] if ub else []}
+        if ua:
+            linha.update(a=ua["p"], s=ua.get("acred", ""))
+            if sem_acento(x["nome"]) != sem_acento(n):
+                linha["nu"] = bonito(x["nome"])
+        if ub:
+            linha["m"] = ub["m"]
+            if sem_acento(ub["nome"]) != sem_acento(n):
+                linha["al"] = bonito(ub["nome"])
+        c["linhas"].append(linha)
     for k_su, x in enumerate(su):
         if k_su in usada_su or x.get("pf"):
             continue
@@ -610,7 +686,8 @@ def nota_pf(a, b):
     nome do medico."""
     if a.get("pf") and b.get("pf") or a["cidade"] != b["cidade"]:
         return 0.0
-    if not mesmo_endereco(a["end"], b["end"]):
+    # mesmo CEP e numero tambem: a Bradesco abrevia a rua ("R VLTOS DA PATRIA")
+    if not (mesmo_endereco(a["end"], b["end"]) or mesmo_cep(a, b)):
         return 0.0
     nome = parecido(a["tok"], b["tok"])
     # o nome todo de um cabe no outro: "SILVIA CAROLINE S M CARVALHO" e "SILVIA CAROLINE
@@ -968,8 +1045,15 @@ def montar():
     # Olhos na R. Benjamin Lins, so na Amil, e na R. Josepha Deren Destefani, nas duas):
     # nas duas operadoras se estiver nas duas, em qualquer endereco
     # SulAmerica (coletar_sulamerica.py): cada unidade na linha do mesmo lugar
-    su, datas_su = unidades_sulamerica()
-    casadas_su = casar_sulamerica(por_cidade, su) if su else 0
+    # prenomes de medico pessoa fisica nas tres operadoras: dizem se o consultorio sem CNPJ
+    # da SulAmerica e de uma pessoa
+    # (so os da Bradesco: medico sem CNPJ; na Amil, "sem CNPJ" tambem pega empresa)
+    prenomes = {sem_acento(u["nome"]).split()[0] for u in bu
+                if u.get("pf") and u["nome"].split() and len(u["nome"].split()[0]) >= 3}
+    su, datas_su = unidades_sulamerica(prenomes)
+    soltos = ([("a", a) for i, a in enumerate(au) if a.get("pf") and i not in par_a] +
+              [("b", b) for j, b in enumerate(bu) if b.get("pf") and j not in par_b])
+    casadas_su = casar_sulamerica(por_cidade, su, soltos) if su else 0
     for c in por_cidade.values():
         for l in c["linhas"]:
             l.pop("_ua", None)
