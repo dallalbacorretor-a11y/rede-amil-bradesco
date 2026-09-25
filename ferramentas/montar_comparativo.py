@@ -369,6 +369,79 @@ def resolver_cidades(au, bu):
             u["p"] = u["pp"].get(u["cidade"]) or u["p"]
 
 
+def juntar_empresa(linhas, juntar_marcas):
+    """Junta as linhas da mesma empresa numa cidade: mesma raiz de CNPJ com nome
+    parecido, ou o mesmo nome (com alguma palavra que identifica). A linha junta
+    lista os enderecos, marcando o que e so de uma operadora, e soma os planos."""
+    pai = list(range(len(linhas)))
+
+    def raiz(x):
+        while pai[x] != x:
+            pai[x] = pai[pai[x]]
+            x = pai[x]
+        return x
+
+    def une(x, y):
+        pai[raiz(x)] = raiz(y)
+    toks = [[tokens(n) for n in l["_n"]] for l in linhas]
+    por_raiz, por_nome = {}, {}
+    for k, l in enumerate(linhas):
+        for c in l["_c"]:
+            por_raiz.setdefault(c[:8], []).append(k)
+        for t in toks[k]:
+            if parecido(t, t) > 0:          # tem palavra que identifica
+                por_nome.setdefault(" ".join(sorted(t)), []).append(k)
+    for ks in por_nome.values():
+        for k in ks[1:]:
+            une(ks[0], k)
+    for ks in por_raiz.values():
+        for x in range(len(ks)):
+            for y in range(x + 1, len(ks)):
+                p, q = ks[x], ks[y]
+                if raiz(p) != raiz(q) and max(parecido(t, u) for t in toks[p] for u in toks[q]) >= 0.6:
+                    une(p, q)
+    grupos = {}
+    for k in range(len(linhas)):
+        grupos.setdefault(raiz(k), []).append(linhas[k])
+    out = []
+    for g in grupos.values():
+        if len(g) == 1:
+            out.append(g[0])
+            continue
+        g.sort(key=lambda l: ("ab", "a", "b").index(l["_l"]))
+        lados = {l["_l"] for l in g}
+        so = {"ab": "", "a": " (só Amil)", "b": " (só Bradesco)"}
+        ends = []
+        for l in g:
+            e = l["e"] + (so[l["_l"]] if len(lados) > 1 else "")
+            if l["e"] and e not in ends:
+                ends.append(e)
+        e = " / ".join(ends[:3]) + (" e mais " + str(len(ends) - 3) + " endereços" if len(ends) > 3 else "")
+        n = g[0]["n"]
+        nomes_b = []
+        for l in g:
+            nb = l["al"] or (l["n"] if l["_l"] != "a" else "")
+            if l["_l"] != "a" and nb and sem_acento(nb) != sem_acento(n) and nb not in nomes_b:
+                nomes_b.append(nb)
+        m = ""
+        for l in g:
+            if l["m"]:
+                m = juntar_marcas(m, l["m"]) if m else l["m"]
+        a = sorted({x for l in g for x in l["a"]})
+        linha = {"n": n, "al": " · ".join(nomes_b[:2]), "t": min(l["t"] for l in g),
+                 "b": next((l["b"] for l in g if l["b"]), ""), "e": e,
+                 "f": next((l["f"] for l in g if l["f"]), ""), "s": next((l["s"] for l in g if l["s"]), ""),
+                 "a": a, "m": m}
+        o = next((l["o"] for l in g if l.get("o")), "")
+        if o and not (a and m):
+            linha["o"] = o
+        out.append(linha)
+    for l in out:
+        for k in ("_c", "_n", "_l"):
+            l.pop(k, None)
+    return out
+
+
 def trocar_pelo_mesmo_lugar(au, bu, par_a, par_b, pares):
     """Par feito so pelo CNPJ, com enderecos diferentes, quando o outro lado tem sem
     par uma unidade no mesmo endereco e com o mesmo telefone: fica o par do mesmo
@@ -669,17 +742,17 @@ def montar():
         outros = []
         for k in idx.get((u["uf"], u["cnpj"][:8]), []):
             o = lista[k]
-            if not o["end"] or o.get("pf") or mesmo_endereco(o["end"], u["end"]):
+            if not o["end"] or o.get("pf") or o["cidade"] == u["cidade"]:
                 continue
             if o["cnpj"] == u["cnpj"] or parecido(u["tok"], o["tok"]) >= 0.6:
-                onde = bonito(o["end"]) + ("" if o["cidade"] == u["cidade"] else " (" + bonito(o["cidade"]) + ")")
+                onde = bonito(o["end"]) + " (" + bonito(o["cidade"]) + ")"
                 if onde not in outros:
                     outros.append(onde)
         if not outros:
             return ""
         if len(outros) <= 2:
             return "na " + operadora + " só em: " + " e ".join(outros)
-        return "na " + operadora + " em outros " + str(len(outros)) + " endereços, não neste"
+        return "na " + operadora + " em outras cidades: " + str(len(outros)) + " endereços"
 
     # linhas por cidade: a do par fica na cidade da Bradesco (a da consulta oficial)
     por_cidade = {}
@@ -687,6 +760,11 @@ def montar():
         if i in ja_juntos or a.get("pf") and i not in par_a:
             continue
         b = bu[par_a[i]] if i in par_a else None
+        cnpjs = {a["cnpj"]} | {au[x]["cnpj"] for x in junto_a.get(i, [])}
+        nomes_l = [a["nome"]] + [au[x]["nome"] for x in junto_a.get(i, [])]
+        if b:
+            cnpjs |= {b["cnpj"]} | {bu[y]["cnpj"] for y in junto_b.get(i, [])}
+            nomes_l += [b["nome"]] + [bu[y]["nome"] for y in junto_b.get(i, [])]
         if junto_a.get(i):
             prods, ends = set(a["p"]), [a["end"]]
             for x in junto_a[i]:
@@ -714,7 +792,8 @@ def montar():
                  sem_acento(b["nome"]) != sem_acento(a["nome"]) else "",
             "t": b["tipo"] if b else a["tipo"], "b": bonito(a["bairro"] or (b or {}).get("bairro", "")),
             "e": bonito(a["end"] or (b or {}).get("end", "")), "f": a["tel"] or (b or {}).get("tel", ""),
-            "s": a["acred"], "a": a["p"], "m": b["m"] if b else ""})
+            "s": a["acred"], "a": a["p"], "m": b["m"] if b else "",
+            "_c": {x for x in cnpjs if len(x) == 14}, "_n": nomes_l, "_l": "ab" if b else "a"})
         if not b:
             nota = em_outro_endereco(a, raiz_b, bu, "Bradesco")
             if nota:
@@ -728,10 +807,20 @@ def montar():
         c["brad"] += 1
         c["linhas"].append({"n": bonito(b["nome"]), "al": "", "t": b["tipo"],
                             "b": bonito(b["bairro"]), "e": bonito(b.get("end", "")),
-                            "f": b.get("tel", ""), "s": "", "a": [], "m": b["m"]})
+                            "f": b.get("tel", ""), "s": "", "a": [], "m": b["m"],
+                            "_c": {b["cnpj"]} if len(b["cnpj"]) == 14 else set(), "_n": [b["nome"]], "_l": "b"})
         nota = em_outro_endereco(b, raiz_a, au, "Amil")
         if nota:
             c["linhas"][-1]["o"] = nota
+
+    # a mesma empresa em varios enderecos na cidade vira uma linha so (Medicos de
+    # Olhos na R. Benjamin Lins, so na Amil, e na R. Josepha Deren Destefani, nas duas):
+    # nas duas operadoras se estiver nas duas, em qualquer endereco
+    for c in por_cidade.values():
+        c["linhas"] = juntar_empresa(c["linhas"], juntar_marcas)
+        c["amil"] = sum(1 for l in c["linhas"] if l["a"])
+        c["brad"] = sum(1 for l in c["linhas"] if l["m"])
+        c["ambos"] = sum(1 for l in c["linhas"] if l["a"] and l["m"])
 
     cidades, linhas_por_cidade, casados_total = [], {}, 0
     for (uf, cidade), c in sorted(por_cidade.items()):
