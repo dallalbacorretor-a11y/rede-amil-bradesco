@@ -267,7 +267,8 @@ SELOS_AMIL = {"a": "ACRED", "e": "TE", "p": "ESP", "r": "RES", "d": "DOUT", "q":
 
 def unidades_amil_coletadas():
     """({(uf, cidade): [unidades]}, {(uf, cidade): data}) de ferramentas/amil/<UF>/<CIDADE>.json.
-    So quem tem CNPJ (medico pessoa fisica fica de fora, como na Bradesco)."""
+    Medico pessoa fisica (sem CNPJ) vem marcado "pf": so entra no comparativo se casar
+    com um estabelecimento da Bradesco no mesmo consultorio."""
     out, datas = {}, {}
     for arq in sorted((RAIZ / "ferramentas" / "amil").glob("*/*.json")):
         d = json.loads(arq.read_text(encoding="utf-8"))
@@ -278,7 +279,8 @@ def unidades_amil_coletadas():
         for u in d["unidades"]:
             por_credenciado[u["cod"]] = por_credenciado.get(u["cod"], 0) + 1
         for u in d["unidades"]:
-            if len(u.get("cnpj") or "") != 14:
+            pf = len(u.get("cnpj") or "") != 14
+            if pf and not u.get("end"):
                 continue
             tipos = set(u.get("tipos") or [])
             esp = " ".join(sem_acento(e) for es in (u.get("esp") or {}).values() for e in es)
@@ -290,11 +292,13 @@ def unidades_amil_coletadas():
             else:
                 tipo = 1
             end = u["end"] + (" " + u["compl"] if u.get("compl") else "")
-            lista.append({"uf": uf, "cidade": cidade, "certo": True, "cands": [cidade],
+            if pf:
+                tipo = 1
+            lista.append({"uf": uf, "cidade": cidade, "certo": True, "cands": [cidade], "pf": pf,
                           "rede": por_credenciado[u["cod"]] > 1, "nome": u["nome"],
                           "bairro": u.get("bairro", ""), "end": end,
                           "tel": (u.get("tel") or [""])[0], "fones": fones(u.get("tel") or []),
-                          "cnpj": u["cnpj"], "tipo": tipo, "p": sorted(u.get("produtos") or []),
+                          "cnpj": "" if pf else u["cnpj"], "tipo": tipo, "p": sorted(u.get("produtos") or []),
                           "tok": tokens(u["nome"]), "cep": u.get("cep", ""),
                           "xy": coordenadas(u),
                           "acred": " · ".join(SELOS_AMIL.get(x, x.upper()) for x in u.get("selos") or [])})
@@ -319,7 +323,11 @@ def perto(p, q, metros=120):
 
 
 def mesmo_predio_amil(a, b):
-    if not perto(a["xy"], b["xy"], 120):
+    """Duas unidades da Amil da mesma empresa (mesma raiz de CNPJ) no mesmo lugar: o
+    mesmo endereco, ou, com o mesmo CNPJ, perto (hospital, mesmo numero ou 30 m)."""
+    if mesmo_endereco(a["end"], b["end"]):
+        return True
+    if a["cnpj"] != b["cnpj"] or not perto(a.get("xy"), b.get("xy"), 120):
         return False
     return (a["tipo"] == 0 and b["tipo"] == 0 or perto(a["xy"], b["xy"], 30)
             or _partes_endereco(a["end"])[0] == _partes_endereco(b["end"])[0] != "")
@@ -361,12 +369,62 @@ def resolver_cidades(au, bu):
             u["p"] = u["pp"].get(u["cidade"]) or u["p"]
 
 
+def trocar_pelo_mesmo_lugar(au, bu, par_a, par_b, pares):
+    """Par feito so pelo CNPJ, com enderecos diferentes, quando o outro lado tem sem
+    par uma unidade no mesmo endereco e com o mesmo telefone: fica o par do mesmo
+    lugar. A Amil da o CNPJ da "Clinica de Olhos Novo Mundo" na Av. Victor Ferreira
+    do Amaral, 58, onde a Bradesco lista a clinica como "Alto da XV" (outro CNPJ, mesmo
+    telefone); a unidade "Novo Mundo" da Bradesco fica na R. Georgi Wassouf, 28."""
+    # so com a Amil conferida unidade a unidade (telefone de cada unidade; na pagina
+    # da Amil o telefone e o do CNPJ, igual em todos os enderecos), o mesmo tipo e algo
+    # do nome em comum ("Clinica de Olhos"): o consultorio de uma medica no andar de
+    # outra clinica, com o mesmo telefone, continua com o CNPJ dela
+    def no_lugar(x, y):
+        return (x.get("xy") and x["tipo"] == y["tipo"] and bool(x["fones"] & y["fones"])
+                and (mesmo_endereco(x["end"], y["end"]) or mesmo_cep(x, y))
+                and parecido(x["tok"], y["tok"]) >= 0.3)
+
+    def so_cnpj(x, y):
+        return x["cnpj"] == y["cnpj"] and not (mesmo_endereco(x["end"], y["end"]) or mesmo_cep(x, y))
+    for s, i, j in pares:
+        a, b = au[i], bu[j]
+        ja, jb = par_a.get(i), par_b.get(j)
+        if ja == j or not no_lugar(a, b):
+            continue
+        # Amil i casada so pelo CNPJ com outra da Bradesco, e a Bradesco j livre
+        if ja is not None and jb is None and so_cnpj(a, bu[ja]):
+            del par_b[ja]
+            par_a[i], par_b[j] = j, i
+        # Bradesco j casada so pelo CNPJ com outra da Amil, e a Amil i livre
+        elif jb is not None and ja is None and so_cnpj(au[jb], b):
+            del par_a[jb]
+            par_a[i], par_b[j] = j, i
+
+
+def nota_pf(a, b):
+    """Medico pessoa fisica de um lado e a empresa dele do outro: so no mesmo
+    consultorio (mesma rua, numero e, se os dois disserem, a mesma sala) e com o
+    nome do medico."""
+    if a.get("pf") and b.get("pf") or a["cidade"] != b["cidade"]:
+        return 0.0
+    if not mesmo_endereco(a["end"], b["end"]) or parecido(a["tok"], b["tok"]) < 0.8:
+        return 0.0
+    na, xa, _, _ = _partes_endereco(a["end"])
+    nb, xb, _, _ = _partes_endereco(b["end"])
+    sa, sb = xa - {na}, xb - {nb}
+    if sa and sb and not sa & sb:
+        return 0.0
+    return 0.73 + (0.1 if a["fones"] & b["fones"] else 0)
+
+
 def nota_par(a, b):
     """Quanto a unidade da Amil e a da Bradesco parecem o mesmo lugar (0 = nao sao).
     O mesmo CNPJ e o mesmo lugar, ainda que o nome mude. CNPJ diferente so casa no
     mesmo endereco (a Amil cadastra as unidades de uma rede com o CNPJ da matriz) ou
     com o mesmo telefone e nome parecido; num predio medico, o mesmo endereco com
     nome diferente e outro consultorio."""
+    if a.get("pf") or b.get("pf"):
+        return nota_pf(a, b)
     mesmo_cnpj = bool(a["cnpj"] and a["cnpj"] == b["cnpj"])
     mesma_raiz = bool(a["cnpj"] and b["cnpj"] and a["cnpj"][:8] == b["cnpj"][:8])
     mesmo_end = mesmo_endereco(a["end"], b["end"]) or mesmo_cep(a, b)
@@ -481,7 +539,10 @@ def montar():
             continue
         extra = p[7] if len(p) > 7 and p[7] else ["", ""]
         cnpj = extra[3] if len(extra) > 3 else ""
-        if p[4] not in TIPO_BRAD and not (p[4] == 3 and cnpj):
+        # medico pessoa fisica: so para casar com o mesmo consultorio cadastrado como
+        # empresa na Amil (o "Savio Lemos Machareth" que a Amil lista com CNPJ)
+        pf = p[4] == 3 and not cnpj
+        if p[4] not in TIPO_BRAD and not (p[4] == 3 and (cnpj or extra[0])):
             continue
         data = (B.get("consulta") or {}).get(str(p[1]))
         if data:
@@ -493,7 +554,7 @@ def montar():
                    "bairro": bai_b[p[2]] if p[2] is not None and p[2] >= 0 else "",
                    "end": extra[0] or "", "tel": (extra[1] or "").split(" · ")[0],
                    "fones": fones([extra[1]]), "cnpj": cnpj, "tipo": TIPO_BRAD.get(p[4], 1),
-                   "cep": extra[4] if len(extra) > 4 else "",
+                   "cep": extra[4] if len(extra) > 4 else "", "pf": pf,
                    "m": marcas_brad(mask), "tok": tokens(nom_b[p[0]])})
 
     # Amil: nas cidades coletadas unidade a unidade na busca avancada (coletar_amil.py),
@@ -546,6 +607,7 @@ def montar():
     for s, i, j in pares:
         if i not in par_a and j not in par_b:
             par_a[i], par_b[j] = j, i
+    trocar_pelo_mesmo_lugar(au, bu, par_a, par_b, pares)
 
     # hospital repetido do mesmo lado no mesmo endereco (a mantenedora e o hospital:
     # "Liga Paranaense de Combate ao Cancer" e o Erasto Gaertner; o "Hospital Espirita
@@ -574,8 +636,8 @@ def montar():
     # da mesma rua continua com duas linhas
     mesmo_predio = {}
     for i, a in enumerate(au):
-        if a.get("xy") and len(a["cnpj"]) == 14:
-            mesmo_predio.setdefault((a["uf"], a["cidade"], a["cnpj"]), []).append(i)
+        if len(a["cnpj"]) == 14:
+            mesmo_predio.setdefault((a["uf"], a["cidade"], a["cnpj"][:8]), []).append(i)
     for grupo in mesmo_predio.values():
         soltos = [i for i in grupo if i not in par_a and i not in junto_ids(junto_a)]
         for i in soltos:
@@ -589,10 +651,40 @@ def montar():
     def juntar_marcas(m1, m2):
         return "".join(max(x, y, key=lambda c: (c == "1", c != "0")) for x, y in zip(m1, m2))
 
+    # quem ficou so numa operadora mas esta na outra em outro endereco (a mesma empresa:
+    # o mesmo CNPJ, ou a mesma raiz com nome parecido): a linha avisa onde, para nao
+    # parecer que falta. "Medicos de Olhos" da R. Benjamin Lins (so na Amil) esta na
+    # Bradesco so na R. Josepha Deren Destefani
+    def por_raiz_de(lista):
+        idx = {}
+        for k, u in enumerate(lista):
+            if len(u["cnpj"]) == 14 and not u.get("pf"):
+                idx.setdefault((u["uf"], u["cnpj"][:8]), []).append(k)
+        return idx
+    raiz_a, raiz_b = por_raiz_de(au), por_raiz_de(bu)
+
+    def em_outro_endereco(u, idx, lista, operadora):
+        if len(u["cnpj"]) != 14:
+            return ""
+        outros = []
+        for k in idx.get((u["uf"], u["cnpj"][:8]), []):
+            o = lista[k]
+            if not o["end"] or o.get("pf") or mesmo_endereco(o["end"], u["end"]):
+                continue
+            if o["cnpj"] == u["cnpj"] or parecido(u["tok"], o["tok"]) >= 0.6:
+                onde = bonito(o["end"]) + ("" if o["cidade"] == u["cidade"] else " (" + bonito(o["cidade"]) + ")")
+                if onde not in outros:
+                    outros.append(onde)
+        if not outros:
+            return ""
+        if len(outros) <= 2:
+            return "na " + operadora + " só em: " + " e ".join(outros)
+        return "na " + operadora + " em outros " + str(len(outros)) + " endereços, não neste"
+
     # linhas por cidade: a do par fica na cidade da Bradesco (a da consulta oficial)
     por_cidade = {}
     for i, a in enumerate(au):
-        if i in ja_juntos:
+        if i in ja_juntos or a.get("pf") and i not in par_a:
             continue
         b = bu[par_a[i]] if i in par_a else None
         if junto_a.get(i):
@@ -623,8 +715,12 @@ def montar():
             "t": b["tipo"] if b else a["tipo"], "b": bonito(a["bairro"] or (b or {}).get("bairro", "")),
             "e": bonito(a["end"] or (b or {}).get("end", "")), "f": a["tel"] or (b or {}).get("tel", ""),
             "s": a["acred"], "a": a["p"], "m": b["m"] if b else ""})
+        if not b:
+            nota = em_outro_endereco(a, raiz_b, bu, "Bradesco")
+            if nota:
+                c["linhas"][-1]["o"] = nota
     for j, b in enumerate(bu):
-        if j in par_b:
+        if j in par_b or b.get("pf"):
             continue
         chave = (b["uf"], b["cidade"])
         por_cidade.setdefault(chave, {"amil": 0, "brad": 0, "ambos": 0, "linhas": []})
@@ -633,6 +729,9 @@ def montar():
         c["linhas"].append({"n": bonito(b["nome"]), "al": "", "t": b["tipo"],
                             "b": bonito(b["bairro"]), "e": bonito(b.get("end", "")),
                             "f": b.get("tel", ""), "s": "", "a": [], "m": b["m"]})
+        nota = em_outro_endereco(b, raiz_a, au, "Amil")
+        if nota:
+            c["linhas"][-1]["o"] = nota
 
     cidades, linhas_por_cidade, casados_total = [], {}, 0
     for (uf, cidade), c in sorted(por_cidade.items()):

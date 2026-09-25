@@ -95,6 +95,7 @@ tr.grupo td{background:var(--realce)!important; font-size:10.5px; font-weight:70
   color:var(--tinta-fraca); padding:12px 10px 8px}
 td.nome b{font-weight:600}
 td.nome .al{display:block; font-size:11.5px; color:var(--tinta-fraca)}
+td.nome .outro{display:block; font-size:11.5px; font-style:italic; color:var(--tinta-fraca)}
 td.nome .end{display:block; font-size:11.5px; color:var(--tinta-fraca); margin-top:2px}
 td.nome .acred{font-size:10px; font-weight:700; letter-spacing:.08em; color:var(--ouro); margin-left:6px}
 td.bairro{font-size:12px; color:var(--tinta-fraca); min-width:110px}
@@ -293,6 +294,7 @@ td.onde{white-space:nowrap}
       }
       h += '<tr><td class="nome"><b>' + esc(l.n) + "</b>" + (l.s ? '<span class="acred">' + esc(l.s) + "</span>" : "") +
            (l.al ? '<span class="al">na Bradesco: ' + esc(l.al) + "</span>" : "") +
+           (l.o ? '<span class="outro">' + esc(l.o) + "</span>" : "") +
            (l.e || l.f ? '<span class="end">' + esc([l.e, l.f].filter(Boolean).join(" · ")) + "</span>" : "") +
            '</td><td class="bairro">' + esc(l.b || "—") + "</td>";
       x.ms.forEach(function (m, k) {
@@ -360,7 +362,8 @@ td.onde{white-space:nowrap}
         produtos: cols.map(function (x) { return { nome: (x.op === "amil" ? "Amil " : "Brad. ") + x.nome, cor: x.cor }; }),
         linhas: itens.map(function (x) {
           return { nome: x.l.n.toUpperCase(), tag: x.l.s || "",
-                   esp: x.l.al ? "na Bradesco: " + x.l.al : "", end: x.l.e, tel: x.l.f,
+                   esp: [x.l.al ? "na Bradesco: " + x.l.al : "", x.l.o || ""].filter(Boolean).join(" · "),
+                   end: x.l.e, tel: x.l.f,
                    bairro: x.l.b, cidade: NOME_ONDE[x.onde],
                    marcas: x.ms.map(function (m, k) {
                      return !m ? false : (m > 1 && cols[k].sub ? cols[k].sub[m - 2] : true);
