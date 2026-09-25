@@ -220,7 +220,9 @@ td.onde{white-space:nowrap}
   var COR_HEX = { ambos: "#0e6b64", amil: "#2733c4", brad: "#8b0633", sula: "#c2560c", empate: "#5b6577" };
 
   var POR_VEZ = 400;
-  var st = { cidade: null, amil: [], brad: [0, 2], sula: [], tipo: -1, onde: "todos", q: "", teto: POR_VEZ };
+  // abre nos hospitais e com as tres operadoras: dois planos Amil, dois Bradesco e os SulAmerica
+  var st = { cidade: null, amil: [], brad: [0, 2], sula: (C.sulamerica || []).map(function (p) { return p.c; }),
+             tipo: 0, onde: "todos", q: "", teto: POR_VEZ };
 
   // ------------------------------------------------------------ cidades
   var porUf = {};
@@ -476,7 +478,7 @@ td.onde{white-space:nowrap}
     $("tabela").innerHTML = h + "</tbody>";
     $("mais").hidden = r.itens.length <= st.teto;
     $("mais").textContent = "Mostrar mais (" + num(r.itens.length - st.teto) + " restantes)";
-    guarda("st", { cidade: st.cidade, amil: st.amil, brad: st.brad, sula: st.sula });
+    guarda("st3", { cidade: st.cidade, amil: st.amil, brad: st.brad, sula: st.sula });
   }
 
   // --------------------------------------------------------------- PDF
@@ -701,13 +703,14 @@ td.onde{white-space:nowrap}
     "exclusivamente pelas operadoras: confirme no portal antes de contratar.</b>";
 
   // ------------------------------------------------------------ inicio
-  var salvo = lembra("st") || {};
+  // "st3": a escolha guardada antes da SulAmerica entrar marcada nao traz os planos dela
+  var salvo = lembra("st3") || lembra("st") || {};
   st.cidade = C.cidades.some(function (c) { return c.k === salvo.cidade; }) ? salvo.cidade :
               (C.cidades.filter(function (c) { return c.k === "PR|CURITIBA"; })[0] || C.cidades[0]).k;
   $("cidade").value = st.cidade;
   st.amil = salvo.amil && salvo.amil.length ? salvo.amil : [];
   if (salvo.brad) st.brad = salvo.brad;
-  if (salvo.sula) st.sula = salvo.sula;
+  if (salvo.sula && lembra("st3")) st.sula = salvo.sula;
   if (!produtosAmil().some(function (p) { return st.amil.indexOf(p.c) >= 0; })) {
     st.amil = produtosAmil().slice(0, 2).map(function (p) { return p.c; });
   }
