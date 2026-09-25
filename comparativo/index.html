@@ -447,9 +447,13 @@ td.onde{white-space:nowrap}
               : cs[0].nome + " e mais " + (cs.length - 1) + " cidades";
     return "; " + nomes + ", unidade a unidade em " + juntar(datas);
   }
-  $("fonte").innerHTML = "<b>Fontes:</b> Amil — busca avançada oficial (base " +
-    Object.keys(C.baseAmil).map(function (uf) { return uf + " " + C.baseAmil[uf]; }).join(", ") +
-    unidadeAUnidade() + "). Bradesco Saúde — " + (C.fonteBradesco === "consulta" ? "consulta oficial de rede referenciada (" :
+  // todas as cidades conferidas unidade a unidade: so a data da busca avancada
+  var todasUnidade = C.cidades.every(function (c) { return C.baseAmilCid && C.baseAmilCid[c.k]; });
+  $("fonte").innerHTML = "<b>Fontes:</b> Amil — busca avançada oficial (" + (todasUnidade
+    ? "unidade a unidade, " + juntar(C.cidades.map(function (c) { return C.baseAmilCid[c.k]; })
+        .filter(function (d, i, a) { return a.indexOf(d) === i; }))
+    : "base " + Object.keys(C.baseAmil).map(function (uf) { return uf + " " + C.baseAmil[uf]; }).join(", ") +
+      unidadeAUnidade()) + "). Bradesco Saúde — " + (C.fonteBradesco === "consulta" ? "consulta oficial de rede referenciada (" :
     "buscador oficial (base ") + esc(C.baseBradesco) + "). Somente estabelecimentos; " +
     "médicos pessoa física não entram. O mesmo prestador com nomes diferentes foi unificado pelo CNPJ, pelo nome, " +
     "pela cidade e pelo endereço — quando o nome difere, a linha mostra também o nome da Bradesco. O prestador " +
