@@ -82,6 +82,36 @@ input[type=search]{min-width:260px}
 .card b{display:block; font:500 30px/1 Newsreader,Georgia,serif}
 .card span{display:block; margin-top:6px; font-size:10.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--tinta-fraca)}
 
+.resumo{background:var(--carta); border:1px solid var(--risco); border-radius:12px; box-shadow:var(--sombra); margin:0 0 18px}
+.resumo > summary{cursor:pointer; padding:14px 18px; list-style:none; display:flex; gap:12px; align-items:baseline; flex-wrap:wrap}
+.resumo > summary::-webkit-details-marker{display:none}
+.resumo > summary b{font:500 20px/1.2 Newsreader,Georgia,serif}
+.resumo > summary span{font-size:10.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--tinta-fraca)}
+.resumo > summary::after{content:"ocultar"; margin-left:auto; font-size:12px; color:var(--tinta-fraca); text-decoration:underline}
+.resumo:not([open]) > summary::after{content:"mostrar"}
+.resumo-in{padding:0 18px 18px; display:grid; gap:14px}
+.frase{margin:0; font-size:13.5px}
+.frase b{white-space:nowrap}
+.dif{overflow:auto; border:1px solid var(--risco); border-radius:10px}
+.dif thead th{position:static}
+.dif td,.dif th{text-align:center; white-space:nowrap}
+.dif td:first-child,.dif th:first-child{text-align:left}
+.dif td.n{font-variant-numeric:tabular-nums; font-size:14px}
+.dif tr.total td{font-weight:700; border-top:2px solid var(--tinta-fraca); background:var(--realce)}
+.dif td:first-child,.dif th:first-child{position:sticky; left:0; z-index:1; background:var(--carta)}
+.dif tbody tr:nth-child(even) td:first-child{background:var(--zebra)}
+.dif th:first-child{background:var(--marca-fundo)}
+.dif tr.total td:first-child{background:var(--realce)}
+.ganha{font-weight:700; color:var(--c)}
+.excl{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+.excl-col{border:1px solid var(--risco); border-top:3px solid var(--c); border-radius:10px; padding:12px 14px; min-width:0}
+.excl-col h3{margin:0 0 8px; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--c)}
+.excl-col ul{margin:0; padding-left:18px; font-size:13px}
+.excl-col li{margin:3px 0}
+.excl-col li small{color:var(--tinta-fraca)}
+.excl-col p{margin:0; font-size:13px; color:var(--tinta-fraca)}
+.link{border:0; background:none; padding:0; margin-top:8px; color:var(--c); font-weight:600; font-size:12.5px;
+  cursor:pointer; text-decoration:underline}
 .aviso{font-size:12.5px; color:var(--tinta-fraca); margin:0 0 10px}
 .grade{background:var(--carta); border:1px solid var(--risco); border-radius:12px; box-shadow:var(--sombra); overflow:auto}
 table{border-collapse:collapse; width:100%; font-size:13px}
@@ -119,6 +149,7 @@ td.onde{white-space:nowrap}
   .acoes{margin-left:0; width:100%} .acoes .btn{flex:1}
   .seg{flex-wrap:wrap; border:0; gap:6px} .seg button{border:1px solid var(--risco); border-radius:8px}
   .card b{font-size:24px}
+  .excl{grid-template-columns:1fr} .resumo > summary,.resumo-in{padding-left:14px; padding-right:14px}
 }
 </style>
 </head>
@@ -148,6 +179,10 @@ td.onde{white-space:nowrap}
   </section>
 
   <div class="placar" id="placar"></div>
+  <details class="resumo" id="resumoCaixa" open>
+    <summary><b>Diferença entre as redes</b><span id="resumoOnde"></span></summary>
+    <div class="resumo-in" id="resumo"></div>
+  </details>
   <p class="aviso" id="aviso"></p>
   <div class="grade"><table id="tabela"></table></div>
   <button class="btn mais" id="mais" type="button" hidden>Mostrar mais</button>
@@ -272,9 +307,101 @@ td.onde{white-space:nowrap}
     return conta;
   }
 
+  // ----------------------------------------------------------- resumo
+  // a diferenca entre as redes na cidade, com os planos marcados: por tipo, quanto cada
+  // plano tem, o que esta nos dois e o que e exclusivo, e os hospitais exclusivos.
+  // Nao depende da busca, do tipo nem do cartao escolhido
+  var COR_HEX = { ambos: "#0e6b64", amil: "#2733c4", brad: "#8b0633", empate: "#5b6577" };
+  function contas() {
+    var cols = colunas(), L = C.rede[st.cidade] || [];
+    var novo = function () {
+      return { p: cols.map(function () { return 0; }), A: 0, B: 0, ambos: 0, amil: 0, brad: 0 };
+    };
+    var por = C.tipos.map(novo), tot = novo(), exc = { amil: [], brad: [] };
+    L.forEach(function (l) {
+      var ms = cols.map(function (c) { return marca(l, c); });
+      var naA = cols.some(function (c, k) { return c.op === "amil" && ms[k]; });
+      var naB = cols.some(function (c, k) { return c.op === "brad" && ms[k]; });
+      if (!naA && !naB) return;
+      var onde = naA && naB ? "ambos" : (naA ? "amil" : "brad");
+      [por[l.t], tot].forEach(function (o) {
+        ms.forEach(function (m, k) { if (m) o.p[k]++; });
+        if (naA) o.A++;
+        if (naB) o.B++;
+        o[onde]++;
+      });
+      if (l.t === 0 && onde !== "ambos") exc[onde].push(l);
+    });
+    ["amil", "brad"].forEach(function (k) {
+      exc[k].sort(function (a, b) { return sem(a.n) < sem(b.n) ? -1 : 1; });
+    });
+    var temA = cols.some(function (c) { return c.op === "amil"; });
+    var temB = cols.some(function (c) { return c.op === "brad"; });
+    return { cols: cols, por: por, tot: tot, exc: exc, dois: temA && temB };
+  }
+  function quemGanha(o) {
+    if (o.A === o.B) return { t: "Empate", k: "empate" };
+    return o.A > o.B ? { t: "Amil +" + (o.A - o.B), k: "amil" } : { t: "Bradesco +" + (o.B - o.A), k: "brad" };
+  }
+  var TIPO_PLURAL = ["hospitais", "clínicas", "laboratórios", "centros de imagem"];
+
+  function resumo() {
+    var r = contas(), c = cidade(), cols = r.cols;
+    $("resumoOnde").textContent = c.nome + " / " + c.uf;
+    if (!cols.length) { $("resumo").innerHTML = '<p class="frase">Marque pelo menos um plano.</p>'; return; }
+    var nomeCol = function (x) { return (x.op === "amil" ? "Amil " : "Bradesco ") + x.nome; };
+    var h = "";
+    if (r.dois) {
+      var ganhaA = [], ganhaB = [], empate = [];
+      r.por.forEach(function (o, t) {
+        if (!o.A && !o.B) return;
+        var g = quemGanha(o), txt = TIPO_PLURAL[t] + " (+" + Math.abs(o.A - o.B) + ")";
+        (g.k === "amil" ? ganhaA : g.k === "brad" ? ganhaB : empate).push(g.k === "empate" ? TIPO_PLURAL[t] : txt);
+      });
+      h += '<p class="frase">' +
+           (ganhaA.length ? '<b style="color:var(--amil)">A Amil tem mais</b> ' + esc(juntar(ganhaA)) + ". " : "") +
+           (ganhaB.length ? '<b style="color:var(--bradesco)">A Bradesco tem mais</b> ' + esc(juntar(ganhaB)) + ". " : "") +
+           (empate.length ? "Empatam em " + esc(juntar(empate)) + ". " : "") +
+           "Dos " + r.tot.A.toLocaleString("pt-BR") + " estabelecimentos da Amil e " +
+           r.tot.B.toLocaleString("pt-BR") + " da Bradesco, <b>" + r.tot.ambos.toLocaleString("pt-BR") +
+           " estão nos dois</b>.</p>";
+    }
+    h += '<div class="dif"><table><thead><tr><th>Tipo</th>' + cols.map(function (x) {
+      return '<th class="pl" style="--c:' + x.cor + '"><small>' + (x.op === "amil" ? "Amil" : "Bradesco") +
+             "</small>" + esc(x.nome) + "</th>";
+    }).join("") + (r.dois ? '<th class="pl" style="--c:var(--ambos)">Nos dois</th>' +
+      '<th class="pl" style="--c:var(--amil)">Só Amil</th><th class="pl" style="--c:var(--bradesco)">Só Bradesco</th>' +
+      "<th>Quem tem mais</th>" : "") + "</tr></thead><tbody>";
+    var linha = function (nome, o, total) {
+      var g = quemGanha(o);
+      return "<tr" + (total ? ' class="total"' : "") + "><td>" + esc(nome) + "</td>" +
+        o.p.map(function (n) { return '<td class="n">' + n.toLocaleString("pt-BR") + "</td>"; }).join("") +
+        (r.dois ? '<td class="n">' + o.ambos.toLocaleString("pt-BR") + '</td><td class="n">' +
+          o.amil.toLocaleString("pt-BR") + '</td><td class="n">' + o.brad.toLocaleString("pt-BR") +
+          '</td><td><span class="ganha" style="--c:' + COR_HEX[g.k] + '">' + g.t + "</span></td>" : "") + "</tr>";
+    };
+    r.por.forEach(function (o, t) { h += linha(C.tipos[t], o, false); });
+    h += linha("Total", r.tot, true) + "</tbody></table></div>";
+    if (r.dois) {
+      h += '<div class="excl">' + [["amil", "Hospitais só na Amil", "var(--amil)"],
+                                   ["brad", "Hospitais só na Bradesco", "var(--bradesco)"]].map(function (e) {
+        var lista = r.exc[e[0]], mostra = lista.slice(0, 12);
+        return '<div class="excl-col" style="--c:' + e[2] + '"><h3>' + e[1] + " · " + lista.length + "</h3>" +
+          (lista.length ? "<ul>" + mostra.map(function (l) {
+            return "<li>" + esc(l.n) + (l.b ? " <small>" + esc(l.b) + "</small>" : "") + "</li>";
+          }).join("") + "</ul>" : "<p>Nenhum: todos os hospitais estão também na outra operadora.</p>") +
+          (lista.length ? '<button type="button" class="link" data-ver="' + e[0] + '">' +
+            (lista.length > mostra.length ? "e mais " + (lista.length - mostra.length) + " — ver todos na tabela"
+                                          : "ver na tabela") + "</button>" : "") + "</div>";
+      }).join("") + "</div>";
+    }
+    $("resumo").innerHTML = h;
+  }
+
   function desenhar() {
     var r = linhas(), cols = r.cols;
     placar(r);
+    resumo();
     var c = cidade();
     $("aviso").innerHTML = cols.length
       ? "Mostrando <b>" + r.itens.length.toLocaleString("pt-BR") + "</b> estabelecimentos em " + esc(c.nome) + "/" + c.uf +
@@ -356,6 +483,39 @@ td.onde{white-space:nowrap}
               "operadora, a qualquer tempo. Este comparativo reproduz as bases oficiais nas datas indicadas e " +
               "serve para orientar a escolha — ", false],
               ["confirme o prestador no portal da operadora antes de fechar o contrato.", true]] }];
+    // a diferenca entre as redes: a mesma tabela e os hospitais exclusivos da tela
+    var rs = contas();
+    var colsTab = [{ nome: "Tipo" }].concat(cols.map(function (x) {
+      return { nome: (x.op === "amil" ? "Amil " : "Brad. ") + x.nome, cor: x.cor, largura: 58 };
+    }));
+    if (rs.dois) colsTab = colsTab.concat([{ nome: "Nos dois", cor: COR_HEX.ambos, largura: 52 },
+      { nome: "Só Amil", cor: COR_HEX.amil, largura: 52 }, { nome: "Só Bradesco", cor: COR_HEX.brad, largura: 58 },
+      { nome: "Quem tem mais", largura: 86 }]);
+    var linhaTab = function (nome, o, total) {
+      var cel = [nome].concat(o.p.map(function (n) { return n.toLocaleString("pt-BR"); }));
+      if (rs.dois) {
+        var g = quemGanha(o);
+        cel = cel.concat([o.ambos.toLocaleString("pt-BR"), o.amil.toLocaleString("pt-BR"),
+                          o.brad.toLocaleString("pt-BR"), { text: g.t, cor: COR_HEX[g.k], negrito: true }]);
+      }
+      return { celulas: cel, total: total };
+    };
+    secoes.push({ tipo: "tabela", titulo: "Diferença entre as redes", conta: onde,
+      colunas: colsTab,
+      linhas: rs.por.map(function (o, t) { return linhaTab(C.tipos[t], o, false); })
+                .concat([linhaTab("Total", rs.tot, true)]),
+      nota: [["Quantos estabelecimentos cada plano atende na cidade. ", false]].concat(rs.dois ? [
+             ["Nos dois", true], [": atende pelo menos um plano marcado de cada operadora. ", false],
+             ["Quem tem mais", true], [": a diferença entre os planos marcados da Amil e os da Bradesco.", false]] : []) });
+    if (rs.dois) {
+      [["amil", "Hospitais só na Amil"], ["brad", "Hospitais só na Bradesco"]].forEach(function (e) {
+        secoes.push({ tipo: "grade", titulo: e[1], cor: COR_HEX[e[0]],
+          conta: rs.exc[e[0]].length + (rs.exc[e[0]].length === 1 ? " hospital" : " hospitais"),
+          itens: rs.exc[e[0]].map(function (l) {
+            return { nome: l.n.toUpperCase(), sub: [l.b, l.e].filter(Boolean).join(" · ") };
+          }) });
+      });
+    }
     C.tipos.forEach(function (nomeTipo, t) {
       var itens = r.itens.filter(function (x) { return x.l.t === t; });
       secoes.push({ tipo: "bloco", titulo: nomeTipo,
@@ -436,6 +596,16 @@ td.onde{white-space:nowrap}
     espera = setTimeout(function () { st.q = v; st.teto = POR_VEZ; desenhar(); }, 150);
   };
   $("mais").onclick = function () { st.teto += POR_VEZ; desenhar(); };
+  $("resumo").onclick = function (e) {
+    var b = e.target.closest("[data-ver]");
+    if (!b) return;
+    st.onde = b.getAttribute("data-ver"); st.tipo = 0; st.teto = POR_VEZ;
+    Array.prototype.forEach.call($("tipo").children, function (x) {
+      x.setAttribute("aria-pressed", String(x.getAttribute("data-t") === "0"));
+    });
+    desenhar();
+    $("tabela").scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   // cidades em que a Amil foi conferida unidade a unidade: "; Curitiba e mais 12 cidades, unidade a unidade em 25/09/2026"
   function unidadeAUnidade() {
