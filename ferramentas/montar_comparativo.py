@@ -371,8 +371,10 @@ def resolver_cidades(au, bu):
 
 def juntar_empresa(linhas, juntar_marcas):
     """Junta as linhas da mesma empresa numa cidade: mesma raiz de CNPJ com nome
-    parecido, ou o mesmo nome (com alguma palavra que identifica). A linha junta
-    lista os enderecos, marcando o que e so de uma operadora, e soma os planos."""
+    parecido, o mesmo nome (com alguma palavra que identifica), ou o mesmo endereco
+    com nome da mesma marca ("Clinica Sugisawa de Imagem" dentro do Hospital
+    Sugisawa). A linha junta lista os enderecos, marcando o que e so de uma
+    operadora, e soma os planos."""
     pai = list(range(len(linhas)))
 
     def raiz(x):
@@ -384,21 +386,26 @@ def juntar_empresa(linhas, juntar_marcas):
     def une(x, y):
         pai[raiz(x)] = raiz(y)
     toks = [[tokens(n) for n in l["_n"]] for l in linhas]
-    por_raiz, por_nome = {}, {}
+    por_raiz, por_nome, por_end = {}, {}, {}
     for k, l in enumerate(linhas):
         for c in l["_c"]:
             por_raiz.setdefault(c[:8], []).append(k)
+        for e in l["_e"]:
+            num, _, rua, _ = _partes_endereco(e or "")
+            if num and rua:
+                por_end.setdefault((num, rua), []).append(k)
         for t in toks[k]:
             if parecido(t, t) > 0:          # tem palavra que identifica
                 por_nome.setdefault(" ".join(sorted(t)), []).append(k)
     for ks in por_nome.values():
         for k in ks[1:]:
             une(ks[0], k)
-    for ks in por_raiz.values():
+    for ks, corte in [(ks, 0.6) for ks in por_raiz.values()] + [(ks, 0.5) for ks in por_end.values()]:
+        ks = sorted(set(ks))
         for x in range(len(ks)):
             for y in range(x + 1, len(ks)):
                 p, q = ks[x], ks[y]
-                if raiz(p) != raiz(q) and max(parecido(t, u) for t in toks[p] for u in toks[q]) >= 0.6:
+                if raiz(p) != raiz(q) and max(parecido(t, u) for t in toks[p] for u in toks[q]) >= corte:
                     une(p, q)
     grupos = {}
     for k in range(len(linhas)):
@@ -411,11 +418,12 @@ def juntar_empresa(linhas, juntar_marcas):
         g.sort(key=lambda l: ("ab", "a", "b").index(l["_l"]))
         lados = {l["_l"] for l in g}
         so = {"ab": "", "a": " (só Amil)", "b": " (só Bradesco)"}
-        ends = []
+        ends, vistos = [], []
         for l in g:
-            e = l["e"] + (so[l["_l"]] if len(lados) > 1 else "")
-            if l["e"] and e not in ends:
-                ends.append(e)
+            if not l["e"] or any(l["e"] == v or mesmo_endereco(l["e"], v) for v in vistos):
+                continue                  # o mesmo endereco escrito de outro jeito
+            vistos.append(l["e"])
+            ends.append(l["e"] + (so[l["_l"]] if len(lados) > 1 else ""))
         e = " / ".join(ends[:3]) + (" e mais " + str(len(ends) - 3) + " endereços" if len(ends) > 3 else "")
         n = g[0]["n"]
         nomes_b = []
@@ -437,7 +445,7 @@ def juntar_empresa(linhas, juntar_marcas):
             linha["o"] = o
         out.append(linha)
     for l in out:
-        for k in ("_c", "_n", "_l"):
+        for k in ("_c", "_n", "_e", "_l"):
             l.pop(k, None)
     return out
 
@@ -762,9 +770,11 @@ def montar():
         b = bu[par_a[i]] if i in par_a else None
         cnpjs = {a["cnpj"]} | {au[x]["cnpj"] for x in junto_a.get(i, [])}
         nomes_l = [a["nome"]] + [au[x]["nome"] for x in junto_a.get(i, [])]
+        ends_l = [a["end"]] + [au[x]["end"] for x in junto_a.get(i, [])]
         if b:
             cnpjs |= {b["cnpj"]} | {bu[y]["cnpj"] for y in junto_b.get(i, [])}
             nomes_l += [b["nome"]] + [bu[y]["nome"] for y in junto_b.get(i, [])]
+            ends_l += [b["end"]] + [bu[y]["end"] for y in junto_b.get(i, [])]
         if junto_a.get(i):
             prods, ends = set(a["p"]), [a["end"]]
             for x in junto_a[i]:
@@ -793,7 +803,7 @@ def montar():
             "t": b["tipo"] if b else a["tipo"], "b": bonito(a["bairro"] or (b or {}).get("bairro", "")),
             "e": bonito(a["end"] or (b or {}).get("end", "")), "f": a["tel"] or (b or {}).get("tel", ""),
             "s": a["acred"], "a": a["p"], "m": b["m"] if b else "",
-            "_c": {x for x in cnpjs if len(x) == 14}, "_n": nomes_l, "_l": "ab" if b else "a"})
+            "_c": {x for x in cnpjs if len(x) == 14}, "_n": nomes_l, "_e": ends_l, "_l": "ab" if b else "a"})
         if not b:
             nota = em_outro_endereco(a, raiz_b, bu, "Bradesco")
             if nota:
@@ -808,7 +818,8 @@ def montar():
         c["linhas"].append({"n": bonito(b["nome"]), "al": "", "t": b["tipo"],
                             "b": bonito(b["bairro"]), "e": bonito(b.get("end", "")),
                             "f": b.get("tel", ""), "s": "", "a": [], "m": b["m"],
-                            "_c": {b["cnpj"]} if len(b["cnpj"]) == 14 else set(), "_n": [b["nome"]], "_l": "b"})
+                            "_c": {b["cnpj"]} if len(b["cnpj"]) == 14 else set(), "_n": [b["nome"]],
+                            "_e": [b["end"]], "_l": "b"})
         nota = em_outro_endereco(b, raiz_a, au, "Amil")
         if nota:
             c["linhas"][-1]["o"] = nota
