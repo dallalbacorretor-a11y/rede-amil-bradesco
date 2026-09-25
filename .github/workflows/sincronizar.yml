@@ -1,4 +1,5 @@
-# Mantem amil/ e bradesco/ iguais aos sites de rede-amil e rede-bradesco.
+# Mantem amil/ e bradesco/ iguais aos sites de rede-amil e rede-bradesco e remonta
+# sulamerica/ (sobre o modelo da pagina da Bradesco) e o comparativo.
 # Roda sozinho a cada 3 horas; para puxar na hora: aba Actions > Sincronizar > Run workflow.
 name: Sincronizar
 
@@ -24,19 +25,23 @@ jobs:
       - name: Traz as duas redes
         run: ./ferramentas/sincronizar.sh
 
+      # a pagina da SulAmerica usa a da Bradesco como modelo
+      - name: Remonta a pagina da SulAmerica
+        run: python3 ferramentas/montar_sulamerica.py
+
       - name: Remonta o comparativo
         run: python3 ferramentas/montar_comparativo.py
 
       - name: Grava o que mudou
         id: grava
         run: |
-          if [ -z "$(git status --porcelain -- amil bradesco comparativo)" ]; then
+          if [ -z "$(git status --porcelain -- amil bradesco sulamerica comparativo)" ]; then
             echo "Nada mudou nas redes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A amil bradesco comparativo
+          git add -A amil bradesco sulamerica comparativo
           git commit -m "Sincroniza com rede-amil e rede-bradesco"
           git push
           echo "mudou=1" >> "$GITHUB_OUTPUT"

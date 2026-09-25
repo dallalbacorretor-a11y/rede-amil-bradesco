@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Comparativo Amil x Bradesco</title>
+<title>Comparativo Amil x Bradesco x SulAmérica</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
@@ -14,7 +14,7 @@
   --papel:#f2f5f9; --carta:#ffffff; --tinta:#101828; --tinta-fraca:#5b6577;
   --risco:#dbe2ec; --realce:#f6f8fc; --zebra:#f7f9fc;
   --marca-fundo:#0f1a29; --sobre-marca:#ffffff; --ouro:#8a6810; --ouro-topo:#c9a227;
-  --amil:#2733c4; --bradesco:#8b0633; --ambos:#0e6b64; --nao:#c3cbd8;
+  --amil:#2733c4; --bradesco:#8b0633; --sula:#c2560c; --ambos:#0e6b64; --nao:#c3cbd8;
   --sombra:0 1px 2px rgba(16,26,41,.05),0 6px 18px rgba(16,26,41,.05);
 }
 @media (prefers-color-scheme:dark){
@@ -22,7 +22,7 @@
     --papel:#0a0f17; --carta:#131a25; --tinta:#e7ecf4; --tinta-fraca:#94a0b4;
     --risco:#25303f; --realce:#19212e; --zebra:#161e2a;
     --marca-fundo:#0b1422; --sobre-marca:#dbe7f7; --ouro:#d6b155;
-    --amil:#8d99ff; --bradesco:#f08aa6; --ambos:#6cc9c0; --nao:#3a4658;
+    --amil:#8d99ff; --bradesco:#f08aa6; --sula:#e8a06b; --ambos:#6cc9c0; --nao:#3a4658;
     --sombra:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.28);
   }
 }
@@ -30,7 +30,7 @@
   --papel:#0a0f17; --carta:#131a25; --tinta:#e7ecf4; --tinta-fraca:#94a0b4;
   --risco:#25303f; --realce:#19212e; --zebra:#161e2a;
   --marca-fundo:#0b1422; --sobre-marca:#dbe7f7; --ouro:#d6b155;
-  --amil:#8d99ff; --bradesco:#f08aa6; --ambos:#6cc9c0; --nao:#3a4658;
+  --amil:#8d99ff; --bradesco:#f08aa6; --sula:#e8a06b; --ambos:#6cc9c0; --nao:#3a4658;
   --sombra:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.28);
 }
 *{box-sizing:border-box}
@@ -64,7 +64,8 @@ input[type=search]{min-width:260px}
 .chip[aria-pressed="true"]{border-color:var(--c); background:color-mix(in srgb, var(--c) 12%, var(--carta));}
 .chip[aria-pressed="true"] i{opacity:1}
 .op{font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-right:4px; align-self:center}
-.op.amil{color:var(--amil)} .op.brad{color:var(--bradesco)}
+.op.amil{color:var(--amil)} .op.brad{color:var(--bradesco)} .op.sula{color:var(--sula)}
+.linha[hidden]{display:none}
 .seg{display:inline-flex; border:1px solid var(--risco); border-radius:8px; overflow:hidden}
 .seg button{border:0; background:var(--carta); padding:8px 12px; cursor:pointer; font-size:12.5px; font-weight:500;
   border-right:1px solid var(--risco)}
@@ -103,7 +104,7 @@ input[type=search]{min-width:260px}
 .dif th:first-child{background:var(--marca-fundo)}
 .dif tr.total td:first-child{background:var(--realce)}
 .ganha{font-weight:700; color:var(--c)}
-.excl{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+.excl{display:grid; grid-template-columns:repeat(var(--n,2),minmax(0,1fr)); gap:14px}
 .excl-col{border:1px solid var(--risco); border-top:3px solid var(--c); border-radius:10px; padding:12px 14px; min-width:0}
 .excl-col h3{margin:0 0 8px; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--c)}
 .excl-col ul{margin:0; padding-left:18px; font-size:13px}
@@ -158,9 +159,9 @@ td.onde{white-space:nowrap}
 <header class="topo">
   <div class="topo-in">
     <div class="selo">Mazza Broker</div>
-    <h1>Comparativo de rede — <em>Amil</em> × <em>Bradesco Saúde</em></h1>
+    <h1>Comparativo de rede — <em>Amil</em> × <em>Bradesco Saúde</em> × <em>SulAmérica</em></h1>
     <p>Hospitais, clínicas, laboratórios e centros de imagem lado a lado, cidade por cidade.
-       Escolha os planos de cada operadora, veja o que está nos dois e o que é exclusivo de cada um,
+       Escolha os planos de cada operadora, veja o que está em todas e o que é exclusivo de cada uma,
        e gere o PDF.</p>
   </div>
 </header>
@@ -176,6 +177,7 @@ td.onde{white-space:nowrap}
     </div>
     <div class="linha"><span class="op amil">Amil</span><div class="chips" id="planosAmil"></div></div>
     <div class="linha"><span class="op brad">Bradesco</span><div class="chips" id="planosBrad"></div></div>
+    <div class="linha" id="linhaSula" hidden><span class="op sula">SulAmérica</span><div class="chips" id="planosSula"></div></div>
   </section>
 
   <div class="placar" id="placar"></div>
@@ -207,22 +209,33 @@ td.onde{white-space:nowrap}
   var sem = function (s) { return (s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase(); };
   var guarda = function (k, v) { try { localStorage.setItem("cmp_" + k, JSON.stringify(v)); } catch (e) {} };
   var lembra = function (k) { try { return JSON.parse(localStorage.getItem("cmp_" + k)); } catch (e) { return null; } };
+  var num = function (n) { return n.toLocaleString("pt-BR"); };
+
+  // as operadoras: a SulAmerica so onde foi coletada (C.sulaCid)
+  var OPS = ["amil", "brad", "sula"];
+  var NOME_OP = { amil: "Amil", brad: "Bradesco", sula: "SulAmérica" };
+  var LONGO_OP = { amil: "Amil", brad: "Bradesco Saúde", sula: "SulAmérica Saúde" };
+  var CURTO_OP = { amil: "Amil ", brad: "Brad. ", sula: "Sula. " };
+  var COR_OP = { amil: "var(--amil)", brad: "var(--bradesco)", sula: "var(--sula)" };
+  var COR_HEX = { ambos: "#0e6b64", amil: "#2733c4", brad: "#8b0633", sula: "#c2560c", empate: "#5b6577" };
 
   var POR_VEZ = 400;
-  var st = { cidade: null, amil: [], brad: [0, 2], tipo: -1, onde: "todos", q: "", teto: POR_VEZ };
+  var st = { cidade: null, amil: [], brad: [0, 2], sula: [], tipo: -1, onde: "todos", q: "", teto: POR_VEZ };
 
   // ------------------------------------------------------------ cidades
   var porUf = {};
   C.cidades.forEach(function (c) { (porUf[c.uf] = porUf[c.uf] || []).push(c); });
   $("cidade").innerHTML = Object.keys(porUf).sort().map(function (uf) {
     return '<optgroup label="' + uf + '">' + porUf[uf].map(function (c) {
-      return '<option value="' + esc(c.k) + '">' + esc(c.nome) + " (" + (c.amil + c.brad - c.ambos) +
+      return '<option value="' + esc(c.k) + '">' + esc(c.nome) + " (" + (C.rede[c.k] || []).length +
              ")</option>";
     }).join("") + "</optgroup>";
   }).join("");
 
   function cidade() { return C.cidades.filter(function (c) { return c.k === st.cidade; })[0]; }
   function produtosAmil() { return C.amil[cidade().uf] || []; }
+  function temSula() { return !!(C.sulaCid && C.sulaCid[cidade().k]); }
+  function produtosSula() { return temSula() ? (C.sulamerica || []) : []; }
 
   // ------------------------------------------------------------- chips
   function chips() {
@@ -236,6 +249,12 @@ td.onde{white-space:nowrap}
       return '<button type="button" class="chip" data-i="' + i + '" style="--c:' + p.cor + '" aria-pressed="' +
              (st.brad.indexOf(i) >= 0) + '"><i></i>' + esc(p.r) + "</button>";
     }).join("");
+    var ps = produtosSula();
+    $("linhaSula").hidden = !ps.length;
+    $("planosSula").innerHTML = ps.map(function (p) {
+      return '<button type="button" class="chip" data-c="' + esc(p.c) + '" style="--c:' + p.cor + '" aria-pressed="' +
+             (st.sula.indexOf(p.c) >= 0) + '"><i></i>' + esc(p.r) + "</button>";
+    }).join("");
     $("tipo").innerHTML = ['<button type="button" data-t="-1">Todos</button>'].concat(C.tipos.map(function (t, i) {
       return '<button type="button" data-t="' + i + '">' + esc(t) + "</button>";
     })).join("");
@@ -246,37 +265,53 @@ td.onde{white-space:nowrap}
 
   // ----------------------------------------------------------- filtro
   function colunas() {
-    var pa = produtosAmil();
     var cols = [];
-    pa.forEach(function (p) {
+    produtosAmil().forEach(function (p) {
       if (st.amil.indexOf(p.c) >= 0) cols.push({ op: "amil", c: p.c, nome: p.r, cor: p.cor });
     });
     st.brad.slice().sort().forEach(function (i) {
       var p = C.bradesco[i];
       cols.push({ op: "brad", i: i, nome: p.r, cor: p.cor, sub: p.sub });
     });
+    produtosSula().forEach(function (p) {
+      if (st.sula.indexOf(p.c) >= 0) cols.push({ op: "sula", c: p.c, nome: p.r, cor: p.cor });
+    });
     return cols;
   }
+  function opsDe(cols) { return OPS.filter(function (op) { return cols.some(function (c) { return c.op === op; }); }); }
 
   function marca(l, col) {
     if (col.op === "amil") return l.a.indexOf(col.c) >= 0 ? 1 : 0;
+    if (col.op === "sula") return (l.u || []).indexOf(col.c) >= 0 ? 1 : 0;
     var d = l.m ? +l.m.charAt(col.i) : 0;
     return d;   // 0 nao, 1 sim, 2/3 so uma acomodacao
   }
+  // onde o estabelecimento esta, entre as operadoras marcadas: "ambos" (em todas), a
+  // operadora sozinha ("amil") ou o par ("amil+sula", com tres marcadas)
+  function ondeDe(ms, cols, ops) {
+    var pres = ops.filter(function (op) { return cols.some(function (c, k) { return c.op === op && ms[k]; }); });
+    if (!pres.length) return null;
+    if (pres.length === ops.length) return "ambos";
+    return pres.join("+");
+  }
+  function nomeOnde(k, ops) {
+    if (k === "ambos") return ops.length >= 3 ? "Nas três" : ops.length === 2 ? "Nos dois" : "Na " + NOME_OP[ops[0]];
+    var p = k.split("+");
+    return p.length === 1 ? "Só " + NOME_OP[k] : p.map(function (o) { return NOME_OP[o]; }).join(" e ");
+  }
+  function corOnde(k) { return k === "ambos" ? "var(--ambos)" : (COR_OP[k] || "var(--tinta-fraca)"); }
 
   function linhas() {
-    var cols = colunas(), q = sem(st.q).split(/\s+/).filter(Boolean);
+    var cols = colunas(), ops = opsDe(cols), q = sem(st.q).split(/\s+/).filter(Boolean);
     var out = [];
     (C.rede[st.cidade] || []).forEach(function (l) {
       if (st.tipo >= 0 && l.t !== st.tipo) return;
       var ms = cols.map(function (c) { return marca(l, c); });
-      var naAmil = cols.some(function (c, k) { return c.op === "amil" && ms[k]; });
-      var naBrad = cols.some(function (c, k) { return c.op === "brad" && ms[k]; });
-      if (!naAmil && !naBrad) return;
-      var onde = naAmil && naBrad ? "ambos" : (naAmil ? "amil" : "brad");
+      var onde = ondeDe(ms, cols, ops);
+      if (!onde) return;
       if (st.onde !== "todos" && st.onde !== onde) return;
       if (q.length) {
-        var alvo = sem(l.n + " " + l.al + " " + l.b + " " + l.e);
+        var alvo = sem(l.n + " " + l.al + " " + (l.nu || "") + " " + l.b + " " + l.e);
         if (!q.every(function (t) { return alvo.indexOf(t) >= 0; })) return;
       }
       out.push({ l: l, ms: ms, onde: onde, n: ms.filter(Boolean).length });
@@ -285,112 +320,116 @@ td.onde{white-space:nowrap}
     out.sort(function (a, b) {
       return a.l.t - b.l.t || b.n - a.n || (sem(a.l.n) < sem(b.l.n) ? -1 : 1);
     });
-    return { cols: cols, itens: out };
+    return { cols: cols, ops: ops, itens: out };
   }
 
   // ------------------------------------------------------------- tela
-  var NOME_ONDE = { ambos: "Nos dois", amil: "Só Amil", brad: "Só Bradesco" };
-  var COR_ONDE = { ambos: "var(--ambos)", amil: "var(--amil)", brad: "var(--bradesco)" };
-
   function placar(r) {
-    var conta = { todos: 0, ambos: 0, amil: 0, brad: 0 };
+    var conta = { todos: 0, ambos: 0 };
+    r.ops.forEach(function (op) { conta[op] = 0; });
     // o placar conta sem o filtro "onde", para os cartoes servirem de filtro
     var salvo = st.onde; st.onde = "todos";
     var todos = linhas().itens; st.onde = salvo;
-    todos.forEach(function (x) { conta.todos++; conta[x.onde]++; });
-    var cards = [["todos", "Estabelecimentos", "var(--ouro-topo)"], ["ambos", "Nos dois", COR_ONDE.ambos],
-                 ["amil", "Só na Amil", COR_ONDE.amil], ["brad", "Só na Bradesco", COR_ONDE.brad]];
+    todos.forEach(function (x) { conta.todos++; if (conta[x.onde] !== undefined) conta[x.onde]++; });
+    var cards = [["todos", "Estabelecimentos", "var(--ouro-topo)"]];
+    if (r.ops.length >= 2) {
+      cards.push(["ambos", nomeOnde("ambos", r.ops), "var(--ambos)"]);
+      r.ops.forEach(function (op) { cards.push([op, "Só na " + NOME_OP[op], COR_OP[op]]); });
+    }
     $("placar").innerHTML = cards.map(function (c) {
       return '<button type="button" class="card" data-onde="' + c[0] + '" style="--c:' + c[2] + '" aria-pressed="' +
-             (st.onde === c[0]) + '"><b>' + conta[c[0]].toLocaleString("pt-BR") + "</b><span>" + c[1] + "</span></button>";
+             (st.onde === c[0]) + '"><b>' + num(conta[c[0]]) + "</b><span>" + c[1] + "</span></button>";
     }).join("");
     return conta;
   }
 
   // ----------------------------------------------------------- resumo
   // a diferenca entre as redes na cidade, com os planos marcados: por tipo, quanto cada
-  // plano tem, o que esta nos dois e o que e exclusivo, e os hospitais exclusivos.
+  // plano tem, o que esta em todas e o que e exclusivo, e os hospitais exclusivos.
   // Nao depende da busca, do tipo nem do cartao escolhido
-  var COR_HEX = { ambos: "#0e6b64", amil: "#2733c4", brad: "#8b0633", empate: "#5b6577" };
   function contas() {
-    var cols = colunas(), L = C.rede[st.cidade] || [];
+    var cols = colunas(), ops = opsDe(cols), L = C.rede[st.cidade] || [];
     var novo = function () {
-      return { p: cols.map(function () { return 0; }), A: 0, B: 0, ambos: 0, amil: 0, brad: 0 };
+      var o = { p: cols.map(function () { return 0; }), U: {}, onde: { ambos: 0 } };
+      ops.forEach(function (op) { o.U[op] = 0; o.onde[op] = 0; });
+      return o;
     };
-    var por = C.tipos.map(novo), tot = novo(), exc = { amil: [], brad: [] };
+    var por = C.tipos.map(novo), tot = novo(), exc = {};
+    ops.forEach(function (op) { exc[op] = []; });
     L.forEach(function (l) {
       var ms = cols.map(function (c) { return marca(l, c); });
-      var naA = cols.some(function (c, k) { return c.op === "amil" && ms[k]; });
-      var naB = cols.some(function (c, k) { return c.op === "brad" && ms[k]; });
-      if (!naA && !naB) return;
-      var onde = naA && naB ? "ambos" : (naA ? "amil" : "brad");
+      var onde = ondeDe(ms, cols, ops);
+      if (!onde) return;
       [por[l.t], tot].forEach(function (o) {
         ms.forEach(function (m, k) { if (m) o.p[k]++; });
-        if (naA) o.A++;
-        if (naB) o.B++;
-        o[onde]++;
+        ops.forEach(function (op) {
+          if (cols.some(function (c, k) { return c.op === op && ms[k]; })) o.U[op]++;
+        });
+        o.onde[onde] = (o.onde[onde] || 0) + 1;
       });
-      if (l.t === 0 && onde !== "ambos") exc[onde].push(l);
+      if (l.t === 0 && exc[onde]) exc[onde].push(l);
     });
-    ["amil", "brad"].forEach(function (k) {
-      exc[k].sort(function (a, b) { return sem(a.n) < sem(b.n) ? -1 : 1; });
-    });
-    var temA = cols.some(function (c) { return c.op === "amil"; });
-    var temB = cols.some(function (c) { return c.op === "brad"; });
-    return { cols: cols, por: por, tot: tot, exc: exc, dois: temA && temB };
+    ops.forEach(function (op) { exc[op].sort(function (a, b) { return sem(a.n) < sem(b.n) ? -1 : 1; }); });
+    return { cols: cols, ops: ops, por: por, tot: tot, exc: exc, varias: ops.length >= 2 };
   }
-  function quemGanha(o) {
-    if (o.A === o.B) return { t: "Empate", k: "empate" };
-    return o.A > o.B ? { t: "Amil +" + (o.A - o.B), k: "amil" } : { t: "Bradesco +" + (o.B - o.A), k: "brad" };
+  // quem tem mais, e por quanto sobre a segunda
+  function quemGanha(o, ops) {
+    var ord = ops.slice().sort(function (a, b) { return o.U[b] - o.U[a]; });
+    if (o.U[ord[0]] === o.U[ord[1]]) return { t: "Empate", k: "empate" };
+    return { t: NOME_OP[ord[0]] + " +" + (o.U[ord[0]] - o.U[ord[1]]), k: ord[0], d: o.U[ord[0]] - o.U[ord[1]] };
   }
   var TIPO_PLURAL = ["hospitais", "clínicas", "laboratórios", "centros de imagem"];
+  var nomeCol = function (x) { return NOME_OP[x.op] + " " + x.nome; };
 
   function resumo() {
-    var r = contas(), c = cidade(), cols = r.cols;
+    var r = contas(), c = cidade(), cols = r.cols, ops = r.ops;
     $("resumoOnde").textContent = c.nome + " / " + c.uf;
     if (!cols.length) { $("resumo").innerHTML = '<p class="frase">Marque pelo menos um plano.</p>'; return; }
-    var nomeCol = function (x) { return (x.op === "amil" ? "Amil " : "Bradesco ") + x.nome; };
     var h = "";
-    if (r.dois) {
-      var ganhaA = [], ganhaB = [], empate = [];
+    if (r.varias) {
+      var ganha = {}, empate = [];
+      ops.forEach(function (op) { ganha[op] = []; });
       r.por.forEach(function (o, t) {
-        if (!o.A && !o.B) return;
-        var g = quemGanha(o), txt = TIPO_PLURAL[t] + " (+" + Math.abs(o.A - o.B) + ")";
-        (g.k === "amil" ? ganhaA : g.k === "brad" ? ganhaB : empate).push(g.k === "empate" ? TIPO_PLURAL[t] : txt);
+        if (!ops.some(function (op) { return o.U[op]; })) return;
+        var g = quemGanha(o, ops);
+        if (g.k === "empate") empate.push(TIPO_PLURAL[t]); else ganha[g.k].push(TIPO_PLURAL[t] + " (+" + g.d + ")");
       });
-      h += '<p class="frase">' +
-           (ganhaA.length ? '<b style="color:var(--amil)">A Amil tem mais</b> ' + esc(juntar(ganhaA)) + ". " : "") +
-           (ganhaB.length ? '<b style="color:var(--bradesco)">A Bradesco tem mais</b> ' + esc(juntar(ganhaB)) + ". " : "") +
+      h += '<p class="frase">' + ops.map(function (op) {
+             return ganha[op].length ? '<b style="color:' + COR_OP[op] + '">A ' + NOME_OP[op] + " tem mais</b> " +
+                                      esc(juntar(ganha[op])) + ". " : "";
+           }).join("") +
            (empate.length ? "Empatam em " + esc(juntar(empate)) + ". " : "") +
-           "Dos " + r.tot.A.toLocaleString("pt-BR") + " estabelecimentos da Amil e " +
-           r.tot.B.toLocaleString("pt-BR") + " da Bradesco, <b>" + r.tot.ambos.toLocaleString("pt-BR") +
-           " estão nos dois</b>.</p>";
+           "Dos " + juntar(ops.map(function (op, i) {
+             return num(r.tot.U[op]) + (i === 0 ? " estabelecimentos" : "") + " da " + NOME_OP[op];
+           })) + ", <b>" + num(r.tot.onde.ambos) + " estão " + (ops.length >= 3 ? "nas três" : "nos dois") +
+           "</b>." + (ops.length >= 3 ? " O “+” de quem tem mais é sobre a segunda colocada." : "") + "</p>";
     }
     h += '<div class="dif"><table><thead><tr><th>Tipo</th>' + cols.map(function (x) {
-      return '<th class="pl" style="--c:' + x.cor + '"><small>' + (x.op === "amil" ? "Amil" : "Bradesco") +
-             "</small>" + esc(x.nome) + "</th>";
-    }).join("") + (r.dois ? '<th class="pl" style="--c:var(--ambos)">Nos dois</th>' +
-      '<th class="pl" style="--c:var(--amil)">Só Amil</th><th class="pl" style="--c:var(--bradesco)">Só Bradesco</th>' +
-      "<th>Quem tem mais</th>" : "") + "</tr></thead><tbody>";
+      return '<th class="pl" style="--c:' + x.cor + '"><small>' + NOME_OP[x.op] + "</small>" + esc(x.nome) + "</th>";
+    }).join("") + (r.varias ? '<th class="pl" style="--c:var(--ambos)">' + nomeOnde("ambos", ops) + "</th>" +
+      ops.map(function (op) {
+        return '<th class="pl" style="--c:' + COR_OP[op] + '">Só ' + NOME_OP[op] + "</th>";
+      }).join("") + "<th>Quem tem mais</th>" : "") + "</tr></thead><tbody>";
     var linha = function (nome, o, total) {
-      var g = quemGanha(o);
+      var g = r.varias ? quemGanha(o, ops) : null;
       return "<tr" + (total ? ' class="total"' : "") + "><td>" + esc(nome) + "</td>" +
-        o.p.map(function (n) { return '<td class="n">' + n.toLocaleString("pt-BR") + "</td>"; }).join("") +
-        (r.dois ? '<td class="n">' + o.ambos.toLocaleString("pt-BR") + '</td><td class="n">' +
-          o.amil.toLocaleString("pt-BR") + '</td><td class="n">' + o.brad.toLocaleString("pt-BR") +
-          '</td><td><span class="ganha" style="--c:' + COR_HEX[g.k] + '">' + g.t + "</span></td>" : "") + "</tr>";
+        o.p.map(function (n) { return '<td class="n">' + num(n) + "</td>"; }).join("") +
+        (r.varias ? '<td class="n">' + num(o.onde.ambos) + "</td>" + ops.map(function (op) {
+          return '<td class="n">' + num(o.onde[op] || 0) + "</td>";
+        }).join("") + '<td><span class="ganha" style="--c:' + COR_HEX[g.k] + '">' + g.t + "</span></td>" : "") +
+        "</tr>";
     };
     r.por.forEach(function (o, t) { h += linha(C.tipos[t], o, false); });
     h += linha("Total", r.tot, true) + "</tbody></table></div>";
-    if (r.dois) {
-      h += '<div class="excl">' + [["amil", "Hospitais só na Amil", "var(--amil)"],
-                                   ["brad", "Hospitais só na Bradesco", "var(--bradesco)"]].map(function (e) {
-        var lista = r.exc[e[0]], mostra = lista.slice(0, 12);
-        return '<div class="excl-col" style="--c:' + e[2] + '"><h3>' + e[1] + " · " + lista.length + "</h3>" +
+    if (r.varias) {
+      h += '<div class="excl" style="--n:' + ops.length + '">' + ops.map(function (op) {
+        var lista = r.exc[op], mostra = lista.slice(0, 12);
+        return '<div class="excl-col" style="--c:' + COR_OP[op] + '"><h3>Hospitais só na ' + NOME_OP[op] + " · " +
+          lista.length + "</h3>" +
           (lista.length ? "<ul>" + mostra.map(function (l) {
             return "<li>" + esc(l.n) + (l.b ? " <small>" + esc(l.b) + "</small>" : "") + "</li>";
-          }).join("") + "</ul>" : "<p>Nenhum: todos os hospitais estão também na outra operadora.</p>") +
-          (lista.length ? '<button type="button" class="link" data-ver="' + e[0] + '">' +
+          }).join("") + "</ul>" : "<p>Nenhum: todos os hospitais dela estão também em outra operadora.</p>") +
+          (lista.length ? '<button type="button" class="link" data-ver="' + op + '">' +
             (lista.length > mostra.length ? "e mais " + (lista.length - mostra.length) + " — ver todos na tabela"
                                           : "ver na tabela") + "</button>" : "") + "</div>";
       }).join("") + "</div>";
@@ -404,12 +443,11 @@ td.onde{white-space:nowrap}
     resumo();
     var c = cidade();
     $("aviso").innerHTML = cols.length
-      ? "Mostrando <b>" + r.itens.length.toLocaleString("pt-BR") + "</b> estabelecimentos em " + esc(c.nome) + "/" + c.uf +
-        ". Clique nos cartões acima para ver só o que está nos dois ou só o exclusivo de cada operadora."
-      : "Marque pelo menos um plano da Amil ou da Bradesco.";
+      ? "Mostrando <b>" + num(r.itens.length) + "</b> estabelecimentos em " + esc(c.nome) + "/" + c.uf +
+        ". Clique nos cartões acima para ver só o que está em todas as operadoras ou só o exclusivo de cada uma."
+      : "Marque pelo menos um plano.";
     var h = '<thead><tr><th>Prestador</th><th>Bairro</th>' + cols.map(function (col) {
-      return '<th class="pl" style="--c:' + col.cor + '"><small>' + (col.op === "amil" ? "Amil" : "Bradesco") +
-             "</small>" + esc(col.nome) + "</th>";
+      return '<th class="pl" style="--c:' + col.cor + '"><small>' + NOME_OP[col.op] + "</small>" + esc(col.nome) + "</th>";
     }).join("") + '<th>Onde</th></tr></thead><tbody>';
     var tipoAtual = -1, mostrados = r.itens.slice(0, st.teto);
     mostrados.forEach(function (x) {
@@ -421,6 +459,7 @@ td.onde{white-space:nowrap}
       }
       h += '<tr><td class="nome"><b>' + esc(l.n) + "</b>" + (l.s ? '<span class="acred">' + esc(l.s) + "</span>" : "") +
            (l.al ? '<span class="al">na Bradesco: ' + esc(l.al) + "</span>" : "") +
+           (l.nu ? '<span class="al">na SulAmérica: ' + esc(l.nu) + "</span>" : "") +
            (l.o ? '<span class="outro">' + esc(l.o) + "</span>" : "") +
            (l.e || l.f ? '<span class="end">' + esc([l.e, l.f].filter(Boolean).join(" · ")) + "</span>" : "") +
            '</td><td class="bairro">' + esc(l.b || "—") + "</td>";
@@ -430,13 +469,14 @@ td.onde{white-space:nowrap}
         h += '<td class="pl" style="color:' + col.cor + '">✓' +
              (m > 1 && col.sub ? "<small>" + esc(col.sub[m - 2]) + "</small>" : "") + "</td>";
       });
-      h += '<td class="onde"><span class="tag" style="--c:' + COR_ONDE[x.onde] + '">' + NOME_ONDE[x.onde] + "</span></td></tr>";
+      h += '<td class="onde"><span class="tag" style="--c:' + corOnde(x.onde) + '">' + nomeOnde(x.onde, r.ops) +
+           "</span></td></tr>";
     });
     if (!r.itens.length) h += '<tr><td class="vazio" colspan="' + (cols.length + 3) + '">Nenhum estabelecimento com esses filtros.</td></tr>';
     $("tabela").innerHTML = h + "</tbody>";
     $("mais").hidden = r.itens.length <= st.teto;
-    $("mais").textContent = "Mostrar mais (" + (r.itens.length - st.teto).toLocaleString("pt-BR") + " restantes)";
-    guarda("st", { cidade: st.cidade, amil: st.amil, brad: st.brad });
+    $("mais").textContent = "Mostrar mais (" + num(r.itens.length - st.teto) + " restantes)";
+    guarda("st", { cidade: st.cidade, amil: st.amil, brad: st.brad, sula: st.sula });
   }
 
   // --------------------------------------------------------------- PDF
@@ -446,38 +486,51 @@ td.onde{white-space:nowrap}
   }
   function juntar(n) { return n.length <= 1 ? (n[0] || "") : n.slice(0, -1).join(", ") + " e " + n[n.length - 1]; }
 
+  function fonteDe(op, c) {
+    if (op === "amil")
+      return (C.baseAmilCid && C.baseAmilCid[c.k] ? ": busca avançada oficial, conferida unidade a unidade em " +
+              C.baseAmilCid[c.k] : ": busca avançada oficial, base de " + (C.baseAmil[c.uf] || "")) + ". ";
+    if (op === "brad")
+      return (C.fonteBradesco === "consulta" ? ": consulta oficial de rede referenciada, " : ": buscador oficial, base ") +
+             C.baseBradesco + ". ";
+    return ": busca de rede referenciada oficial, " + (C.sulaCid[c.k] || "") + " (Clássico 100 e Especial 100, PME). ";
+  }
+
   function documento() {
-    var r = linhas(), cols = r.cols, c = cidade();
+    var r = linhas(), cols = r.cols, ops = r.ops, c = cidade();
     var onde = c.nome + " / " + c.uf;
-    var nomesA = cols.filter(function (x) { return x.op === "amil"; }).map(function (x) { return x.nome; });
-    var nomesB = cols.filter(function (x) { return x.op === "brad"; }).map(function (x) { return x.nome; });
-    var conta = { ambos: 0, amil: 0, brad: 0 };
-    r.itens.forEach(function (x) { conta[x.onde]++; });
-    var placarPdf = [[r.itens.length, "estabelecimentos"], [conta.ambos, "nos dois"],
-                     [conta.amil, "só na Amil"], [conta.brad, "só na Bradesco"]];
-    cols.forEach(function (col, k) {
-      placarPdf.push([r.itens.filter(function (x) { return x.ms[k]; }).length,
-                      (col.op === "amil" ? "Amil " : "Bradesco ") + col.nome]);
+    var nomes = {};
+    ops.forEach(function (op) {
+      nomes[op] = cols.filter(function (x) { return x.op === op; }).map(function (x) { return x.nome; });
     });
+    var conta = { ambos: 0 };
+    ops.forEach(function (op) { conta[op] = 0; });
+    r.itens.forEach(function (x) { if (conta[x.onde] !== undefined) conta[x.onde]++; });
+    var placarPdf = [[r.itens.length, "estabelecimentos"]];
+    if (ops.length >= 2) {
+      placarPdf.push([conta.ambos, nomeOnde("ambos", ops).toLowerCase()]);
+      ops.forEach(function (op) { placarPdf.push([conta[op], "só na " + NOME_OP[op]]); });
+    }
+    cols.forEach(function (col, k) {
+      placarPdf.push([r.itens.filter(function (x) { return x.ms[k]; }).length, nomeCol(col)]);
+    });
+    var marcas = ops.map(function (op) { return "\"(só " + NOME_OP[op] + ")\""; });
     var secoes = [{ tipo: "leitura",
       cartoes: [
-        { titulo: "Os planos comparados", etiquetas: cols.map(function (x) {
-            return [(x.op === "amil" ? "Amil " : "Bradesco ") + x.nome, x.cor]; }),
+        { titulo: "Os planos comparados", etiquetas: cols.map(function (x) { return [nomeCol(x), x.cor]; }),
           texto: [["O ", false], ["visto", true], [" na coluna do plano diz que o estabelecimento atende " +
-                  "quem tem aquele plano; o traço, que não atende. Na Bradesco, \"só enf\" ou \"só apto\" " +
-                  "avisa quando só uma acomodação é atendida.", false]] },
+                  "quem tem aquele plano; o traço, que não atende." + (ops.indexOf("brad") >= 0 ?
+                  " Na Bradesco, \"só enf\" ou \"só apto\" avisa quando só uma acomodação é atendida." : ""), false]] },
         { titulo: "Como ler o comparativo", texto: [["Cada bloco é um tipo de estabelecimento: ", false],
             ["hospitais", true], [", ", false], ["clínicas", true], [", ", false], ["laboratórios", true],
             [" e ", false], ["centros de imagem", true], [". Primeiro vêm os que estão em mais planos. " +
              "Médicos pessoa física não entram. O prestador com vários endereços na cidade aparece numa " +
-             "linha só, com os endereços; \"(só Amil)\" ou \"(só Bradesco)\" marca o endereço que só uma " +
+             "linha só, com os endereços; " + juntar(marcas) + " marca o endereço que só uma " +
              "operadora lista.", false]] },
-        { titulo: "De onde vêm os dados", texto: [["Amil", true], [(C.baseAmilCid && C.baseAmilCid[c.k] ?
-            ": busca avançada oficial, conferida unidade a unidade em " + C.baseAmilCid[c.k] :
-            ": busca avançada oficial, base de " + (C.baseAmil[c.uf] || "")) + ". ", false], ["Bradesco Saúde", true], [(C.fonteBradesco === "consulta" ?
-            ": consulta oficial de rede referenciada, " : ": buscador oficial, base ") +
-            C.baseBradesco + ". O mesmo estabelecimento com nomes diferentes em cada operadora foi " +
-            "unificado pelo nome, pela cidade e pelo endereço.", false]] }
+        { titulo: "De onde vêm os dados", texto: ops.reduce(function (t, op) {
+            return t.concat([[LONGO_OP[op], true], [fonteDe(op, c), false]]);
+          }, []).concat([["O mesmo estabelecimento com nomes diferentes em cada operadora foi " +
+            "unificado pelo CNPJ, pelo nome, pela cidade e pelo endereço.", false]]) }
       ],
       aviso: [["Antes de contratar. ", true], ["A rede é definida e alterada exclusivamente por cada " +
               "operadora, a qualquer tempo. Este comparativo reproduz as bases oficiais nas datas indicadas e " +
@@ -486,17 +539,17 @@ td.onde{white-space:nowrap}
     // a diferenca entre as redes: a mesma tabela e os hospitais exclusivos da tela
     var rs = contas();
     var colsTab = [{ nome: "Tipo" }].concat(cols.map(function (x) {
-      return { nome: (x.op === "amil" ? "Amil " : "Brad. ") + x.nome, cor: x.cor, largura: 58 };
+      return { nome: CURTO_OP[x.op] + x.nome, cor: x.cor, largura: 58 };
     }));
-    if (rs.dois) colsTab = colsTab.concat([{ nome: "Nos dois", cor: COR_HEX.ambos, largura: 52 },
-      { nome: "Só Amil", cor: COR_HEX.amil, largura: 52 }, { nome: "Só Bradesco", cor: COR_HEX.brad, largura: 58 },
-      { nome: "Quem tem mais", largura: 86 }]);
+    if (rs.varias) colsTab = colsTab.concat([{ nome: nomeOnde("ambos", ops), cor: COR_HEX.ambos, largura: 52 }])
+      .concat(ops.map(function (op) { return { nome: "Só " + NOME_OP[op], cor: COR_HEX[op], largura: 58 }; }))
+      .concat([{ nome: "Quem tem mais", largura: 86 }]);
     var linhaTab = function (nome, o, total) {
-      var cel = [nome].concat(o.p.map(function (n) { return n.toLocaleString("pt-BR"); }));
-      if (rs.dois) {
-        var g = quemGanha(o);
-        cel = cel.concat([o.ambos.toLocaleString("pt-BR"), o.amil.toLocaleString("pt-BR"),
-                          o.brad.toLocaleString("pt-BR"), { text: g.t, cor: COR_HEX[g.k], negrito: true }]);
+      var cel = [nome].concat(o.p.map(num));
+      if (rs.varias) {
+        var g = quemGanha(o, ops);
+        cel = cel.concat([num(o.onde.ambos)]).concat(ops.map(function (op) { return num(o.onde[op] || 0); }))
+                 .concat([{ text: g.t, cor: COR_HEX[g.k], negrito: true }]);
       }
       return { celulas: cel, total: total };
     };
@@ -504,14 +557,15 @@ td.onde{white-space:nowrap}
       colunas: colsTab,
       linhas: rs.por.map(function (o, t) { return linhaTab(C.tipos[t], o, false); })
                 .concat([linhaTab("Total", rs.tot, true)]),
-      nota: [["Quantos estabelecimentos cada plano atende na cidade. ", false]].concat(rs.dois ? [
-             ["Nos dois", true], [": atende pelo menos um plano marcado de cada operadora. ", false],
-             ["Quem tem mais", true], [": a diferença entre os planos marcados da Amil e os da Bradesco.", false]] : []) });
-    if (rs.dois) {
-      [["amil", "Hospitais só na Amil"], ["brad", "Hospitais só na Bradesco"]].forEach(function (e) {
-        secoes.push({ tipo: "grade", titulo: e[1], cor: COR_HEX[e[0]],
-          conta: rs.exc[e[0]].length + (rs.exc[e[0]].length === 1 ? " hospital" : " hospitais"),
-          itens: rs.exc[e[0]].map(function (l) {
+      nota: [["Quantos estabelecimentos cada plano atende na cidade. ", false]].concat(rs.varias ? [
+             [nomeOnde("ambos", ops), true], [": atende pelo menos um plano marcado de cada operadora. ", false],
+             ["Quem tem mais", true], [ops.length >= 3 ? ": a operadora com mais estabelecimentos nos planos marcados e " +
+              "a diferença para a segunda." : ": a diferença entre os planos marcados das duas operadoras.", false]] : []) });
+    if (rs.varias) {
+      ops.forEach(function (op) {
+        secoes.push({ tipo: "grade", titulo: "Hospitais só na " + NOME_OP[op], cor: COR_HEX[op],
+          conta: rs.exc[op].length + (rs.exc[op].length === 1 ? " hospital" : " hospitais"),
+          itens: rs.exc[op].map(function (l) {
             return { nome: l.n.toUpperCase(), sub: [l.b, l.e].filter(Boolean).join(" · ") };
           }) });
       });
@@ -521,25 +575,28 @@ td.onde{white-space:nowrap}
       secoes.push({ tipo: "bloco", titulo: nomeTipo,
         conta: itens.length + (itens.length === 1 ? " estabelecimento" : " estabelecimentos"),
         endereco: true, telefone: true,
-        produtos: cols.map(function (x) { return { nome: (x.op === "amil" ? "Amil " : "Brad. ") + x.nome, cor: x.cor }; }),
+        produtos: cols.map(function (x) { return { nome: CURTO_OP[x.op] + x.nome, cor: x.cor }; }),
         linhas: itens.map(function (x) {
           return { nome: x.l.n.toUpperCase(), tag: x.l.s || "",
-                   esp: [x.l.al ? "na Bradesco: " + x.l.al : "", x.l.o || ""].filter(Boolean).join(" · "),
+                   esp: [x.l.al ? "na Bradesco: " + x.l.al : "", x.l.nu ? "na SulAmérica: " + x.l.nu : "",
+                         x.l.o || ""].filter(Boolean).join(" · "),
                    end: x.l.e, tel: x.l.f,
-                   bairro: x.l.b, cidade: NOME_ONDE[x.onde],
+                   bairro: x.l.b, cidade: nomeOnde(x.onde, ops),
                    marcas: x.ms.map(function (m, k) {
                      return !m ? false : (m > 1 && cols[k].sub ? cols[k].sub[m - 2] : true);
                    }) };
         }) });
     });
+    var opsNomes = ops.map(function (op) { return NOME_OP[op]; });
     return {
-      arquivo: nomeArquivo(["Comparativo Amil x Bradesco", juntar(nomesA) + (nomesA.length && nomesB.length ? " x " : "") +
-                            juntar(nomesB), onde]),
-      rodape: "Comparativo Amil × Bradesco Saúde   ·   " + onde,
+      arquivo: nomeArquivo(["Comparativo " + opsNomes.join(" x "), ops.map(function (op) {
+        return juntar(nomes[op]);
+      }).join(" x "), onde]),
+      rodape: "Comparativo " + ops.map(function (op) { return LONGO_OP[op]; }).join(" × ") + "   ·   " + onde,
       corretora: "Mazza Broker", corretorNome: (lembra("nome") || ""),
-      capa: { titulo: "Comparativo de rede", destaque: "Amil × Bradesco Saúde", onde: onde,
-              recorte: (nomesA.length ? "Amil " + juntar(nomesA) : "") + (nomesA.length && nomesB.length ? "  ·  " : "") +
-                       (nomesB.length ? "Bradesco " + juntar(nomesB) : ""),
+      capa: { titulo: "Comparativo de rede", destaque: ops.map(function (op) { return LONGO_OP[op]; }).join(" × "),
+              onde: onde,
+              recorte: ops.map(function (op) { return NOME_OP[op] + " " + juntar(nomes[op]); }).join("  ·  "),
               placar: placarPdf, cores: cols.map(function (x) { return x.cor; }),
               assinatura: "Documento gerado em " + new Date().toLocaleDateString("pt-BR") + "  ·  Mazza Broker" },
       secoes: secoes
@@ -561,24 +618,29 @@ td.onde{white-space:nowrap}
   };
 
   // ----------------------------------------------------------- eventos
+  function troca(lista, v, b) {
+    var i = lista.indexOf(v);
+    if (i >= 0) lista.splice(i, 1); else lista.push(v);
+    b.setAttribute("aria-pressed", String(i < 0)); st.teto = POR_VEZ;
+    // o cartao escolhido pode deixar de existir com outras operadoras marcadas
+    if (st.onde !== "todos" && st.onde !== "ambos" && opsDe(colunas()).indexOf(st.onde) < 0) st.onde = "todos";
+    desenhar();
+  }
   $("cidade").onchange = function () {
-    st.cidade = this.value; st.teto = POR_VEZ;
+    st.cidade = this.value; st.teto = POR_VEZ; st.onde = "todos";
     if (!st.amil.length || !produtosAmil().some(function (p) { return st.amil.indexOf(p.c) >= 0; })) {
       st.amil = produtosAmil().slice(0, 2).map(function (p) { return p.c; });
     }
     chips(); desenhar();
   };
   $("planosAmil").onclick = function (e) {
-    var b = e.target.closest(".chip"); if (!b) return;
-    var c = b.dataset.c, i = st.amil.indexOf(c);
-    if (i >= 0) st.amil.splice(i, 1); else st.amil.push(c);
-    b.setAttribute("aria-pressed", String(i < 0)); st.teto = POR_VEZ; desenhar();
+    var b = e.target.closest(".chip"); if (b) troca(st.amil, b.dataset.c, b);
   };
   $("planosBrad").onclick = function (e) {
-    var b = e.target.closest(".chip"); if (!b) return;
-    var k = +b.dataset.i, i = st.brad.indexOf(k);
-    if (i >= 0) st.brad.splice(i, 1); else st.brad.push(k);
-    b.setAttribute("aria-pressed", String(i < 0)); st.teto = POR_VEZ; desenhar();
+    var b = e.target.closest(".chip"); if (b) troca(st.brad, +b.dataset.i, b);
+  };
+  $("planosSula").onclick = function (e) {
+    var b = e.target.closest(".chip"); if (b) troca(st.sula, b.dataset.c, b);
   };
   $("tipo").onclick = function (e) {
     var b = e.target.closest("button"); if (!b) return;
@@ -619,16 +681,23 @@ td.onde{white-space:nowrap}
   }
   // todas as cidades conferidas unidade a unidade: so a data da busca avancada
   var todasUnidade = C.cidades.every(function (c) { return C.baseAmilCid && C.baseAmilCid[c.k]; });
+  var sulaCids = C.cidades.filter(function (c) { return C.sulaCid && C.sulaCid[c.k]; });
+  var sulaDatas = sulaCids.map(function (c) { return C.sulaCid[c.k]; })
+                          .filter(function (d, i, a) { return a.indexOf(d) === i; });
   $("fonte").innerHTML = "<b>Fontes:</b> Amil — busca avançada oficial (" + (todasUnidade
     ? "unidade a unidade, " + juntar(C.cidades.map(function (c) { return C.baseAmilCid[c.k]; })
         .filter(function (d, i, a) { return a.indexOf(d) === i; }))
     : "base " + Object.keys(C.baseAmil).map(function (uf) { return uf + " " + C.baseAmil[uf]; }).join(", ") +
       unidadeAUnidade()) + "). Bradesco Saúde — " + (C.fonteBradesco === "consulta" ? "consulta oficial de rede referenciada (" :
-    "buscador oficial (base ") + esc(C.baseBradesco) + "). Somente estabelecimentos; " +
+    "buscador oficial (base ") + esc(C.baseBradesco) + ")." + (sulaCids.length ? " SulAmérica Saúde — busca de rede " +
+    "referenciada oficial (" + juntar(sulaDatas) + "), planos Clássico 100 Enfermaria e Especial 100 (PME), em " +
+    (sulaCids.length <= 3 ? juntar(sulaCids.map(function (c) { return c.nome; }))
+                          : sulaCids[0].nome + " e mais " + (sulaCids.length - 1) + " cidades da região") + "." : "") +
+    " Somente estabelecimentos; " +
     "médicos pessoa física não entram. O mesmo prestador com nomes diferentes foi unificado pelo CNPJ, pelo nome, " +
-    "pela cidade e pelo endereço — quando o nome difere, a linha mostra também o nome da Bradesco. O prestador " +
-    "com vários endereços na cidade aparece numa linha só; \"(só Amil)\" ou \"(só Bradesco)\" marca o endereço " +
-    "que só uma operadora lista. <b>A rede é definida e alterada " +
+    "pela cidade e pelo endereço — quando o nome difere, a linha mostra também o nome nas outras operadoras. O prestador " +
+    "com vários endereços na cidade aparece numa linha só; \"(só Amil)\", \"(só Bradesco)\" ou \"(só SulAmérica)\" " +
+    "marca o endereço que só uma operadora lista. <b>A rede é definida e alterada " +
     "exclusivamente pelas operadoras: confirme no portal antes de contratar.</b>";
 
   // ------------------------------------------------------------ inicio
@@ -638,6 +707,7 @@ td.onde{white-space:nowrap}
   $("cidade").value = st.cidade;
   st.amil = salvo.amil && salvo.amil.length ? salvo.amil : [];
   if (salvo.brad) st.brad = salvo.brad;
+  if (salvo.sula) st.sula = salvo.sula;
   if (!produtosAmil().some(function (p) { return st.amil.indexOf(p.c) >= 0; })) {
     st.amil = produtosAmil().slice(0, 2).map(function (p) { return p.c; });
   }

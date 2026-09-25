@@ -1,11 +1,13 @@
 /* Barra de troca de operadora, no topo de cada rede.
    Entra no fim do index.html de cada pasta (ferramentas/sincronizar.sh) e se
    poe antes de tudo no <body>. As cores sao fixas: a barra fica sempre escura,
-   em cima do cabecalho navy da Amil e do vinho da Bradesco, nos dois temas. */
+   em cima do cabecalho navy da Amil, do vinho da Bradesco e do azul da SulAmerica,
+   nos dois temas. */
 (function () {
   var OPERADORAS = [
     { id: "amil", nome: "Amil" },
     { id: "bradesco", nome: "Bradesco", longo: " Saúde" },
+    { id: "sulamerica", nome: "SulAmérica", longo: " Saúde" },
     { id: "comparativo", nome: "Comparativo" }
   ];
   var eu = document.currentScript;

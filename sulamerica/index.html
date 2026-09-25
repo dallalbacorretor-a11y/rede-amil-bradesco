@@ -1,0 +1,1895 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rede SulAmérica por Cidade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap">
+<style>
+/* ---------------------------------------------------------------- tokens */
+:root{
+  --ink:#101a29; --paper:#f4f6f9; --surface:#ffffff; --raised:#fafbfd;
+  --rule:#dde3ec; --rule-forte:#c6d0de; --muted:#5a6a80; --fraco:#8695a9;
+  /* o cabecalho usa o azul-marinho da SulAmerica */
+  --topo:#0b2d5c; --sobre-topo:#ffffff; --topo-fraco:#c8d6ec; --ouro-claro:#f0c96a;
+  --ouro:#9a7420; --ouro-fraco:#f6efdd;
+  /* uma cor por produto da tela, do mais enxuto ao mais amplo:
+     Efetivo IV, Efetivo Plus, Top Nacional, Nacional Plus, Premium */
+  --p0:#c2560c; --p1:#1d5089; --p2:#1d5089; --p3:#0e6b64; --p4:#6b3fa0;
+  --p0-bg:#fbefe6; --p1-bg:#eaf0f9; --p2-bg:#eaf0f9; --p3-bg:#e5f2f1; --p4-bg:#f1ecf9;
+  --alerta:#8a5a12; --alerta-bg:#fbf1de; --alerta-rule:#ecd9b2;
+  --nota:#274a77; --nota-bg:#eaf0f9; --nota-rule:#cfdcee;
+  --sombra:0 1px 2px rgba(16,26,41,.05), 0 6px 18px rgba(16,26,41,.05);
+  --sombra-alta:0 12px 34px rgba(16,26,41,.16);
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  --mono:"IBM Plex Mono","Consolas","SF Mono",monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#e7edf6; --paper:#0d141f; --surface:#151e2c; --raised:#1b2534;
+    --rule:#283444; --rule-forte:#3a4859; --muted:#9aa9bf; --fraco:#78889e;
+    --topo:#0a2347; --sobre-topo:#ffffff; --topo-fraco:#b9c9e2; --ouro-claro:#f0c96a;
+    --ouro:#d3a742; --ouro-fraco:#2b2415;
+    --p0:#e8a06b; --p1:#8fb6e8; --p2:#8fb6e8; --p3:#6cc9c0; --p4:#c1a3ea;
+    --p0-bg:#2a1c14; --p1-bg:#14202f; --p2-bg:#14202f; --p3-bg:#0f2523; --p4-bg:#1e1830;
+    --alerta:#e0b671; --alerta-bg:#2a2314; --alerta-rule:#443619;
+    --nota:#9dbde6; --nota-bg:#14202f; --nota-rule:#2a3b52;
+    --sombra:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.28);
+    --sombra-alta:0 12px 34px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#e7edf6; --paper:#0d141f; --surface:#151e2c; --raised:#1b2534;
+  --rule:#283444; --rule-forte:#3a4859; --muted:#9aa9bf; --fraco:#78889e;
+  --topo:#080e17; --sobre-topo:#e7edf6; --topo-fraco:#8496ad; --ouro-claro:#d3a742;
+  --ouro:#d3a742; --ouro-fraco:#2b2415;
+  --p0:#e8a06b; --p1:#8fb6e8; --p2:#8fb6e8; --p3:#8fb6e8; --p4:#6cc9c0;
+  --p0-bg:#2a1c14; --p1-bg:#14202f; --p2-bg:#14202f; --p3-bg:#14202f; --p4-bg:#0f2523;
+  --alerta:#e0b671; --alerta-bg:#2a2314; --alerta-rule:#443619;
+  --nota:#9dbde6; --nota-bg:#14202f; --nota-rule:#2a3b52;
+  --sombra:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.28);
+  --sombra-alta:0 12px 34px rgba(0,0,0,.5);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font:15px/1.5 var(--sans); -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{margin:0; text-wrap:balance}
+button{font:inherit; color:inherit; cursor:pointer}
+:focus-visible{outline:2px solid var(--ouro); outline-offset:2px; border-radius:4px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+
+/* ---------------------------------------------------------------- topo */
+.topo{
+  background:var(--topo); color:var(--sobre-topo); padding:15px 24px 14px;
+  display:flex; align-items:center; gap:20px; flex-wrap:wrap;
+  border-bottom:3px solid var(--ouro-claro);
+}
+.logo-op{height:34px; width:auto; flex:0 0 auto; display:block}
+.marca{flex:1 1 auto; min-width:230px; display:flex; flex-direction:column; gap:3px}
+/* barra de abas, no padrao da ferramenta da Amil */
+.abas{background:var(--surface); border-bottom:1px solid var(--rule);
+  padding:0 24px; display:flex; gap:4px; position:sticky; top:0; z-index:45;
+  overflow-x:auto}
+.abas button{border:0; background:none; padding:13px 16px 11px; white-space:nowrap;
+  font:600 14.5px/1 var(--sans); color:var(--muted); border-bottom:3px solid transparent}
+.abas button:hover{color:var(--ink)}
+.abas button[aria-selected="true"]{color:var(--ink); border-bottom-color:var(--p0)}
+.painel[hidden]{display:none}
+
+/* --- aba Visao geral --- */
+.geral{padding:26px 24px 34px; max-width:1220px; margin:0 auto}
+.geral .escopo{font-size:13.5px; line-height:1.6; color:var(--muted); margin:14px 0 0;
+  max-width:62ch}
+.placar-geral{display:flex; gap:38px 46px; flex-wrap:wrap; align-items:flex-end}
+.placar-geral div{min-width:96px}
+.placar-geral b{display:block; font:400 40px/1 var(--serif); color:var(--ink);
+  letter-spacing:-.02em}
+.placar-geral span{display:block; margin-top:7px; font:600 10px/1.3 var(--sans);
+  letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+.geral h2{font:400 21px/1.2 var(--serif); color:var(--ink); margin:34px 0 4px}
+.geral h2:first-child{margin-top:0}
+.geral .sob{font-size:13.5px; line-height:1.6; color:var(--muted); max-width:62ch;
+  margin-bottom:14px}
+.mapa{background:var(--surface); border:1px solid var(--rule); border-radius:10px;
+  padding:10px; box-shadow:var(--sombra)}
+.mapa svg{display:block; width:100%; height:auto}
+.mapa circle{cursor:default}
+.mapa .bolha{fill:var(--p2); fill-opacity:.24; stroke:var(--p2); stroke-opacity:.5}
+.mapa .miolo{fill:var(--ouro)}
+.mapa text{font:600 10.5px/1 var(--sans); fill:var(--muted)}
+.legenda-mapa{display:flex; gap:20px; flex-wrap:wrap; align-items:center; margin-top:12px;
+  font-size:12.5px; color:var(--muted)}
+.legenda-mapa i{display:inline-block; border-radius:50%; background:var(--p2);
+  opacity:.45; vertical-align:middle; margin-right:7px}
+.legenda-mapa em{display:inline-block; width:8px; height:8px; border-radius:50%;
+  background:var(--ouro); vertical-align:middle; margin-right:7px}
+.duplo{display:grid; gap:32px 44px; grid-template-columns:repeat(auto-fit,minmax(330px,1fr));
+  margin-top:8px}
+.barras{display:grid; gap:9px}
+.barras .l{display:grid; grid-template-columns:minmax(88px,auto) 1fr auto; gap:12px;
+  align-items:center; font-size:13.5px}
+.barras .l span{color:var(--ink)}
+.barras .t{height:15px; border-radius:3px; background:var(--rule); overflow:hidden}
+.barras .t i{display:block; height:100%; border-radius:3px}
+.barras .n{font:600 13.5px/1 var(--mono); color:var(--ink); text-align:right; min-width:44px}
+.barras .t i.b0{background:var(--p0)} .barras .t i.b1{background:var(--p1)}
+.barras .t i.b2{background:var(--p2)} .barras .t i.b3{background:var(--p3)}
+.barras .t i.b4{background:var(--p4)}
+
+/* --- aba Entre planos --- */
+.entre{padding:26px 24px 34px; max-width:1220px; margin:0 auto}
+.entre h2{font:400 21px/1.2 var(--serif); color:var(--ink); margin:0 0 4px}
+.entre .sob{font-size:13.5px; line-height:1.6; color:var(--muted); max-width:66ch;
+  margin-bottom:18px}
+.escolha-par{display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;
+  padding-bottom:22px; border-bottom:1px solid var(--rule)}
+.escolha-par .campo{flex:0 1 210px}
+.escolha-par .seta{font-size:19px; color:var(--fraco); padding-bottom:9px}
+.placar-perde{display:flex; gap:34px 44px; flex-wrap:wrap; margin:22px 0 6px}
+.placar-perde div{min-width:104px}
+.placar-perde b{display:block; font:400 36px/1 var(--serif); color:var(--p0);
+  letter-spacing:-.02em}
+.placar-perde b.bom{color:var(--ink)}
+.placar-perde span{display:block; margin-top:6px; font:600 10px/1.35 var(--sans);
+  letter-spacing:.13em; text-transform:uppercase; color:var(--muted); max-width:15ch}
+.frase-troca{font-size:14px; line-height:1.65; color:var(--ink); margin:16px 0 30px;
+  max-width:74ch}
+.frase-troca b{font-weight:600}
+.perde-lista{display:grid; gap:9px; grid-template-columns:repeat(auto-fill,minmax(266px,1fr))}
+.perde-lista .it{border:1px solid var(--rule); border-left:3px solid var(--p0);
+  border-radius:7px; padding:10px 13px; background:var(--surface)}
+.perde-lista .it b{display:block; font:600 13.5px/1.35 var(--sans); color:var(--ink)}
+.perde-lista .it span{display:block; margin-top:3px; font-size:12px; color:var(--muted)}
+.entre .nada{padding:16px 18px; border-radius:8px; background:var(--nota-bg);
+  border:1px solid var(--nota-rule); color:var(--nota); font-size:13.5px; line-height:1.6}
+
+/* --- escolha de produtos (cartoes) --- */
+.produtos{padding:15px 24px 17px; border-top:1px dashed var(--rule);
+  display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap}
+.produtos .rot{font:600 10px/1.4 var(--sans); letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); padding-top:12px; flex:0 0 auto; max-width:16ch}
+.cartoes-prod{display:flex; gap:9px; flex-wrap:wrap; flex:1 1 320px}
+.cartao-prod{border:1px solid var(--rule-forte); border-radius:8px; padding:9px 13px 10px;
+  background:var(--surface); display:flex; gap:9px; align-items:flex-start;
+  min-width:150px; cursor:pointer}
+.cartao-prod input{width:auto; padding:0; margin:2px 0 0; accent-color:var(--p0)}
+.cartao-prod b{display:block; font:600 14px/1.2 var(--sans); color:var(--ink)}
+.cartao-prod span{display:block; margin-top:3px; font-size:11.5px; color:var(--muted)}
+.cartao-prod.on{border-color:var(--p0); box-shadow:inset 0 0 0 1px var(--p0)}
+.cartao-prod.c0.on{border-color:var(--p0); box-shadow:inset 0 0 0 1px var(--p0)}
+.cartao-prod.c1.on{border-color:var(--p1); box-shadow:inset 0 0 0 1px var(--p1)}
+.cartao-prod.c2.on{border-color:var(--p2); box-shadow:inset 0 0 0 1px var(--p2)}
+.cartao-prod.c3.on{border-color:var(--p3); box-shadow:inset 0 0 0 1px var(--p3)}
+.cartao-prod.c4.on{border-color:var(--p4); box-shadow:inset 0 0 0 1px var(--p4)}
+.modo{display:inline-flex; border:1px solid var(--rule-forte); border-radius:6px;
+  overflow:hidden; background:var(--raised); flex:0 0 auto; align-self:center}
+.modo button{border:0; background:transparent; padding:8px 13px; font-size:13px;
+  color:var(--muted); border-right:1px solid var(--rule); white-space:nowrap}
+.modo button:last-child{border-right:0}
+.modo button[aria-pressed="true"]{background:var(--ink); color:var(--surface); font-weight:600}
+
+/* --- tabela da rede --- */
+.tab-rede{width:100%; border-collapse:collapse; background:var(--surface);
+  border:1px solid var(--rule); border-radius:10px; overflow:hidden;
+  box-shadow:var(--sombra); table-layout:fixed}
+.tab-rede thead th{font:600 10px/1.3 var(--sans); letter-spacing:.12em; text-transform:uppercase;
+  color:var(--muted); background:var(--raised); text-align:center; padding:10px 8px;
+  border-bottom:1px solid var(--rule)}
+.tab-rede thead th:first-child{text-align:left; width:auto}
+.tab-rede thead th.p{width:88px}
+.tab-rede tbody td{padding:11px 10px; border-bottom:1px solid var(--rule); vertical-align:top}
+.tab-rede tbody tr:last-child td{border-bottom:0}
+.tab-rede tbody tr:hover td{background:var(--realce,var(--raised))}
+.tab-rede .nm{font:600 15px/1.3 var(--sans); color:var(--ink)}
+.tab-rede .sub{display:block; margin-top:4px; font-size:12.5px; line-height:1.55; color:var(--muted)}
+.tab-rede .sub b{color:var(--ink); font-weight:600}
+.tab-rede .sub .tel{white-space:nowrap; color:var(--ink)}
+.tab-rede .sub.fora{color:var(--alerta)}
+.tab-rede .selos{margin-top:6px; display:flex; gap:5px; flex-wrap:wrap}
+.tab-rede .selo-t{font:600 10px/1 var(--sans); letter-spacing:.08em; text-transform:uppercase;
+  padding:4px 7px; border-radius:4px; background:var(--raised); color:var(--muted);
+  border:1px solid var(--rule)}
+.tab-rede td.pl{text-align:center; font:700 20px/1 var(--sans)}
+.tab-rede td.pl.s0{color:var(--p0)} .tab-rede td.pl.s1{color:var(--p1)}
+.tab-rede td.pl.s2{color:var(--p2)} .tab-rede td.pl.s3{color:var(--p3)}
+.tab-rede td.pl.s4{color:var(--p4)}
+.tab-rede td.pl.nao{color:var(--rule-forte); font-weight:400}
+.tab-rede td.pl i{display:block; margin-top:3px; font:600 10px/1.3 var(--sans);
+  font-style:normal; color:var(--fraco)}
+.tab-rede td.pl.c0{background:var(--p0-bg)} .tab-rede td.pl.c1{background:var(--p1-bg)}
+.tab-rede td.pl.c2{background:var(--p2-bg)} .tab-rede td.pl.c3{background:var(--p3-bg)}
+.tab-rede td.pl.c4{background:var(--p4-bg)}
+@media (max-width:760px){
+  .tab-rede thead th.p{width:62px}
+  .tab-rede td.pl{font-size:16px}
+}
+.selo{font:600 10.5px/1 var(--sans); letter-spacing:.22em; text-transform:uppercase; color:var(--ouro-claro)}
+.selo b{font-weight:400; color:var(--topo-fraco)}
+h1{font:500 23px/1.15 var(--serif); color:var(--sobre-topo); letter-spacing:-.01em}
+h1 em{font-style:italic; color:var(--ouro-claro)}
+.fontes{font:400 12px/1.6 var(--sans); color:var(--topo-fraco); text-align:right; max-width:46ch; flex:0 1 auto}
+.fontes b{color:var(--sobre-topo); font-weight:600}
+.fontes .rot{font:500 10px/1 var(--sans); letter-spacing:.16em; text-transform:uppercase;
+  color:var(--topo-fraco); display:block; margin-bottom:5px; opacity:.75}
+
+/* ---------------------------------------------------------------- barra de comando */
+.barra{position:sticky; top:0; z-index:40; background:var(--surface);
+  border-bottom:1px solid var(--rule); box-shadow:var(--sombra)}
+.barra-in{padding:13px 24px; display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap}
+.campo{position:relative; display:flex; flex-direction:column; gap:5px; min-width:0}
+.campo.cidade{flex:1 1 250px}
+.campo.busca{flex:1 1 210px}
+.campo.plano{flex:0 1 185px}
+label{font:600 10px/1 var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+input,select{
+  font:400 14.5px/1.2 var(--sans); width:100%; padding:9px 11px; color:var(--ink);
+  background:var(--raised); border:1px solid var(--rule-forte); border-radius:6px;
+}
+select{cursor:pointer}
+input:focus,select:focus{outline:none; border-color:var(--ouro); background:var(--surface);
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--ouro) 18%, transparent)}
+input::placeholder{color:var(--fraco)}
+.limpar{position:absolute; right:6px; top:26px; border:0; background:transparent; color:var(--fraco);
+  font-size:18px; line-height:1; padding:5px 6px; border-radius:5px; display:none}
+.limpar:hover{background:var(--rule); color:var(--ink)}
+.campo.tem .limpar{display:block}
+.campo.tem input{padding-right:30px}
+
+.seg{display:inline-flex; border:1px solid var(--rule-forte); border-radius:6px; overflow:hidden;
+  background:var(--raised); align-self:flex-end}
+.seg button{border:0; background:transparent; padding:9px 13px; font-size:13.5px; color:var(--muted);
+  border-right:1px solid var(--rule)}
+.seg button:last-child{border-right:0}
+.seg button:hover{background:var(--surface); color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--surface); font-weight:600}
+
+.btn{border:1px solid var(--rule-forte); background:var(--surface); color:var(--muted);
+  padding:9px 14px; border-radius:6px; font-size:13.5px; white-space:nowrap}
+.btn:hover{border-color:var(--ouro); color:var(--ink)}
+.btn.fantasma{border-style:dashed}
+.mais-filtros{margin-left:auto; display:flex; gap:8px; align-items:flex-end; flex-wrap:wrap}
+
+.avancado{display:none; padding:13px 24px 14px; gap:12px; align-items:flex-end; flex-wrap:wrap;
+  border-top:1px dashed var(--rule)}
+.avancado.on{display:flex}
+.avancado .campo{flex:1 1 210px}
+.avancado .acoes{margin-left:auto; display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+.opcao{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; color:var(--muted);
+  white-space:nowrap; cursor:pointer}
+.opcao input{width:auto; padding:0; margin:0; accent-color:var(--ouro)}
+
+/* --- janela "Seus dados" --- */
+dialog::backdrop{background:color-mix(in srgb, var(--ink) 58%, transparent)}
+.janela{border:1px solid var(--rule-forte); border-radius:12px; background:var(--surface);
+  box-shadow:var(--sombra-alta); padding:0; color:var(--ink);
+  width:min(470px, calc(100vw - 28px))}
+.janela h2{font:400 24px/1.15 var(--serif); padding:22px 24px 0; color:var(--ink)}
+.janela .nota{font-size:13px; line-height:1.55; color:var(--muted); padding:9px 24px 0}
+.janela .linhas{padding:18px 24px 2px; display:grid; gap:13px}
+.janela .linhas label{display:block; margin-bottom:5px}
+.janela .pe{display:flex; gap:8px; justify-content:flex-end; padding:18px 24px 20px;
+  flex-wrap:wrap}
+.janela .pe .esq{margin-right:auto}
+.janela .pe .feito{border-color:var(--ouro); color:var(--ink); font-weight:600}
+.trocar{color:var(--ouro); text-decoration:underline; background:none; border:0;
+  font:inherit; padding:0; cursor:pointer}
+
+.ac{position:absolute; left:0; right:0; top:100%; margin-top:5px; z-index:60; display:none;
+  background:var(--surface); border:1px solid var(--rule-forte); border-radius:8px;
+  box-shadow:var(--sombra-alta); max-height:340px; overflow:auto}
+.ac.on{display:block}
+.ac .op{padding:9px 12px; display:flex; justify-content:space-between; gap:12px; cursor:pointer;
+  border-bottom:1px solid var(--rule); font-size:14px}
+.ac .op:last-child{border-bottom:0}
+.ac .op:hover,.ac .op[aria-selected="true"]{background:var(--ouro-fraco)}
+.ac .qt{font:400 12px/1.4 var(--mono); color:var(--fraco); white-space:nowrap;
+  font-variant-numeric:tabular-nums}
+.ac .qt.zero{font-family:var(--sans); font-style:italic}
+.ac mark{background:color-mix(in srgb, var(--ouro) 26%, transparent); color:inherit; border-radius:2px}
+.ac .aviso-ac{padding:13px 14px; font-size:13.5px; line-height:1.55; color:var(--alerta);
+  background:var(--alerta-bg); cursor:default}
+
+/* ---------------------------------------------------------------- resumo */
+.resumo{padding:20px 24px 0; display:flex; gap:26px; align-items:flex-start; flex-wrap:wrap}
+.contagem{display:flex; align-items:baseline; gap:10px; flex:0 0 auto}
+.contagem b{font:500 34px/1 var(--serif); font-variant-numeric:tabular-nums; letter-spacing:-.02em}
+.contagem span{font-size:13.5px; color:var(--muted); max-width:26ch}
+.medidores{display:flex; gap:7px; flex-wrap:wrap; flex:1 1 380px}
+.medidor{flex:1 1 108px; min-width:100px; background:var(--surface); border:1px solid var(--rule);
+  border-radius:7px; padding:8px 10px 9px; box-shadow:var(--sombra)}
+.medidor .nome{font:600 10px/1.3 var(--sans); letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+.medidor .val{font:500 19px/1.15 var(--mono); font-variant-numeric:tabular-nums; margin-top:2px}
+.medidor .trilho{height:3px; border-radius:2px; background:var(--rule); margin-top:6px; overflow:hidden}
+.medidor .trilho i{display:block; height:100%; border-radius:2px}
+.selos-uf{display:flex; gap:7px; flex-wrap:wrap; padding:14px 24px 0}
+.selo-uf{font-size:12px; padding:4px 11px; border-radius:20px; border:1px solid var(--rule);
+  background:var(--surface); color:var(--muted)}
+.selo-uf.ok{border-color:var(--nota-rule); background:var(--nota-bg); color:var(--nota)}
+.selo-uf.falta{border-color:var(--alerta-rule); background:var(--alerta-bg); color:var(--alerta)}
+
+/* ---------------------------------------------------------------- como ler */
+.comoler{margin:18px 24px 0; border:1px solid var(--rule); border-radius:8px; background:var(--surface);
+  box-shadow:var(--sombra); overflow:hidden}
+.comoler > summary{padding:11px 15px; cursor:pointer; font-size:13.5px; color:var(--muted);
+  list-style:none; display:flex; align-items:center; gap:9px}
+.comoler > summary::-webkit-details-marker{display:none}
+.comoler > summary::before{content:"?"; font:600 11px/16px var(--mono); width:16px; height:16px;
+  border-radius:50%; background:var(--ouro); color:var(--surface); text-align:center; flex:0 0 auto}
+.comoler[open] > summary{border-bottom:1px solid var(--rule)}
+.comoler .corpo{padding:16px; display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(238px,1fr))}
+.comoler h3{font:600 11px/1 var(--sans); letter-spacing:.12em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:7px}
+.comoler p{margin:0; font-size:13.5px; color:var(--muted); line-height:1.65}
+.comoler b{color:var(--ink); font-weight:600}
+
+/* ---------------------------------------------------------------- lista */
+main{padding:6px 24px 48px; max-width:1560px}
+.secao{display:flex; align-items:baseline; gap:12px; margin:26px 0 12px}
+.secao h2{font:500 19px/1 var(--serif)}
+.secao .qt{font:400 12.5px/1 var(--mono); color:var(--fraco); font-variant-numeric:tabular-nums}
+.secao hr{flex:1; height:0; border:0; border-top:1px solid var(--rule); margin:0}
+
+.grade{display:grid; gap:13px; align-items:start; grid-template-columns:repeat(auto-fill,minmax(430px,1fr))}
+@media(max-width:520px){.grade{grid-template-columns:1fr}}
+.ficha{background:var(--surface); border:1px solid var(--rule); border-radius:9px;
+  padding:14px 15px 13px; box-shadow:var(--sombra); position:relative; overflow:hidden}
+.ficha::before{content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--ouro)}
+.ficha.t1::before{background:var(--ink)}
+.ficha.t2::before{background:var(--p4)}
+.ficha.t3::before{background:var(--p3)}
+.ficha.t4::before{background:#6b3fa0}
+.cab{display:flex; gap:10px; align-items:flex-start; margin-bottom:3px}
+.cab h3{font:600 17px/1.3 var(--sans); flex:1; min-width:0}
+.tipo{font:600 9.5px/1 var(--sans); letter-spacing:.09em; text-transform:uppercase;
+  padding:4px 7px; border-radius:4px; white-space:nowrap; margin-top:2px;
+  background:var(--rule); color:var(--muted)}
+.ficha.t1 .tipo{background:var(--ink); color:var(--surface)}
+.ficha.t2 .tipo{background:var(--p4-bg); color:var(--p4)}
+.ficha.t3 .tipo{background:var(--p3-bg); color:var(--p3)}
+.ficha.t4 .tipo{background:#f1ecf9; color:#6b3fa0}
+.endereco{font-size:13px; color:var(--muted); margin-bottom:12px}
+.endereco code{font:400 11.5px/1 var(--mono); color:var(--fraco)}
+
+.cobertura{width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums}
+.cobertura th,.cobertura td{padding:0; text-align:center}
+.cobertura thead th{font:700 11px/1.25 var(--sans); letter-spacing:.02em; color:var(--muted);
+  padding:0 2px 6px}
+.cobertura thead th:first-child{width:74px}
+.cobertura tbody th{font:600 12px/1 var(--sans); text-align:left; color:var(--muted);
+  padding:0 9px 0 0; white-space:nowrap}
+.cobertura tbody tr + tr th,.cobertura tbody tr + tr td{padding-top:4px}
+.cobertura td{padding-left:2px; padding-right:2px}
+.cel{display:block; padding:7px 0; border-radius:5px; font:600 13px/1.2 var(--mono);
+  background:var(--raised); color:var(--fraco); border:1px solid transparent}
+.cel.sim{font-weight:600}
+.cel.c0{background:var(--p0-bg); color:var(--p0); border-color:color-mix(in srgb,var(--p0) 22%,transparent)}
+.cel.c1{background:var(--p1-bg); color:var(--p1); border-color:color-mix(in srgb,var(--p1) 22%,transparent)}
+.cel.c2{background:var(--p2-bg); color:var(--p2); border-color:color-mix(in srgb,var(--p2) 22%,transparent)}
+.cel.c3{background:var(--p3-bg); color:var(--p3); border-color:color-mix(in srgb,var(--p3) 22%,transparent)}
+.cel.c4{background:var(--p4-bg); color:var(--p4); border-color:color-mix(in srgb,var(--p4) 22%,transparent)}
+
+.servico{margin-top:10px; font-size:13px; color:var(--muted); display:flex; flex-wrap:wrap; gap:3px 10px}
+.servico .rot{font:600 9.5px/1.6 var(--sans); letter-spacing:.1em; text-transform:uppercase; color:var(--fraco)}
+.servico i{font-style:normal}
+.servico i b{font-weight:600; color:var(--ink)}
+.servico i u{text-decoration:none; color:var(--fraco)}
+
+.aviso{margin-top:11px; padding:9px 12px; border-radius:6px; font-size:13px; line-height:1.5;
+  background:var(--alerta-bg); border:1px solid var(--alerta-rule); color:var(--alerta)}
+.aviso.nota{background:var(--nota-bg); border-color:var(--nota-rule); color:var(--nota)}
+
+.esp-bloco{margin-top:11px}
+.esp-rot{font:600 9.5px/1 var(--sans); letter-spacing:.1em; text-transform:uppercase;
+  color:var(--fraco); margin-bottom:6px; display:flex; gap:7px; align-items:baseline}
+.esp-rot span{font-family:var(--mono); letter-spacing:0; font-weight:400}
+.chips{display:flex; flex-wrap:wrap; gap:4px}
+.chips.corta .chip:nth-child(n+13):not(.abrir){display:none}
+.chip{font-size:12.5px; padding:4px 9px; border-radius:4px; background:var(--raised);
+  color:var(--muted); border:1px solid var(--rule)}
+.chip.hit{background:var(--ouro-fraco); border-color:var(--alerta-rule); color:var(--alerta); font-weight:600}
+button.chip{border-style:dashed; color:var(--fraco)}
+button.chip:hover{border-color:var(--ouro); color:var(--ink)}
+.detalhe{margin-top:9px}
+.detalhe > summary{font-size:12px; color:var(--alerta); cursor:pointer; font-weight:500}
+.detalhe table{width:100%; border-collapse:collapse; margin-top:8px; font-size:11.5px;
+  font-family:var(--mono); font-variant-numeric:tabular-nums}
+.detalhe th{font:600 9px/1.2 var(--sans); color:var(--fraco); padding:3px 2px; text-align:center}
+.detalhe th:first-child{text-align:left}
+.detalhe td{padding:3px 2px; border-top:1px solid var(--rule); text-align:center; color:var(--fraco)}
+.detalhe td:first-child{text-align:left; color:var(--muted); font-family:var(--sans); font-size:11px}
+
+.painel{background:var(--surface); border:1px solid var(--rule); border-radius:10px;
+  padding:30px 28px 26px; box-shadow:var(--sombra); margin-top:8px}
+.painel h2{font:500 22px/1.2 var(--serif); margin-bottom:8px}
+.painel p{margin:0 0 4px; color:var(--muted); font-size:14px; max-width:66ch; line-height:1.65}
+.painel p b{color:var(--ink)}
+.anel{margin-top:20px; padding-top:15px; border-top:1px solid var(--rule)}
+.anel h3{font:600 10.5px/1 var(--sans); letter-spacing:.12em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:10px}
+.anel .vazio{margin:0; font-size:13px; color:var(--fraco)}
+.atalhos{display:flex; gap:7px; flex-wrap:wrap; align-items:center}
+.atalho{border:1px solid var(--rule-forte); background:var(--surface); border-radius:20px;
+  padding:6px 8px 6px 14px; font-size:13.5px; display:inline-flex; gap:8px; align-items:center}
+.atalho:hover{border-color:var(--ouro); background:var(--raised)}
+.atalho span{font:500 12px/1 var(--mono); color:var(--fraco); font-variant-numeric:tabular-nums;
+  background:var(--raised); padding:3px 6px; border-radius:10px}
+.resto{font-size:12.5px; color:var(--fraco)}
+.rodape-anel{margin-top:18px; font-size:12px; color:var(--fraco); max-width:72ch; line-height:1.65}
+
+#maisWrap{text-align:center; padding:22px 0 4px}
+#mais{border:1px solid var(--rule-forte); background:var(--surface); border-radius:7px;
+  padding:11px 28px; font-size:14px; font-weight:500}
+#mais:hover{border-color:var(--ouro)}
+
+footer{padding:24px; border-top:1px solid var(--rule); color:var(--fraco); font-size:12px;
+  line-height:1.75; max-width:104ch}
+footer b{color:var(--muted); font-weight:600}
+footer .selo-rodape{font:600 10px/1 var(--sans); letter-spacing:.2em; text-transform:uppercase;
+  color:var(--ouro); display:block; margin-bottom:8px}
+
+@media(max-width:900px){
+  .barra{position:static}
+  .topo{padding:14px 16px; gap:12px}
+  .fontes{text-align:left; max-width:none}
+  .barra-in,.avancado{padding-left:16px; padding-right:16px}
+  main,.resumo,.selos-uf{padding-left:16px; padding-right:16px}
+  .comoler{margin-left:16px; margin-right:16px}
+  .mais-filtros{margin-left:0; width:100%}
+}
+</style>
+</head>
+<body>
+
+<header class="topo">
+    <div class="marca">
+    <div class="selo">Mazza <b>Broker</b></div>
+    <h1>Rede referenciada <em>SulAmérica Saúde</em></h1>
+  </div>
+  <div class="fontes">
+    <span class="rot">Bases oficiais</span>
+    <span id="fonteResumo"></span>
+  </div>
+</header>
+
+<nav class="abas" id="abas" role="tablist" aria-label="seções">
+  <button role="tab" data-aba="geral" aria-selected="false">Visão geral</button>
+  <button role="tab" data-aba="entre" aria-selected="false">Entre planos</button>
+  <button role="tab" data-aba="rede" aria-selected="true">Rede completa</button>
+</nav>
+
+<section class="painel" id="pGeral" role="tabpanel" hidden></section>
+<section class="painel" id="pEntre" role="tabpanel" hidden></section>
+
+<div class="painel" id="pRede">
+
+<div class="barra">
+  <div class="barra-in">
+    <div class="campo cidade" id="cCid">
+      <label for="fCid">Cidade</label>
+      <input id="fCid" autocomplete="off" placeholder="digite a cidade — ex.: curitiba">
+      <button class="limpar" data-alvo="fCid" aria-label="limpar cidade">&times;</button>
+      <div class="ac" id="acCid" role="listbox"></div>
+    </div>
+    <div class="campo busca" id="cQ">
+      <label for="fQ">Prestador ou código</label>
+      <input id="fQ" autocomplete="off" placeholder="ex.: marcelino, 2102">
+      <button class="limpar" data-alvo="fQ" aria-label="limpar busca">&times;</button>
+    </div>
+    <div class="seg" id="fTipo" role="group" aria-label="tipo de prestador">
+      <button data-t="-1" aria-pressed="true">Tudo</button>
+      <button data-t="1" aria-pressed="false">Hospitais</button>
+      <button data-t="0" aria-pressed="false">Clínicas</button>
+      <button data-t="3" aria-pressed="false">Médicos</button>
+      <button data-t="2" aria-pressed="false">Laboratórios</button>
+      <button data-t="4" aria-pressed="false">Imagem</button>
+    </div>
+    <div class="mais-filtros">
+      <button class="btn fantasma" id="bAvancado" aria-expanded="false">Mais filtros</button>
+    </div>
+  </div>
+  <div class="produtos">
+    <span class="rot">Escolha o produto</span>
+    <div class="cartoes-prod" id="cartoesProd"></div>
+    <div class="modo" id="fModo" role="group" aria-label="como combinar os produtos">
+      <button data-m="qualquer" aria-pressed="true">atende a qualquer um</button>
+      <button data-m="todos" aria-pressed="false">atende a todos</button>
+    </div>
+  </div>
+  <div class="avancado" id="avancado">
+    <div class="campo" id="cEsp">
+      <label for="fEsp">Especialidade</label>
+      <input id="fEsp" autocomplete="off" placeholder="todas">
+      <button class="limpar" data-alvo="fEsp" aria-label="limpar especialidade">&times;</button>
+      <div class="ac" id="acEsp" role="listbox"></div>
+    </div>
+    <div class="campo">
+      <label for="fBai">Bairro</label>
+      <select id="fBai"></select>
+    </div>
+    <div class="acoes">
+      <button class="btn" id="bCsv">Exportar</button>
+      <button class="btn" id="bCopiar">Copiar</button>
+      <button class="btn" id="bImp">Gerar PDF</button>
+      <button class="btn fantasma" id="bCorr">Seus dados</button>
+      <label class="opcao"><input type="checkbox" id="fEspPdf" checked> especialidades no PDF</label>
+      <button class="btn" id="bZerar">Limpar tudo</button>
+    </div>
+  </div>
+</div>
+
+<section class="resumo" id="resumo"></section>
+<div class="selos-uf" id="selosUf"></div>
+
+<details class="comoler" id="comoler">
+  <summary>Como ler esta tela</summary>
+  <div class="corpo">
+    <div>
+      <h3>Uma linha por prestador</h3>
+      <p>O ✔ à direita diz em quais planos ele está. Sob o nome vêm o bairro, a cidade, as
+        especialidades, o endereço e o telefone. As etiquetas dizem o que mais ele faz:
+        <b>internação</b>, <b>pronto-socorro</b>, <b>maternidade</b>, <b>hospital-dia</b> e
+        <b>exames</b>.</p>
+    </div>
+    <div>
+      <h3>Clássico 100 e Especial 100</h3>
+      <p>Os dois planos da SulAmérica Saúde (PME; Empresarial e PME Mais têm a mesma rede).
+        Clique em um ou nos dois: <b>atende a qualquer um</b> mostra quem está em pelo menos um;
+        <b>atende a todos</b>, só a rede dos dois. A aba <b>Entre planos</b> mostra o que muda
+        de um para o outro.</p>
+    </div>
+    <div>
+      <h3>As cinco categorias</h3>
+      <p><b>Hospitais</b> são quem interna, tem pronto-socorro ou hospital-dia na rede.
+        <b>Médicos</b> são pessoa física. <b>Laboratórios</b> fazem análises clínicas ou
+        patologia; <b>centros de imagem</b>, exames de imagem; o resto é <b>clínica</b>. A
+        separação usa a categoria e as especialidades que a própria SulAmérica informa.</p>
+    </div>
+    <div>
+      <h3>De onde vem</h3>
+      <p>Da busca de rede referenciada do site da SulAmérica Saúde, plano a plano, categoria a
+        categoria e especialidade a especialidade, cobrindo a cidade inteira.</p>
+    </div>
+    <div>
+      <h3>Antes de fechar</h3>
+      <p>A rede é definida e alterada só pela operadora. <b>Confirme no
+        <a href="https://portal.sulamericaseguros.com.br/rede-credenciada" target="_blank" rel="noopener">portal da SulAmérica Saúde</a> antes
+        de contratar.</b></p>
+    </div>
+  </div>
+</details>
+
+
+
+<main id="lista"></main>
+<div id="maisWrap" style="display:none"><button id="mais"></button></div>
+
+</div><!-- /pRede -->
+
+<dialog id="dlgCorr" class="janela" aria-labelledby="tCorr">
+  <h2 id="tCorr">Seus dados no PDF</h2>
+  <p class="nota">Vão na capa e no rodapé de todo PDF que você gerar. Ficam guardados
+    só neste navegador: o site é o mesmo para todos os corretores, cada um assina o seu.</p>
+  <div class="linhas">
+    <div><label for="kCorretora">Corretora</label>
+      <input id="kCorretora" autocomplete="organization" placeholder="Mazza Broker"></div>
+    <div><label for="kNome">Seu nome</label>
+      <input id="kNome" autocomplete="name" placeholder="nome que aparece no documento"></div>
+    <div><label for="kFone">Telefone</label>
+      <input id="kFone" autocomplete="tel" placeholder="(41) 90000-0000"></div>
+    <div><label for="kEmail">E-mail</label>
+      <input id="kEmail" autocomplete="email" placeholder="voce@corretora.com.br"></div>
+  </div>
+  <div class="pe">
+    <button class="btn fantasma esq" id="bCorrLimpa">Apagar meus dados</button>
+    <button class="btn fantasma" id="bCorrFecha">Agora não</button>
+    <button class="btn feito" id="bCorrSalva">Salvar</button>
+  </div>
+</dialog>
+
+<script src="pdf-rede.js"></script>
+
+<footer>
+  <span class="selo-rodape" id="seloRod">Mazza Broker</span>
+  <b>Versão sempre atualizada:</b>
+  <a href="https://dallalbacorretor-a11y.github.io/rede-amil-bradesco/sulamerica/" style="color:var(--ouro)">dallalbacorretor-a11y.github.io/rede-amil-bradesco/sulamerica</a><br>
+  <span id="fonteDetalhe"></span><br>
+  Gerado em <span id="ger"></span> · <span id="rodCorr"></span><br>
+  A classificação em hospital, laboratório, imagem e clínica segue a categoria e as especialidades
+  informadas pela SulAmérica.
+  <b>A rede é definida e alterada exclusivamente pela operadora. Confirme no
+  <a href="https://portal.sulamericaseguros.com.br/rede-credenciada" target="_blank" rel="noopener" style="color:var(--ouro)">portal da SulAmérica
+  Saúde</a> antes de contratar.</b>
+</footer>
+
+<script>
+const DADOS = {"ref":"25/09/2026","fonte":"busca de rede referenciada da SulAmérica Saúde","gerado":"25/09/2026","corretor":{"corretora":"Mazza Broker","nome":"","fone":"","email":""},"logo":"","logoBranca":"","planos":["Clássico 100 Enfermaria","Especial 100"],"grupos":[{"rot":"Clássico 100","bits":[0],"sub":null},{"rot":"Especial 100","bits":[1],"sub":null}],"hospRef":{},"labRef":{},"espFora":[],"uf":["PR"],"cid":[[0,"ARAUCARIA"],[0,"CAMPINA GRANDE DO SUL"],[0,"CAMPO LARGO"],[0,"COLOMBO"],[0,"CURITIBA"],[0,"FAZENDA RIO GRANDE"],[0,"LAPA"],[0,"PINHAIS"],[0,"PIRAQUARA"],[0,"QUATRO BARRAS"],[0,"SAO JOSE DOS PINHAIS"]],"geo":[[-25.5859,-49.4047],[-25.3044,-49.0551],[-25.4525,-49.529],[-25.2925,-49.2262],[-25.4195,-49.2646],[-25.6624,-49.3073],[-25.7671,-49.7168],[-25.4429,-49.1927],[-25.4422,-49.0624],[-25.3673,-49.0763],[-25.5313,-49.2031]],"bai":["Centro","Costeira","Aracatuba","Jardim Aracatuba","Vila Bancaria","Jardim Busmayer","Loteamento Sao Geronimo","Osasco","Maracana","Roca Grande","Fatima","Guarani","Guaraituba","Vila Izabel","Capao da Imbuia","Alto da Rua Xv","Sao Francisco","Bacacheri","Bigorrilho","Agua Verde","Portao","Juveve","Boqueirao","Cabral","Xaxim","Batel","Reboucas","Seminario","Centro Civico","Novo Mundo","Taruma","Jardim Social","Bom Retiro","Alto da Gloria","Ahu","Jardim das Americas","Cristo Rei","Mossungue","Merces","Barreirinha","Cidade Industrial","Cascatinha","Sao Lourenco","Hugolandi","Boa Vista","Vista Alegre","Pilarzinho","Hauer","Cajuru","Prado Velho","Guabirotuba","Santa Felicidade","Uberaba","Fazendinha","Pinheirinho","Sitio Cercado","Hugo Lange","Atuba","Campo Comprido","Parolin","Campina do Siqueira","Capao Raso","Jardim Botanico","Pioneiros","Eucaliptos","Emiliano Perneta","Jardim Claudia","Cayva","Planta Santo Antonio","Palmitalzinho","Quatro Barras","Sao Pedro","Cidade Jardim","Afonso Pena","Bom Jesus","Ina"],"esp":["Fisioterapia","Psicologia","Fonoaudiologia","Clínica médica","Neurologia clínica","Pediatria","Cardiologia clínica","Obstetricia","Ginecologia","Oftalmologia","Otorrinolaringologia","Ortopedia e traumatologia","Ortopedia e traumatologia pediátrica","Cirurgia plástica reparadora","Urologia","Endocrinologia","Gastroenterologia","Psicologia infantil","Nutricionista","Diag por imagem / ultrassonografia","Diagnóstico por imagem - radiologia","Diag por imagem/resson nuclear magnética","Nefrologia","Patologia / anatomia patológica","Lab análise clinica/medicina laboratorial","Endoscopia digestiva","Acupuntura","Dermatologia","Cirurgia do aparelho digestivo","Cirurgia geral","Coloproctologia","Neurocirurgia","Terapia ocupacional","Autismo/transtornos globais desenv.","Geriatria","Cirurgia de cabeça e pescoço","Cirurgia pediátrica","Oncologia clínica","Radioterapia","Hematologia","Infectologia","Neurologia pediátrica","Pronto socorro pediátrico","Pneumologia","Pneumologia pediátrica","Psiquiatria","Reumatologia","Nefrologia pediátrica","Nutrologia","Alergia e imunologia pediátrica","Cardiologia pediátrica","Ecocardiograma e ergometria","Fisiatria/medicina física e reabilitação","Cirurgia oncológica","Oncologia pediátrica","Densitometria óssea","Diag por imagem/tomo computadorizada","Cirurgia cardiovascular / cardíaca","Cirurgia bariátrica","Maternidade","Mastologia","Cirurgia da mão","Pronto socorro ortopédico","Cirurgia buco maxilo facial","Cirurgia torácica","Hospital geral","Hospital dia","Pronto socorro adulto","Pronto socorro obstétrico","Endocrinologia pediátrica","Psiquiatria da infância e adolescência","Angiologia / cirur vascular e linfática","Alergia e imunologia","Gastroenterologia pediátrica","Hospital especializado em ortopedia e traumatologia","Genética clínica","Homeopatia","Hepatologia","Hospital especializado em nefro/urologia","Hospital especializado em oncologia","Hospital especializado cirurgia vascular","Hospital especializado em cirurgia cabeça e pescoço","Hospital especializado cirurgia do aparelho digestivo","Hospital especializado em oftalmologia","Hospital especializado otorrinolaringologia","Hospital especializado cirurgia plástica reparadora","Hospital especializado em gineco/obstetricia","Hospital especializado em psiquiatria","Pronto socorro especializado em psiquiatria","Angiorradiologia e cirurgia endovascular","Dor","Fisioterapia - autismo/tgd","Pronto socorro especializado em oftalmologia","Medicina de família e comunidade","Hospital especializado cirurg pediátrica","Hospital especializado cir cardiovasc/marcapasso/hemod","Imunobiológicos - infusão","Cirurgia de coluna","Hospital especializado em pediatria","Hematologia pediátrica","Hospital especializado clínica","Hospital especializado em infectologia","Hospital especializado em neurocirurgia","Hospital especializado em cirurgia torácica","Infectologia pediátrica","Anestesiologia"],"nom":["ARAUFISIO CLIN DE FISIOT SC LTDA","CENTRO MEDICO DE ARAUCARIA","CIM ARAUCARIA - CENT INTEG DE MED","CLIN E ECOG SANTA PAULA SC LTDA","CLIN RADIOLOGICA CURITIBA SC","DAVITA","FISIOCLINICA","FRISCHMANN AISENGART","IMA","INNOVARE","OFTALMOCLINICA ARAUCARIA","POLICLINICA DONA ANITA","CLINIRAD CLINICA DE RADIOTERAPIA","HOSPITAL ANGELINA CARON","LABCK LTDA","CIMAD CENTRO DE IMAGEM DIAGNOSTICA","CLIN OLHOS DR CLAYTON JOAO VIDAL","CLIN PED WERNER & WERNER S/S LTDA","DAVITA SERVICOS NEFRO CAMPO LARGO","HOSP NOSSA SENHORA DO ROCIO","HOSPITAL SAO LUCAS","IFO-INSTITUTO DE FISIOTERARIA ORTOP","LIANE GLINKA BERNET","NELSON LUIZ RIBAS","PROEMI NEURO REABILITACAO NEUROLOGI","SAO CAMILO CENTRO MEDICO","CLINICA PRO FAMILIA","FISIO ZENI","FISIOTERAPIA SILVA FERREIRA LTDA","NK SERVICOS DE FISIOTERAPIA LTDA","POLICLINICA BOM PASTOR","POLICLINICA GUARAITUBA SC LTDA","A C CLINICA MEDICA LTDA","A+ MEDICINA DIAGNOSTICA","AB VITAE","ADEMIR ANTONIO MARQUES ROCCO","ADILSON HELIODORO CAVASSIN","ADMAR MORAESDE SOUZA","ADRIANA TURIN MORI","ADRIANO DA SILVA WOLLMANN","AFONSO CLEMER TOSIN LOPES","ALBANO TEIXEIRA BUENO","ALBERTO FERNANDES DE O JR","ALBERTO SAPAROLLI JUNIOR","ALDEIA CANNARA","ALFACLIN","ALIANA R G KOHANE","ALIME BAKRI SAUDE DA MULHER S/S LTD","ALPHASONIC","ALTO DA GLORIA CONS MED ASSOCIADOS","AMERICO ALVARO FARINHA MARTINS","AMGISCOR CARDIOLOGIA","AMISTAD CLINICA DE ESP MEDICAS","ANA LUCIA BERTHOLDI PIACENTINI","ANA PAULA BADUY","ANGIOBATEL SERV MEDICOS SC LTDA","ANGIOLAB","ANNAPURNA CLINICA MEDICA LTDA","ANTONIO ALIDIO VANNUCCHI","ANVILY CLIN INFANTIL SC LTDA","AQUATICA","ARAMIS DE CASTRO BACH","ARTRO CLINICA ORTOPEDICA","ASA","BAGGIO CIRURGIA VASCULAR E PLASTICA","BAMBINI","BANA FIGUEIRA SERVICOS MEDICOS","BARBARA JARUGA DELLA BIANCA","BEATRIZ PEREZ DE O A CALIXTO","BL SERVICOS MEDICOS SS","BONALUMI & BONALUMI","BRUNO SCRIPES WLADECK","BYORI - LABORATORIO DE HIST E CITOP","C A O CTO AVAN OTORRINOLARINGOLOGIA","CAINARA M K GOULART","CARDIOCARE CLIN CARDIOLOGICA LTDA","CARDIOCENTER BATEL","CARLA REGINA BATIUK SCHAMNE","CARLOS AFONSO MAESTRI","CARLOS EDUARDO VALLE RIBEIRO","CARLOS ROGERIO TEMPORAL","CDOP CIRUR E DIAG EM OFTAL PARANA","CEDIP CLIN DIAG POR IMAGEM PR LTDA","CEDO DIAGNOSTICO POR IMAGEM","CEDRA DIALISE","CEFOR - CENTRO DA FACE E OTORRINO","CELIA REGINA TARGA PINTO","CELIO TEIXEIRA MENDONCA","CENDICARDIO","CENT DE MEDICINA NUCLEAR PARANA","CENT DE RECUPERACAO NEUROLOGICA","CENT DIA CLIN RECUPERACAO LTDA","CENT MED INTEGRADO","CENT PARANAENSE DIAG ECO GIDO PERES","CENTRO DE CHECK UP DE CURITIBA","CENTRO DE NEFROLOGIA","CENTRO DE ONCOLOGIA DO PARANA LTDA","CENTRO DE PATOLOGIA DE CURITIBA SC","CENTRO DIAGNOSTICO AGUA VERDE","CENTRO MEDICO ANITA","CENTRO MEDICO BOQUEIRAO","CENTRO MEDICO LUMEN S/S","CENTRO MEDICO MARECHAL","CERNE","CETAC CENTRO DE TOM A COMP SC LTDA","CIEP","CIM AGUA VERDE - CENT INTEGR DE MED","CIM CIC - CENTRO INTEGRADO DE MEDI","CIRURGICARE - PARK SHOPPING BARIGUI","CLAITON MARTELLI","CLAUDIA VALERIA CIUFFI","CLAUDIO LEINING PEREIRA DA CUNHA","CLAUDIO SCHULZ","CLELIA SCHEFFER","CLIMM CL AL DER DR MAURICIO MARTINS","CLIMULTI","CLIN DA VOZ E DA FALA MARTA MONICA","CLIN DE DERMAT E PNEUMOL CURITIBA","CLIN DE FRAT E ORTOPEDIA SAO MARCOS","CLIN DE FRAT STA FELICIDADE","CLIN DE FRATURAS NORTE LTDA","CLIN DE FRATURAS VL HAUER SC LTDA","CLIN DE ORT & SPORTS MEDICINE S/S","CLIN DE OTORRINO DR CAIO SOARES","CLIN DE OTORRINO DR LUIS DUDA","CLIN DE UROGINECOLOGIA SC LTDA","CLIN DE UROL THADEU BREMMY FILHO","CLIN DERMATOLOGICA GEANN DE BORTOLI","CLIN DIAG CAPAO RASO LTDA","CLIN DR FLAVIO MENONCIN","CLIN ECOCOR SC LTDA","CLIN GANDHI","CLIN GAPSKI MOREIRA SC LTDA","CLIN LOS ANGELES","CLIN MADALOZZO DE NEUROCIRURGIA","CLIN MED VON BAHTEN LTDA","CLIN MED WILLIAM FERES LTDA","CLIN MEDIC MEISTER","CLIN OLHOS DR ITAMAR FERNANDES LTDA","CLIN OLHOS DRA NEUZA YATIYO HOND","CLIN OLHOS MARCO CANTO","CLIN ORTOP TARUMAT UBIJARA BLEY","CLIN PARANAENSE DE OTORRINO LTDA","CLIN PORTO SEGURO","CLIN PROF OCTAVIO DA SILVEIRA SC LT","CLIN SABOIA ONCO MASTO E CIR PLAST","CLIN SALLUS","CLINEURO","CLINI FLUSS","CLINI SAN","CLINICA ADVENTISTA DE CURITIBA","CLINICA AFFOLTER E ORLOWSKI","CLINICA ARTRO","CLINICA DA PSIQUE","CLINICA DE CIR GERAL E OFTALMOLOGIA","CLINICA DE DOENCAS RENAIS","CLINICA DE FISIOTERAPIA ITUPAVA","CLINICA DE OLHOS GULIN","CLINICA DIMPNA","CLINICA DR EDISON FABRI","CLINICA DRA ANDRESSA GIACOMAZZI","CLINICA EQUILIBRIO","CLINICA EVANGELICO EIRELI","CLINICA GARDEN OURO","CLINICA GRACIOSA - SERVICOS MEDICOS","CLINICA HARA FISIOTERAPIA E ACUPUNT","CLINICA IMED","CLINICA L EQUILIBRE DE PSICO E FONO","CLINICA MARPY PEDIATRIA","CLINICA MATHEUS KOWAL ROSALES","CLINICA MEDICA BRAMBILLA LTDA","CLINICA MEDICA DR RAMZA C NASSER","CLINICA MEDICA GONDEK","CLINICA MEDICA KURAHASHI MELO","CLINICA MEDICA MAKINO MONTEMEZZO","CLINICA MEDICA MEDILOCUS","CLINICA MEDICA VITALI","CLINICA OFTALMOLOGICA HAUER","CLINICA OSWALDO CRUZ SC LTDA","CLINICA PROTHEUS LTDA","CLINICA QALI","CLINICA SAO JOAO BATISTA LTDA","CLINICA SAO LUIZ","CLINICA SAUDE DA MULHER EIRELI","CLINICA SCHAEFER","CLINICA SCHMITZ RATHUNDE","CLINICA SIRIA","CLINICA V EQ SAUDE INTEGRADA","CLINICA VIEIRA SS LT","CLINICA VISAO","CLINICA VITAVISAO LTDA","CLINICEM CTO DE DIAG HAUER","CLINICOR CLIN PARANAENSE CARD SC LT","CLINIFISIO SC LTDA","CLINIMARC CARDIOLOGIA E ENDOCRINO","CLINIMED CLIN MED FIS REAB DO PR","CLINISA CLINICA DE SAUDE MEDICA SS","CMI CENTRO MATERNO INFANTIL","CNC CARDIOLOGIA NUCLEAR SS LTDA","COELHO E MARTINS SERVICOS MEDICOS S","CONCEPTKIDS CEN DE DESEN INFANTIL","CONS MED AMANDA VILHENA DE ANDRADE","CONS MED MARCOS MATTOS BENETTI","CONSULMED-CONSULTORIO MEDICO SS ME","CONSULT MED JUK BENKE SS","CONSULTORIO LANDAL","CONSULTORIO MED CIRUR APARELHO DIGE","CONSULTORIO MEDICO SINAIDA HADDAD","COOPCARDIO PR","CORONEL DULCIDIO OFTALMOLOGIA LTDA","CORONEL DULCIDIO OFTALMOLOGIA S/S","CORUS CARDIOLOGIA SS","COTELESSE DA COSTA & PEREIRA DE ALM","CPAA CENTRO DE PESQUISA E AVALIACAO","CRISTIANE DE FATIMA LEMOS DE CASTRO","CRISTIANE MARIA CALIL V AMPESSAN","CTO CURITIBANO DA VISAO CLIN OFTAL","CTO DE AVALIACAO FETAL BATEL","CTO DE VIDEO ENDOSCOPIA IGUACU","CTO PARANAENSE DE OTORRINO E PLASTI","CYBELLE ENTA DO PRADO","D ANLAGUE TERAPIAS ASSOCIADAS","DANIEL ZENI RISPOLI","DAVITA SERVICOS DE NEFRO CAJURU","DEBORA BERBERT MOCELIN","DELTA SAUDE","DERMATOLOGIA CURITIBA","DERMOESTETICA","DETSCH E NAKATANI SER MED HOSP S/S","DIAGNOSON DIAG POR ULTRASSON LTDA","DIGICENTRO SERVICOS MEDICOS S S","DIPAR SERV DIAG PARANAENSE SOC SIMP","DOB FEDATTO","ECCOS - SERVICOS MEDICOS","ECO GR SANTA BRIGIDA","ECOLAB LAB DE ECOCARDIOGRAFIA SC LT","EDEN LUIZ COLLA","EDISON JAIR BECKHAUSER","EDUARDO EGYDIO DE OLIVEIRA","EDUARDO ERICO ZEN","EDUARDO SILVA FURTADO","ELIZABETH MARIA MERCER MOURAO","ELIZABETI LESSA CHAVES","ELO SAUDE MENTAL","ENDOCORE","ENDOGASTRO CLINICA MEDICA S/S LTDA","ENDONEURO","ENDOSKOPE DIAGNOSTICOS ENDOSCOPICOS","ENDOVIDEO ENDOS DIGEST RESPIRATORIO","ENDRIGO MONTE SERRAT PREVEDELLO","EUREKA INTERVENCAO COMPORT ABA","EVANDRO SEITI VILAR ODA","FAGUNDES E OBRALI MEDICOS ASSOCIADO","FELICCITA CENTRO MEDICO DA MULHER","FERRAZ FARIA ORTOPEDIA","FERREIRA SERVICOS DE FISIOTERAPIA S","FETALMED MED FETAL E DIAG POR IMAG","FISICOR CLIN DE REAB PULMONAR LTDA","FISIOFORM","FLAVIA DO ROCIO FOLLADOR","FLAVIA SGUARIO NUTRICAO","FLAVIO GOMEL","FRANCISCO MIGUEL LOSSO","FRANCISCO XAVIER DA SILVA","FRATNOR PANSINI E NAUIACK","FUNEF CENTRO INTEGRADO DE DIAG","GASTRO CLINICA SABBAG","GASTRO VIDA","GASTROCIRURGICA CLIN MED E CIRURGIC","GILBERTO V FIGUEIREDO FILHO","GIORGIO ROBERTO BALDANZI","GONZALEZ SERVICOS MEDICOS LTDA ME","GUILHERME AUGUSTO ROLIM DE MOURA","GYNECLIN SC LTDA","HAPPYKIDS CENTRO DE REABILITACAO","HEMOBANCO","HOSP DAS NACOES LTDA","HOSP DE OLHOS DO PARANA LTDA","HOSP E MAT NOSSA SENHORA DE FATIMA","HOSP E MATERNIDADE SANTA BRIGIDA","HOSP INF PEQUENO PRINCIPE","HOSP NOSSA SRA DAS GRACAS","HOSP NOVO MUNDO LTDA","HOSP SANTA CRUZ","HOSP SAO VICENTE","HOSPITAL CARDIOLOGICO COSTANTINI","HOSPITAL ERASTINHO","HOSPITAL MARCELINO CHAMPAGNAT","HOSPITAL PILAR","HOSPITAL UNION LTDA","HOSPITAL UNIVER EVANG MACKENZIE","HOSPITAL VITA BATEL","HOSPITAL VITA CURITIBA","HOSPITAL XV LTDA","HUGO TAKAO NAKATANI","ICTR INST DO CANCER E TRANSPLAN SC","IM OFTAMOLOGIA LTDA","IMAX DIAG POR IMAGEM DA MULHER","IMMEF-INST DA MULHER E MED FETAL","IMO","INCIGAP","INCORPORE","INDIC PILAR","INST AP DIGESTIVO DE CURITIBA LTDA","INST DA VISAO CLIN E CIR DOS OLHOS","INST DO RIM DO PARANA SC LTDA","INST HEMATOL ONCO CURITIBA CLIN MED","INST MED FLUMIGNANO","INST NEUROLOGIA DE CURITIBA","INST OFTALMOLOGIA DE CTBA SC LTDA","INST OTORRINO OFTALMO","INST TERAPEUTICO DE CURITIBA SC LTD","INSTITUTO DA CRIANCA","INSTITUTO DE ONCOLOGIA DO PR","INSTITUTO GRAEFE DE OFTALMOLOGIA","INSTITUTO MOBILITAT","INSTITUTO NEUROLOGIA DE CURITIBA","INSTITUTO PAULO NASSIF","INSTITUTO SETTI","INTEGRARE TERAPIA INTEGRADA","ISIDORO C STANISCHESK","IVO LUVIZOTTI","JACOBOVICZ CONSULTORIO MED LTDA ME","JAM FISIOTERAPEUTAS ASSOC S S LTDA","JARBAS ACCIOLI RODRIGUES DA COSTA","JOAO CARLOS GARBERS","JOAO CARLOS GOMES VIALLE","JOAO GONDEK","JORGE TETSUO HARAGUSHIKU","JOSE PAULO SCIREA","JOSEPH HANNA SERV MED SC LTDA","JUARES BRAGA DE ARAUJO","JULIET ANSELMO MARZALEK ME","JULIO CESAR S FRANCA","JULIO SIQUEIRA PIERIN SIQUEIRA","JUSSARA BALDANZI","JUSSARA GUIMARAES BACOCCINI","L.M.M.F - ATENDIMENTOS MEDICOS S/S","LABORATORIO ANNALAB","LABORATORIO CITOLAB","LABORATORIO SANTA CRUZ","LAFAYETE BARBOSA RAMOS","LE PETIT CLINICA PEDIATRICA","LEA AMARAL CAMARGO DA SILVA","LEO FRANCISCO LEONE JUNIOR","LIGA PARANAENSE COMBATE AO CANCER","LITOCLINICA DE CURITIBA SS LTDA","LOYOLA & AVELLAR S/S","LUCIANE & BOLCATO LTDA","LUIZ ALBERTO FERRO SABBATINI","LUIZ ANTONIO DE BARROS","LUZIA MARIA FRANKLIN C THIVES","M G F CLINICA DE ENDOC PEDIATRICA","MAGDA BOLZANI","MARCELO BITTENCOURT BELLEZA","MARCELO MARIANO DA SILVA","MARCOS GOMES","MARIA DE FATIMA MOSCALEWSKI","MARIA ISABEL BORA C ANDRADE","MARIA SUMIE SAMMI","MARTINELLI & BRASIL S/S","MATERNIDADE CURITIBA LTDA","MAURICIO DO VALLE SABOIA","MAURICIO HENRIQUE ABRAO","MAURO SERGIO TORNESI","MEDCENTRO","MEDICINA ESPECIALIZADA SC LTDA","MEDSENA CLIN MEDICA E CIRURGICA LTD","MIGUEL CARLOS SABIO GRESPAM","MILTON BITTENCOURTJR","MILTON HIROMU KUMAGAI","MIXMED SERVICOS MEDICOS S/S","MONTAZZO CONSULTORIO MEDICO","MONTAZZO ECOGRAFIA E COLPOSCOPIA","NAKADOMARI SERVICOS MEDICOS LTDA","NEFROKIDS","NEO NUCLEO ESTUDOS ONCOLOGICOS","NEURO INSTITUTO FOREL SC LTDA","NEUROFAZ REAB E DESEN NEUROLOGICO","NORTON LUIS NOBREGA","NUCLEO OTORRINOL E FONODIAUL SC LTD","NW NEURO E NEUROFIS CLINICA LTDA","OBEPAR","ODETE V DELLATORRE LEMOS","OFTALMOCLINICA CURITIBA SC LTDA","OFTALMOLASER LUIZ ANTONIO LIPINSKI","OFTALMOLOGIA BARIGUI","OFTALMOPAR CLIN OFTALMOL PARANAENSE","OLIVEIRA E TAGLIARI MED ASSOCIADOS","OMBRO DK & CIA SERVICOS MEDICOS S/S","ONCOVILLE","OPUS SALUTIS CLIN MED SC LTDA","ORTHO SPINE INSTITUT","ORTOPEDIA SCHIAVON","ORTOPEDIA SETE LTDA","OTOCLINICA","OTORRINOS CURITIBA SERV MEDICOS LIM","PAULO EDUARDO PRZYSIEZNY","PAULO FERNANDO BOZKO","PAULO MAGNO NASIMOTO","PAULO ROBERTO MUZZILLO CARNEIRO","PEDIATRIA - DA MATTA & GARCIA","PEDIATRIA PLENA SERVICOS MEDICOS SS","PEDRO CARON MEDICO","PEDRO LUIS STROPARO","PELECLIN","PHD: PATOLOGIA HUMANA DIAGNOSTICA","PMED SERVICOS MEDICOS SS LTDA","POLICLINICA CAPAO RASO SC LTDA","POLICLINICA SAO MARCOS SC LTDA","POLICLINICA VENETO","PRIME COR","PRO MULHER ATEND MED","PROBEM PSICOLOGIA CL E SAUDE MENTAL","PROCTOCLIN","PROFISIO ASSISTENCIA FISIOTERAPICA","PROFTAL OFTALMOLOGIA S S","PROLAB CENT DIAG CARDIOLOGICO","PULMONAR CURITIBA - CLIN MED RESP","QUALITA CLINICA E DIAGNOSTICO S/S","QUALITY LIFE","QUANTA DIAGNOSTICO E TERAPIA","RADION","RAFAELA PERRARO SANDERSON SERV MED","RDI - RADIOCLINICA DIAG POR IMAGEM","REALMED","REUMATO PRIMER","RICARDO J L RIBEIRO","RICARDO SALTER SCHWARZ","ROGERIO SCHWABE","ROSMERI MARIA KREUTZ CARVALHO","ROSSANE MARIA ANDRAUS M NASCIMENTO","RUBENS MANSO VIEIRA","RUDINEI JOSE BIGUELINI","RVS ALERGIA","SAMIR HAURANI","SANDRA MARIA ARENHART","SANTA CASA DE CURITIBA","SANTA CRUZ - CENTRO MEDICO","SAULO CARVALHOFILHO","SCHMIDT & XAVIER SERV MEDICOS","SEMEC SERV MEDICOS CARDIOLOGICOS","SERGIO FRANCISCO PAROLIN","SERVICO DE RESSONANCIA MAGNETICA","SIMONE TERESINHA BUTURI NETO","SIMONE ZANARDO GONZALLES","SINAPSE","SKROBOT SERVICOS MEDICOS EIRELI","SOMAS CONSULTORIOS MEDICOS","SOS RIM ATENDIMENTO RENAL LTDA","SUELY ESCHHOLZ RIBEIRO BROFMAN","SUSAN MAYUMI FUKUDA","TEMPO MEDICINA DE FAMILIA","THEREZA CRISTINA WICKLER","TOMAS TAQUEO TERAMOTO","TRILHAS SERVICOS TERAPEUTICOS","TURBAY SERVICOS MEDICOS EIRELI","ULTRA SCAN CENTRO DE PROC ECOGRAFIC","UNICARDIOS UNID DE ATEND DO CORACAO","UNIICA - BOM RETIRO - DOM JOAO BOSC","UNIICA UNID INT DE CRISE E AP A VID","UNINEO CURITIBA","UNIRIM","UROCENTRO CLINICA DE UROL CURITIBA","UROCLINICA","UROLOGISTAS ASSOCIADOS SC LTDA","UROVILLE SERVICOS MEDICOS S S","VANOLI & VANOLI","VG SERVICOS MEDICOS","VICENLAB","VICTOR BREGOLA","VITALE CONSULTORIOS INTEGRADOS","VITAMED","VIVA IMAGEM","VIVIANE ANDRI COLLA","WANDERLEY HYGINO KOWALSKI","WAY SERVICOS MEDICOS LTDA EPP","WIEDERKHER MEDICOS ASSOCIADOS","WILSON GREGORIO WLADECK","X LEME SERV DE RADIOLOGIA CLINICA","YUKIKO TAKIMURA","ZABOT - GINEC E OBST","CLIN FISIOTERAPIA ALQUINO","CLINICA - NEUROFAZ SAUDE E REABILIT","CONCEMED","POLICLIN FAZENDA","CEDEPI","CLINICA CIRANDA","COTRAUMA","DIAGNOSTICOS DA AMERICA SA","ESPACO TERAPIA CURIONI","FUNDACAO HOSPITALAR PINHAIS","LABCEN","PLUS CLINICA","PRIMAMED - DIAGNOSTICO POR IMAGEM","CADMO CLINICA MEDICA","LUZERNA CL DE FISIOT E REABILITACAO","TSS HUMANA SERVICOS DE SAUDE","CLIN QUATRO BARRAS","INTER SAUDE","ANA CLAUDIA DE CASTRO MIYAWAKI","ANGIMEDI CLIN MEDICA","ANTONIO CARLOS ZEN FRANCO","BENJAMIN NOGUEIRA CAMPOS NETO","CASA TRILA","CATIVAR CENTRO TERAPEUTICO","CEDIC CLINICA E DIAGNOSTICO LTDA","CEDIP CLIN DIAG POR IMAG DO PARANA","CENTRO DE DESENVOLVIMENTO HUMANO PL","CENTRO DE DIAGNOSTICO MEDIMAGEM","CERNE CLINICA DE FISIOTERAPIA E TO","CHRISTIANE E NERONE","CIM SAO JOSE DOS PINHAIS - CENT INT","CISABEM","CLIN DE PED BRETZKE E SOLYON","CLIN FRATURAS E ORTOPEDIA SAO JOSE","CLIN INTEGRADAS SAO JOSE","CLIN JASINSKI E SUZUKI LTDA","CLIN PEDIATRICA AMORIM PEREIRA","CLINICA CARDIOKINDER","CLINICA DE FRATURAS ORTOTRAUMA","CLINICA DE OLHOS FAUZI SALEM","CLINICA DE OLHOS OFTALMO BRASIL S/S","CLINICA DE OLHOS SAO JOSE","CLINICA DE UROL SAO JOSE SC LTDA","CLINICA HOSP DE IMAGEM SAO JOSE","CLINICA INTEGRARE SC LTDA","CLINICA SEMAER","CLINICA UTIDA","CLINICA VITAVISAO","CONSULTORIO MEDICO INTEGRADO LTDA","CONSULTORIO MEDICO MAEDA & SAITO LT","CRISTINA H W HSU CLETO","DARLAN COSTA JR","DEBORA CAROLINE ZIELONKA DA SILVA","ELDO ERN","EXAMINI DIAGNOSTICO POR IMAGEM","FACILITY SAUDE","FEMME GINECO E OBSTETRICIA","FISIO ANGELO CORDEIRO","FISIOMAX CLIN FISIOT SC","FRANCISCO LUIZ FERREIRA DA ROCHA","GABRIEL TREML MURARA E MEDICOS ASSO","GASTROCENTRO SC LTDA","INST DE OLHOS SAO JOSE DOS PINHAIS","INST DO APARELHO DIGESTIVO","IOT - INST DE ORTOP E TRAUMAT S.J P","IVONE TERUMI SHINIKE","JEM SERVICOS MEDICOS LTDA","JOSIETI SKIBINSKI MAIOLINO","LUZIA DO ROCIO PINTO CORDEIRO","NOVACLINICA HOSP E MATERNIDADE","NUTTRIR","PROCTOCENTRO SC LTDA","S.L.M CLINICA MEDICA","SERGIO LUIZ ROCHA","WALDIR FONCATTI","YM SERVICOS MEDICOS"],"serv":["","H/P.S/M/HDIA","H/M","H/HDIA","P.S","H/M/HDIA","H/P.S/HDIA","H/P.S","HDIA","H"],"pr":[[0,0,0,[],0,[0,3,1,3,2,3],[0,0,0],["Rua Pedro Druszcz, 631 Sala 01","(41) 3642-5288 · (41) 9928-02300","","81906745000116","83702080"]],[1,0,0,[],0,[3,3,4,3,5,3,6,3,7,3,8,3,9,3,10,3,11,3,12,3,13,3,14,3],[0,0,0],["R Professor Alfredo Parodi, 437","(41) 3031-3107","","","83702070"]],[2,0,0,[],0,[3,3,15,3,16,3,5,3,6,3,0,3,1,3,17,3,18,3,19,3,7,3,8,3,9,3,10,3,11,3,14,3],[0,3,0],["R Manoel Ribas, 100 Lj 2","(41) 3340-3030","","","83702035"]],[3,0,0,[],4,[19,3],[0,3,0],["R Professor Alfredo Parodi, 584 Sl C","(41) 3642-1669","","","83702070"]],[4,0,0,[],4,[20,3,19,3,21,3],[0,3,0],["Rua Sao Vicente de Paulo, 513 Predio","(41) 3031-7231","","76704840000105","83702050"]],[5,0,1,[],0,[22,3],[0,0,0],["Av Archelau de Almeida Torres, 2141","(41) 4004-8610","","","83709255"]],[6,0,0,[],0,[0,3],[0,0,0],["Av Doutor Victor do Amaral, 1201","(41) 3642-4342","","","83702040"]],[7,0,0,[],2,[23,3,24,3],[0,3,0],["Rua Professor Alfredo Parodi, 143 Sala 1 Parte","(41) 3642-2856 · (41) 4004-0103","","","83702070"]],[8,0,0,[],0,[3,3,16,3,5,3,6,3,25,3,26,3,27,3,28,3,29,3,30,3,7,3,8,3,31,3,9,3,10,3,14,3],[0,0,0],["R Pedro Druszcz, 584 Edf.","(41) 3642-3872","","","83702080"]],[9,0,0,[],0,[1,3,17,3,32,3,33,3,2,3],[0,0,0],["Av Doutor Victor do Amaral, 1217 Sobreloja","(41) 3552-2610","","","83702040"]],[10,0,0,[],0,[9,3],[0,0,0],["Av Doutor Victor do Amaral, 1398 Loja 7 e 8","(41) 3031-7711 · (41) 9925-48278","","","83702040"]],[11,0,0,[],0,[3,3,34,3,15,3,4,3,5,3,35,3,27,3,28,3,29,3,7,3,8,3,9,3,10,3,36,3,14,3],[0,0,0],["Rua Rodolfo Hasselmann, 309 Casa","(41) 3552-5774 · (41) 3552-7938 · (41) 9980-80108","","","83702170"]],[12,1,2,[],0,[37,3,38,3],[0,0,0],["Rod Pr 506 Km 01, 195","(41) 3679-8122 · (41) 3679-8128 · (41) 3679-8130","","00208932000124","83430000"]],[13,1,2,[],1,[3,3,15,3,16,3,39,3,40,3,4,3,41,3,5,3,42,3,43,3,44,3,45,3,46,3,22,3,47,3,48,3,49,3,6,3,50,3,51,3,23,3,25,3,52,3,0,3,1,3,18,3,53,3,37,3,54,3,55,3,20,3,19,3,56,3,57,3,35,3,27,3,28,3,29,3,30,3,58,3,7,3,8,3,59,3,60,3,61,3,31,3,9,3,10,3,2,3,11,3,12,3,62,3,36,3,13,3,63,3,64,3,14,3,65,3,66,3,67,3],[[[1,1]],3,0],["Rod do Caqui, 1150 Km 01","(41) 3679-8100","","","83430000"]],[14,1,3,[],2,[24,3],[0,3,0],["Rod do Caqui, 1150 Fundos - Sala","(41) 4042-6233","","","83430000"]],[15,2,0,[],4,[20,3,56,3,21,3],[0,3,0],["R Domingos Cordeiro, 1223 - Ate 1299/1300","(41) 3539-6264","","","83601120"]],[16,2,0,[],0,[9,3],[0,0,0],["Rua Monsenhor Aluisio Domanski, 23 Sobreloja Loja","(41) 3392-1031 · (41) 9887-38646","","05408553000100","83601200"]],[17,2,4,[],0,[5,3,36,3],[0,0,0],["Avenida Padre Natal Pigatto, 781","(41) 3393-3057 · (41) 9913-59215","","","83601630"]],[18,2,5,[],0,[22,3],[0,0,0],["R Ayrton Senna da Silva, 3500","(41) 4004-8610 · (41) 8000-0086","","","83606390"]],[7,2,0,[],2,[24,3],[0,3,0],["R Marechal Deodoro, 496","(41) 4004-0103","","","83601020"]],[19,2,6,[],1,[3,3,5,3,42,3,43,3,6,3,20,3,29,3,7,3,8,3,59,3,68,3,11,3,65,3,66,3,67,3],[[[1,1]],3,0],["R Maria Aparecida de Oliveira, 599","(41) 3136-2527","","75802348000100","83606177"]],[20,2,0,[],1,[3,3,15,3,69,3,16,3,4,3,5,3,45,3,70,3,6,3,25,3,0,3,1,3,37,3,20,3,19,3,56,3,71,3,27,3,29,3,7,3,8,3,59,3,10,3,2,3,11,3,12,3,14,3,65,3],[[[2,2]],3,0],["R Generoso Marques, 2022","(41) 3032-9300 · (41) 3032-9800","","75807073000199","83601050"]],[21,2,0,[],0,[0,3],[0,0,0],["R Barao do Rio Branco, 1443 Sala 02","(41) 3032-7374","","","83601180"]],[22,2,0,[],3,[7,3,8,3],[0,0,0],["Rua Xavier da Silva, 930 Apto 602","(41) 3032-2839 · (41) 3292-2614 · (41) 9975-95725","","","83601010"]],[23,2,0,[],3,[71,3],[0,0,0],["R Barao do Rio Branco, 1415","(41) 3392-2004","","","83601180"]],[24,2,0,[],0,[0,3,1,3,17,3,32,3,33,3,2,3],[0,0,0],["R Rua Benedito Soares Pinto, 1729","(41) 3032-1571 · (41) 9950-92800","","","83600970"]],[25,2,0,[],0,[3,3,4,3,5,3,46,3,6,3,0,3,1,3,10,3,11,3],[0,0,0],["R Barao do Rio Branco, 979","(41) 3032-1590 · (41) 3032-5020","","01697059000143","83601180"]],[26,3,7,[],0,[3,3,6,3,27,3,9,3],[0,0,0],["Rua Odonis Bighi, 53 Apto 602","(41) 3037-5008 · (41) 3037-5009 · (41) 9850-44957","","","83402700"]],[27,3,8,[],0,[0,3],[0,0,0],["R Vereador Miguel Costacurta, 87","(41) 9999-73152","","","83408460"]],[28,3,9,[],0,[0,3],[0,0,0],["Rodovia da Uva, 930 Sala 1 e 2","(41) 3663-9635 · (41) 9886-85593","","","83402000"]],[29,3,10,[],0,[0,3,1,3,32,3,33,3,2,3],[0,0,0],["R Paschoa Lazarotto Toniolo, 1502","(41) 3128-2828","","","83405760"]],[30,3,11,[],0,[3,3,5,3,6,3,7,3,8,3],[0,0,0],["Av Marginal Jose de Anchieta, 1404","(41) 3666-6892","","84995588000150","83408010"]],[31,3,12,[],0,[15,3,16,3,4,3,5,3,45,3,1,3,20,3,27,3,28,3,29,3,7,3,8,3,9,3,10,3,2,3,11,3,14,3],[0,3,0],["Rua Nicolau Schleder do Carmo, 186","(41) 3666-1589","","01929943000166","83410165"]],[32,4,13,[],0,[18,3],[0,0,0],["Avenida Republica Argentina, 1228 26 Andar","(41) 3243-0156 · (41) 9912-11799","","","80620010"]],[33,4,14,[],2,[23,3],[0,3,0],["Delegado Leopoldo Belczak, 1886 Lj 3 Sl 1","(41) 4020-8000","","","82810060"]],[33,4,15,[],2,[23,3],[0,3,0],["Dias da Rocha Filho, 387","(41) 4020-8000","","","80040050"]],[33,4,16,[],2,[23,3],[0,3,0],["Dr Roberto Barrozo, 1360","(41) 4020-8000","","","80520070"]],[33,4,17,[],2,[23,3],[0,3,0],["Parana, 1670 Lj 2 Sl 1","(41) 4020-8000","","","82510000"]],[33,4,18,[],2,[23,3],[0,3,0],["R Padre Anchieta, 2194 Sl 2","(41) 4020-8000","","","80730000"]],[33,4,19,[],2,[23,3],[0,3,0],["Republica Argentina, 900 Sl 1","(41) 4020-8000","","","80620010"]],[33,4,20,[],2,[23,3],[0,3,0],["Republica Argentina, 3021 Sl 1","(41) 4020-8000","","","80610260"]],[34,4,21,[],0,[5,3],[0,0,0],["Av Joao Gualberto, 1342 Andar 15","(41) 3232-5495 · (41) 9880-32542","","","80030001"]],[35,4,22,[],3,[7,3,8,3],[0,0,0],["R Italino Peruffo, 59","(41) 3286-6363","","","81650330"]],[36,4,23,[],3,[5,3],[0,0,0],["Avenida Parana, 337 507 5 Andar","(41) 3253-1715 · (41) 9996-15445","","","80035130"]],[37,4,19,[],3,[6,3],[0,0,0],["Avenida Republica Argentina, 452 Conjunto 1009","(41) 3343-6572 · (41) 9877-3883","","","80240210"]],[38,4,0,[],3,[5,3],[0,0,0],["Rua Joao Negrao, 731 23 Andar Sala 06","(41) 3029-5831 · (41) 9993-20426","","","80010200"]],[39,4,0,[],3,[7,3,8,3],[0,0,0],["R Joao Negrao, 731 23 And","(41) 3029-5831 · (41) 9976-4349","","","80010200"]],[40,4,19,[],3,[7,3,8,3],[0,0,0],["Rua Candido Xavier, 232","(41) 3018-4421 · (41) 3349-3279","","","80240280"]],[41,4,0,[],3,[71,3],[0,0,0],["R Candido Lopes, 128 4 Andar","(41) 3233-9923 · (41) 3262-9162","","","80020060"]],[42,4,19,[],3,[72,3],[0,0,0],["Rua Silveira Peixoto, 1040","(41) 9844-94322","","","80240120"]],[43,4,17,[],3,[5,3],[0,0,0],["R Mexico, 156","(41) 3257-4553","","","82510060"]],[44,4,18,[],0,[1,3],[0,0,0],["R Dona Alice Tibirica, 111","(41) 3233-5087 · (41) 3527-0028","","","80730320"]],[45,4,24,[],0,[0,3,1,3,17,3,2,3],[0,0,0],["R Francisco Derosso, 2571","(41) 3275-6986","","02169082000128","81720000"]],[46,4,18,[],0,[9,3],[0,0,0],["Rua Padre Anchieta, 1846 Cj 811","(41) 3024-6574 · (41) 3568-1111 · (41) 9992-80016","","","80730001"]],[47,4,0,[],0,[7,3,8,3],[0,0,0],["R Emiliano Perneta, 860 Cj 1606 - 16 Andar","(41) 3078-7646","","","80420080"]],[48,4,25,[],4,[20,3,19,3,21,3],[0,3,0],["Av Vicente Machado, 1932 Letra B","(41) 3312-1300","","","80440020"]],[49,4,23,[],0,[5,3],[0,0,0],["Avenida Parana, 337 Sala 1002","(41) 3252-0910","","00899303000198","80035130"]],[50,4,18,[],3,[57,3],[0,0,0],["R Bruno Filgueira, 1795","(41) 3342-2575","","","80730380"]],[51,4,17,[],0,[15,3,6,3],[0,0,0],["Av Nossa Senhora da Luz, 751","(41) 3357-5007","","68636174000189","82510050"]],[51,4,0,[],0,[15,3,6,3],[0,0,0],["R Marechal Deodoro, 869","(41) 3392-2004","","68636174000189","80060010"]],[52,4,18,[],0,[15,3,5,3,73,3],[0,0,0],["Rua Padre Anchieta, 1691 Conjunto 907 A 9","(41) 3016-1261 · (41) 9913-41212","","","80730001"]],[53,4,18,[],3,[8,3],[0,0,0],["R Padre Anchieta, 1923 Cj 511 Andar 5","(41) 3015-4238","","","80730000"]],[54,4,0,[],0,[10,3],[0,0,0],["R Rua Comendador Araujo, 323 Cj 101","(41) 3322-5578 · (41) 9967-88902","","03739826000165","80420903"]],[55,4,25,[],0,[71,3],[0,0,0],["Rua Bruno Filgueira, 369 8 Andar","(41) 3244-8787 · (41) 3336-6000 · (41) 9853-51031","","00858586000120","80440220"]],[56,4,26,[],0,[71,3],[0,0,0],["Av Iguacu, 1236 1 And","(41) 3085-5414 · (41) 3362-0133","","40433062000101","80250190"]],[57,4,25,[],0,[28,3,29,3],[0,0,0],["R Bruno Filgueira, 369 12 Sala 1204","(41) 3242-6967 · (41) 3342-7755","","","80440220"]],[58,4,0,[],3,[7,3,8,3],[0,0,0],["R Visconde de Nacar, 865 Cj 906","(41) 3024-0411","","","80410201"]],[59,4,0,[],0,[50,3],[0,0,0],["R Doutor Faivre, 1023 5 And","(41) 3023-2393","","81913899000135","80060140"]],[60,4,22,[],0,[0,3],[0,0,0],["Rua Tenente Francisco Ferreira de Souza, 3579","(41) 3023-6074 · (41) 9809-0025","","","81670010"]],[61,4,19,[],3,[9,3],[0,0,0],["Av Silva Jardim, 4262","(41) 3363-7717","","","80240021"]],[62,4,27,[],1,[74,3,66,3],[[[3,3]],0,0],["Av Vicente Machado, 2411","(41) 3340-5500","","","80440020"]],[63,4,0,[],0,[6,3],[0,0,0],["R Voluntarios da Patria, 475 Sl 1301 - 13o Andar","(41) 3225-1933","","03872723000179","80020000"]],[64,4,0,[],0,[71,3,13,3],[0,0,0],["R Desembargador Motta, 3329","(41) 3117-5322 · (41) 9982-20268","","00097548000100","80430200"]],[65,4,0,[],0,[5,3],[0,0,0],["Av Sete de Setembro, 5402 Conjunto 53 e 54","(41) 3524-0333","","","80240000"]],[66,4,19,[],0,[69,3,5,3,18,3],[0,0,0],["Av Republica Argentina, 1228 Sala 706 Andar 7","(41) 3209-5500","","","80620010"]],[67,4,0,[],3,[7,3,8,3],[0,0,0],["Rua Marechal Deodoro, 857 11 Andar Conjunto 11","(41) 3022-8246 · (41) 9919-81953","","","80060010"]],[68,4,0,[],3,[27,3],[0,0,0],["Av Marechal Floriano Peixoto, 96 20 And Cj 202","(41) 3224-0817","","","80020090"]],[69,4,25,[],0,[3,3,27,3],[0,0,0],["Av Sete de Setembro, 4923 Sala 102","(41) 3308-8224","","","80240000"]],[70,4,19,[],0,[27,3],[0,0,0],["Rua Carneiro Lobo, 570 Conjunto 1503","(41) 3016-5579 · (41) 9960-85579","","","80240240"]],[71,4,28,[],0,[34,3],[0,0,0],["Avenida Candido de Abreu, 526 Conjunto 803 Andar 8","(41) 3224-9668","","","80530905"]],[72,4,13,[],2,[23,3],[0,3,0],["R Pedro Collere, 951","(41) 3023-5341","","","80320320"]],[73,4,25,[],0,[35,3,10,3],[0,0,0],["Av Sete de Setembro, 6700","(41) 3077-5050","","81131096000129","80240001"]],[74,4,29,[],3,[3,3],[0,0,0],["R Dr Francisco Soares, 639 Sobrado","(41) 3247-2508 · (41) 9967-78384","","","81030450"]],[75,4,30,[],0,[6,3],[0,0,0],["Av Marechal Humberto de Alencar Castelo Branco, 295","(41) 3262-9053","","03061656000102","82530205"]],[76,4,19,[],0,[6,3],[0,0,0],["R Republica Argentina, 369 Cj 1005","(41) 3024-1001","","01095898000191","80240210"]],[77,4,0,[],3,[7,3,8,3],[0,0,0],["Av Sete de Setembro, 4214 Cj 201","(41) 3225-3807 · (41) 9922-91185","","","80250210"]],[78,4,15,[],3,[8,3,60,3],[0,0,0],["R Reinaldino Schaffenberg de Quadros, 118 - Ate 519/520","(41) 3089-8888","","","80045070"]],[79,4,0,[],3,[43,3],[0,0,0],["R Vinte e Quatro de Maio, 262 Cj 805 e 806","(41) 3323-1863","","","80230080"]],[80,4,28,[],3,[7,3,8,3],[0,0,0],["Avenida Candido de Abreu, 140 Conjunto 1034","(41) 3044-5552","","","80530901"]],[81,4,19,[],0,[9,3],[0,0,0],["Avenida Silva Jardim, 4172","(41) 3221-3600","","00395490000172","80240021"]],[82,4,31,[],4,[20,3,19,3,56,3],[0,3,0],["R Raphael Papa, 20","(41) 3362-3111","","81911240000140","82530190"]],[83,4,0,[],4,[20,3,19,3],[0,3,0],["Rua Benjamin Constant, 000608","(41) 3319-4919","","05903121000167","80060020"]],[84,4,32,[],0,[22,3],[0,0,0],["R Emilio de Menezes, 833 1 Andar","(41) 3076-4774","","","80520240"]],[85,4,25,[],0,[10,3],[0,0,0],["Rua Bruno Filgueira, 369 10âº Andar","(41) 3222-4472 · (41) 9840-64445","","","80440220"]],[86,4,0,[],3,[5,3],[0,0,0],["R Joao Negrao, 731 13 And","(41) 3232-3320","","","80010020"]],[87,4,0,[],3,[71,3],[0,0,0],["R Visconde do Rio Branco, 1717 3 Andar","(41) 3322-5422","","","80420210"]],[88,4,33,[],0,[6,3],[0,0,0],["Rua Maua, 683","(41) 3052-6550 · (41) 3052-6551 · (41) 9877-9277","","00693233000117","80030200"]],[89,4,25,[],4,[55,3],[0,3,0],["R Padre Ildefonso, 158","(41) 3022-5050 · (41) 3270-3270 · (41) 3270-3291","","75033308000132","80240160"]],[90,4,34,[],0,[52,3,0,3,32,3,2,3],[0,0,0],["R Vereador Washington Mansur, 287","(41) 3363-1390","","75102798000181","80540210"]],[91,4,35,[],0,[43,3],[0,0,0],["R Otavio Pereira dos Anjos, 454 Casa","(41) 3266-1875 · (41) 3366-2983","","02794099000176","81530130"]],[92,4,15,[],0,[3,3,5,3,44,3,1,3,17,3,37,3,27,3,7,3,8,3],[0,0,0],["Rua Reinaldino Schaffenberg de Quadros, 118 Cmi","(41) 3089-8858 · (41) 3089-8880 · (41) 9920-00100","","01072700000154","80045070"]],[93,4,15,[],4,[55,3,19,3,21,3],[0,3,0],["R Itupava, 1701","(41) 3513-6000 · (41) 9918-50481","","75621367000121","80045305"]],[94,4,0,[],0,[3,3,6,3,7,3,8,3,14,3],[0,0,0],["R Emiliano Perneta, 860 21 And","(41) 3222-0101","","76729920000107","80420080"]],[95,4,36,[],0,[22,3],[0,0,0],["Av Marechal Humberto de Alencar Castelo Branco, 131","(41) 3264-8270","","80867492000156","82530195"]],[96,4,37,[],0,[3,3,39,3,75,3,37,3,54,3,35,3,29,3],[0,0,0],["Rod Br-277, 1437 2° Andar","(41) 3322-0899","","76708049000165","82305100"]],[97,4,38,[],2,[23,3],[0,3,0],["R Alcides Munhoz, 433","(41) 3026-3939","","00273762000161","80810040"]],[98,4,19,[],4,[20,3,19,3,56,3,21,3],[0,3,0],["R Goias, 83","(41) 3074-9000","","00897070000194","80620060"]],[99,4,39,[],0,[3,3,27,3,8,3],[0,0,0],["Av Anita Garibaldi, 3842","(41) 3263-1123","","","82220005"]],[100,4,22,[],0,[11,3],[0,0,0],["R Napoleao Laureano, 800","(41) 3276-9203","","78725926000131","81650210"]],[101,4,0,[],0,[27,3,7,3,8,3],[0,0,0],["Alameda Augusto Stellfeld, 1437","(41) 3044-0027 · (41) 9922-76337","","","80430140"]],[102,4,22,[],0,[5,3],[0,0,0],["Av Marechal Floriano Peixoto, 8693 Sl 01","(41) 3286-1011 · (41) 3287-1416","","","81650000"]],[103,4,20,[],0,[1,3,32,3,2,3],[0,0,0],["Av Presidente Arthur da Silva Bernardes, 1385","(41) 3092-6366","","","80320300"]],[104,4,25,[],4,[20,3,19,3,56,3,21,3],[0,3,0],["R Padre Ildefonso, 105","(41) 3270-3270","","77538288000187","80240160"]],[105,4,27,[],0,[69,2,41,2,5,2,50,2],[0,0,0],["Av Sete de Setembro, 6197","(41) 3342-0112","","","80240001"]],[106,4,19,[],1,[3,3,76,3,34,3,15,3,69,3,16,3,39,3,4,3,41,3,5,3,43,3,22,3,6,3,51,3,25,3,1,3,17,3,32,3,18,3,33,3,53,3,37,3,20,3,19,3,56,3,71,3,35,3,27,3,29,3,30,3,7,3,8,3,60,3,61,3,31,3,10,3,2,3,11,3,12,3,36,3,14,3,66,3],[[[3,3]],3,0],["Av Presidente Getulio Vargas, 3201","(41) 3340-3030","","","80240040"]],[107,4,40,[],0,[3,3,16,3,5,3,0,3,20,3,7,3,8,3,2,3,11,3],[0,3,0],["R Manoel Valdomiro de Macedo, 2851","(41) 3340-3030","","","81170150"]],[108,4,37,[],0,[77,3,35,3,64,3],[0,0,0],["R Professor Pedro Viriato Parigot de Souza, 600 Loja 3001-b","(41) 3441-0951","","","81200100"]],[109,4,19,[],3,[6,3],[0,0,0],["R Doutor Alexandre Gutierrez, 990 20 Andar","(41) 3045-9383 · (41) 3244-5520 · (41) 9994-40909","","","80240130"]],[110,4,0,[],0,[10,3],[0,0,0],["R da Paz, 195 L6","(41) 3263-3019","","03773969000193","80060160"]],[111,4,25,[],3,[6,3],[0,0,0],["R Olavo Bilac, 181","(41) 3343-3996","","","80440040"]],[112,4,19,[],3,[36,3],[0,0,0],["Av Sete de Setembro, 4881 Sl 45","(41) 3243-5122","","","80240120"]],[113,4,0,[],3,[7,3,8,3],[0,0,0],["R Barao do Cerro Azul, 252 Sl B","(41) 3029-5450","","","80020000"]],[114,4,0,[],0,[43,3,72,3,27,3],[0,0,0],["R Mal Deodoro, 869 Cj 1104","(41) 3223-0329 · (41) 3224-3064","","72415110000125","80060010"]],[115,4,18,[],0,[5,3,1,3],[0,0,0],["Al Princesa Izabel, 2526","(41) 3077-7300","","76534726000176","80730080"]],[116,4,18,[],0,[2,3],[0,0,0],["Rua Padre Anchieta, 1846 Conjunto 1201","(41) 3336-3839 · (41) 9992-33750","","01389714000104","80730001"]],[117,4,25,[],0,[27,3],[0,0,0],["Av Sete de Setembro, 4214 Cj 1501","(41) 3233-8083","","03905150000132","80250210"]],[118,4,25,[],0,[26,3],[0,0,0],["R Goncalves Dias, 507","(41) 3242-2683","","86779782000124","80240340"]],[119,4,41,[],0,[11,3,12,3],[0,0,0],["Av Manoel Ribas, 6457","(41) 3273-4838","","40420945000187","82025160"]],[120,4,17,[],1,[61,3,11,3,62,3],[[[4,4]],0,0],["R Holanda, 390","(41) 3356-2424","","82592742000118","82510190"]],[120,4,17,[],0,[61,3,11,3],[0,0,0],["R Holanda, 406","(41) 3356-2424","","82592742000118","82510190"]],[121,4,30,[],0,[20,3,11,3,12,3],[0,3,0],["Avenida Marechal Humberto de Alencar Castelo Branco, 67","(41) 3276-4312 · (41) 3278-5532","","77829497000180","82530205"]],[122,4,18,[],0,[11,3],[0,0,0],["R Fernando Simas, 221","(41) 3234-1616","","","80430190"]],[123,4,19,[],0,[10,3],[0,0,0],["Avenida Republica Argentina, 2069 2 Andar","(41) 3094-5725 · (41) 9950-38225","","","80620010"]],[124,4,18,[],0,[10,3],[0,0,0],["R Pe Anchieta, 1846 Cj 204","(41) 3336-3534","","00177665000175","80730000"]],[125,4,0,[],0,[14,3],[0,0,0],["Av Mal Floriano Peixoto, 50 Cj 201","(41) 3232-3039","","01063480000100","80020090"]],[126,4,0,[],0,[14,3],[0,0,0],["Avenida Vicente Machado, 320 7 Andar Sala 701","(41) 3233-6419 · (41) 9968-59773","","05465466000186","80420010"]],[127,4,0,[],0,[27,3],[0,0,0],["Av Vicente Machado, 467 3 A Cj 34","(41) 3044-2414","","","80420010"]],[128,4,29,[],0,[25,3,20,3,19,3],[0,3,0],["R Pedro Zagonel, 197","(41) 3077-2455","","82662867000177","81050110"]],[129,4,0,[],0,[7,3,8,3],[0,0,0],["Av Visconde de Guarapuava, 3444 Cj 802","(41) 3077-0031","","04739190000114","80250220"]],[130,4,0,[],0,[6,3,50,3],[0,0,0],["Rua Desembargador Westphalen, 594","(41) 3013-6878 · (41) 9951-35301","","81501793000124","80010110"]],[131,4,42,[],0,[1,3,17,3,29,3,7,3,8,3,2,3],[0,0,0],["Av Anita Garibaldi, 2565","(41) 3354-9000","","79797247000130","82210000"]],[132,4,19,[],0,[43,3,6,3],[0,0,0],["Trav Joao Turin, 37 3 And","(41) 3203-2017 · (41) 3343-5644","","68566769000105","80240100"]],[133,4,25,[],1,[78,3,79,3,80,3,81,3,82,3,83,3,84,3,85,3,86,3,66,3],[[[5,5]],0,0],["Av Sete de Setembro, 6520","(41) 3343-3103","","02541094000131","80240001"]],[134,4,25,[],0,[31,3],[0,0,0],["Avenida do Batel, 1230 Bloco B Sala 708","(41) 3343-0057 · (41) 3343-5230 · (41) 9922-34484","","","80420090"]],[135,4,28,[],0,[5,3,29,3],[0,0,0],["Avenida Candido de Abreu, 140 8 Andar Conjunto 801","(41) 3224-4593 · (41) 3225-5796 · (41) 9980-19100","","03948193000103","80530901"]],[136,4,13,[],0,[3,3],[0,0,0],["Avenida Republica Argentina, 1336 Conj 714","(41) 3244-4664 · (41) 3342-3337 · (41) 9922-84452","","04156128000108","80620010"]],[137,4,25,[],0,[76,3],[0,0,0],["R Capitao Souza Franco, 848 Conj 41 e 42 4 Andar","(41) 3224-2591","","","80730420"]],[138,4,19,[],0,[9,3],[0,0,0],["Avenida Republica Argentina, 2056 8 Andar Conjunto 81","(41) 3345-0700 · (41) 9840-33182","","00450055000101","80620970"]],[139,4,0,[],0,[9,3],[0,0,0],["R Emiliano Perneta, 680 Cj 303/304","(41) 3027-1314","","07468607000140","80420080"]],[140,4,0,[],0,[9,3],[0,0,0],["R Voluntarios da Patria, 400 C 201","(41) 3022-8836 · (41) 3222-8836","","03216152000114","80020000"]],[141,4,19,[],0,[11,3],[0,0,0],["R Bruno Filgueira, 369","(41) 3242-2524","","00952588000183","80240220"]],[142,4,19,[],1,[72,3,10,3,84,3,66,3],[[[3,3]],0,0],["Av Republica Argentina, 2069","(41) 3314-1500","","85514370000108","80620010"]],[143,4,26,[],1,[45,3,87,3,88,3,66,3],[[[6,6]],0,0],["R Brigadeiro Franco, 3900","(41) 3019-1234","","76801422000128","80220100"]],[144,4,37,[],0,[4,3,45,3],[0,0,0],["Rua Deputado Heitor Alencar Furtado, 3350 Sala 404","(41) 9870-39603 · (41) 9990-65151","","02516330000160","81200110"]],[145,4,0,[],0,[37,3,29,3,60,3,13,3],[0,0,0],["R Visconde de Nacar, 656","(41) 3224-9470 · (41) 3234-2172","","03777765000120","80410200"]],[146,4,43,[],0,[3,3],[0,0,0],["R Presidente Rodrigo Otavio, 1976 - de 927/928 Ao Fim","(41) 3352-1029","","82193749000167","80040452"]],[147,4,44,[],0,[45,3,70,3],[0,0,0],["Rua Jovino do Rosario, 125","(41) 3257-4740","","79197919000177","82540115"]],[148,4,13,[],0,[71,3,89,3],[0,3,0],["Av Republica Argentina, 1228 Salas 2207 e 2208","(41) 3079-7973","","","80620010"]],[149,4,26,[],0,[3,3,1,3,17,3,2,3],[0,0,0],["Av Iguacu, 1676","(41) 3233-2288 · (41) 3324-9963","","40385239000141","80250190"]],[150,4,18,[],0,[3,3,16,3,5,3,6,3,27,3,28,3,29,3,30,3,7,3,8,3],[0,0,0],["Al Julia da Costa, 1447","(41) 3240-2900","","","80730070"]],[151,4,15,[],0,[5,3],[0,0,0],["Rua Marechal Deodoro, 1784","(41) 3263-2666 · (41) 9912-82666","","","80045090"]],[152,4,25,[],0,[11,3],[0,0,0],["Av Vicente Machado, 2439","(41) 3340-5500 · (41) 3340-5510","","","80440020"]],[153,4,45,[],0,[1,3,17,3,32,3,33,3,2,3],[0,0,0],["Avenida Desembargador Hugo Simas, 1353 Casa de Esquina","(41) 9843-23284 · (41) 9886-68866","","","80820102"]],[154,4,0,[],0,[29,3],[0,0,0],["R da Paz, 195 Sl 504 505","(41) 3264-6719","","01730052000186","80060160"]],[155,4,25,[],0,[22,3],[0,0,0],["Avenida Vicente Machado, 2190 1 A Bloco 2","(41) 3010-8265","","","80420011"]],[155,4,29,[],0,[22,3],[0,0,0],["R Coronel Herculano de Araujo, 412","(41) 3039-8162 · (41) 3248-0833","","","81050090"]],[156,4,0,[],0,[0,3],[0,0,0],["Rua da Paz, 195 Cj 15","(41) 3264-7833 · (41) 3308-4915 · (41) 9849-05648","","80765233000114","80060160"]],[157,4,20,[],0,[9,3],[0,0,0],["Av Republica Argentina, 2150 Cj 52 5 Andar","(41) 3345-5153","","","80610260"]],[158,4,38,[],0,[4,3,41,3],[0,0,0],["R Padre Anchieta, 155","(41) 3222-8801 · (41) 9984-30122","","","80430060"]],[159,4,0,[],0,[1,3,10,3,2,3],[0,0,0],["R Marechal Deodoro, 235 Sl 1408","(41) 3232-5694 · (41) 3233-8530","","95362463000100","80020907"]],[160,4,18,[],0,[27,3],[0,0,0],["Rua Padre Anchieta, 2348 16 Andar Sala 1606","(41) 3039-0003 · (41) 9980-22263","","","80730001"]],[161,4,17,[],0,[40,3],[0,0,0],["R Equador, 195","(41) 3039-7359","","","82510120"]],[162,4,13,[],0,[22,3],[0,0,0],["Rua Professor Ulisses Vieira, 959","(41) 3046-1910","","","80320090"]],[163,4,0,[],0,[15,3,69,3,44,3,49,3,18,3],[0,0,0],["Avenida Nossa Senhora Aparecida, 3497 Sala 111 e 112","(41) 3319-5013 · (41) 3323-9415","","","80310100"]],[164,4,15,[],0,[27,3],[0,0,0],["R Professor Brandao, 1015","(41) 3095-7015","","","80045325"]],[165,4,33,[],0,[0,3],[0,0,0],["R Augusto Severo, 414","(41) 3252-4407","","","80030240"]],[166,4,19,[],0,[25,3,28,3,29,3],[0,0,0],["Av Republica Argentina, 1160 Conj 504 Andar 05","(41) 3328-0013 · (41) 3528-6411 · (41) 3528-6412","","","80620010"]],[167,4,20,[],0,[1,3,17,3,2,3],[0,0,0],["Avenida Republica Argentina, 3396 Imovel Comercial","(41) 3503-7071 · (41) 3503-7072","","02180056000109","80610260"]],[168,4,0,[],0,[5,3],[0,0,0],["R da Paz, 195 Cj 124","(41) 3263-1182","","","80060160"]],[169,4,46,[],0,[15,3],[0,0,0],["R Tenente Miguel Anselmo da Silva, 240","(41) 9978-28133","","","82120390"]],[170,4,46,[],0,[14,3],[0,0,0],["Rua Elias Joaquim, 414 Nao Consta","(41) 3077-9666 · (41) 3078-0660 · (41) 9921-62003","","03827793000105","82120350"]],[171,4,18,[],0,[48,3],[0,0,0],["R Coronel Joaquim Ignacio Taborda Ribas, 59","(41) 3342-9249","","","80730330"]],[172,4,19,[],0,[7,3,8,3],[0,0,0],["R Desembargador Motta, 1499 Cj 404 - 4 Andar","(41) 3324-3133","","","80250060"]],[173,4,0,[],0,[10,3],[0,0,0],["R da Paz, 98 Sala 304","(41) 3044-4422 · (41) 3044-4423","","","80060160"]],[174,4,40,[],0,[27,3],[0,0,0],["R Professor Pedro Viriato Parigot de Souza, 3901 Andar 4 Cj 44","(41) 3149-0822 · (41) 9986-88632","","","81280330"]],[175,4,0,[],0,[75,3],[0,0,0],["Rua Conselheiro Araujo, 434 Sala 23 Andar 2","(41) 3514-5102 · (41) 9987-81562 · (41) 9999-22933","","","80060230"]],[176,4,28,[],0,[7,3,8,3],[0,0,0],["Avenida Candido de Abreu, 526 Conjunto 310 Torre A","(41) 3018-0313 · (41) 9999-90837","","","80530905"]],[177,4,22,[],0,[9,3],[0,0,0],["Rua Jose Peixoto de Lacerda Wernek, 41","(41) 3276-4202 · (41) 3276-4430 · (41) 9882-44785","","01548604000130","81650260"]],[178,4,35,[],0,[3,3,0,3],[0,0,0],["Rua Senador Batista de Oliveira, 190 2 Andar Sala 04","(41) 3045-9172 · (41) 3246-9171 · (41) 9847-38490","","40451874000180","81530150"]],[179,4,0,[],0,[76,3,45,3,70,3,1,3],[0,0,0],["R Xv de Novembro, 266 Conjunto 57","(41) 3223-8630","","","80020310"]],[180,4,38,[],0,[15,3],[0,0,0],["Avenida Manoel Ribas, 985 Sala 34 35","(41) 9958-70005","","","80810000"]],[181,4,40,[],0,[3,3,16,3,6,3,19,3],[0,3,0],["R Joao Falarz, 1086","(41) 3373-6666","","02734076000176","81280270"]],[182,4,0,[],0,[5,3],[0,0,0],["Al Doutor Carlos de Carvalho, 1087","(41) 3223-8996","","","80430180"]],[183,4,0,[],0,[7,3,8,3],[0,0,0],["Av Visconde de Guarapuava, 3444 8 Andar","(41) 3095-8835","","","80250220"]],[184,4,19,[],0,[9,3],[0,0,0],["Pres Getulio Vargas, 2932 Terreo","(41) 3027-3807","","40449894000116","80240040"]],[185,4,0,[],0,[7,3,8,3],[0,0,0],["Tv Itarare, 55 Conj 51","(41) 3233-7446","","","80060040"]],[186,4,13,[],0,[10,3],[0,0,0],["Av Republica Argentina, 1228 Andar 21 Sala 2106","(41) 3343-0101","","","80620010"]],[187,4,0,[],0,[1,3,32,3,33,3,2,3],[0,0,0],["Av Visconde de Guarapuava, 3965","(41) 9924-55500","","","80250220"]],[188,4,25,[],0,[9,3],[0,0,0],["Av Sete de Setembro, 4848 Apto 1304","(41) 3343-3522 · (41) 9156-5282","","03557136000195","80240000"]],[189,4,0,[],0,[9,3],[0,0,0],["R da Paz, 195 Sl 123","(41) 3092-4200 · (41) 3092-4201 · (41) 9915-60698","","","80060160"]],[190,4,0,[],0,[9,3],[0,0,0],["Rua Marechal Deodoro, 51 10 And Conj 1009","(41) 9853-43745 · (41) 9914-47520","","","80020320"]],[191,4,47,[],0,[3,3,5,3,19,3,14,3],[0,3,0],["Rua Alcino Guanabara, 945","(41) 3077-3424 · (41) 3773-0373 · (41) 9993-89592","","72082035000128","81630190"]],[192,4,15,[],0,[6,3],[0,0,0],["R Reinaldino Schaffenberg de Quadros, 367","(41) 3264-6311","","77522589000112","80045070"]],[193,4,18,[],0,[0,3],[0,0,0],["Rua Francisco Rocha, 2084 Apto 204","(41) 3335-5656 · (41) 9994-50447","","72378110000100","80710540"]],[194,4,13,[],0,[15,3,6,3,71,3],[0,0,0],["Av Republica Argentina, 1336 3o Conj. 304","(41) 3072-6555","","","80620010"]],[195,4,0,[],0,[0,3],[0,0,0],["Rua Emiliano Perneta, 680 17âº Conj 1707 e 170","(41) 3222-9672 · (41) 9994-93889","","85504447000150","80420080"]],[196,4,0,[],0,[7,3,8,3],[0,0,0],["R da Paz, 195 Conj 125","(41) 3078-8556","","","80060160"]],[197,4,0,[],0,[5,3,7,3,8,3],[0,0,0],["R Visconde do Rio Branco, 1630 Cj 701 Ao 704","(41) 3223-7873 · (41) 3225-4907","","68639889000195","80420210"]],[198,4,32,[],0,[6,3],[0,0,0],["Av Desembargador Hugo Simas, 322","(41) 3528-6555","","","80520250"]],[199,4,27,[],0,[90,3],[0,0,0],["R Teixeira Soares, 50","(41) 3336-1540","","","80240440"]],[200,4,19,[],0,[33,3,91,3],[0,0,0],["Av dos Estados, 889","(41) 9882-78471","","","80610040"]],[201,4,18,[],0,[26,3],[0,0,0],["Rua Padre Anchieta, 2050 Sala 1309","(41) 9993-1384","","","80730001"]],[202,4,0,[],0,[3,3],[0,0,0],["R Mal Deodoro, 51 Sl 904 A","(41) 3232-7931","","04007931000172","80020320"]],[203,4,18,[],0,[76,3],[0,0,0],["Rua Padre Anchieta, 1846 Conjunto 202 Andar 2","(41) 3335-4614 · (41) 3336-3070 · (41) 9926-22662","","","80730001"]],[204,4,16,[],0,[27,3,7,3,8,3,10,3],[0,0,0],["Rua Portugal, 351","(41) 3233-5753 · (41) 3402-5235 · (41) 3618-0043","","06164411000107","80510280"]],[205,4,18,[],0,[8,3],[0,0,0],["R Padre Anchieta, 1846 Sala 103","(41) 3042-6959","","","80730000"]],[206,4,18,[],0,[25,3,28,3,29,3],[0,0,0],["Al Princesa Izabel, 1555 Casa","(41) 3335-7974","","06016070000114","80730080"]],[207,4,21,[],0,[7,3,8,3],[0,0,0],["R Moyses Marcondes, 365 Ap 02","(41) 3014-3435 · (41) 3252-3430","","","80530310"]],[208,4,0,[],0,[57,3],[0,0,0],["R Lamenha Lins, 266 Cj 24 2 Andar","(41) 3076-8100","","","80250020"]],[209,4,22,[],1,[83,3,92,3,66,3],[[[6,6]],0,0],["R Josepha Deren Destefani, 198","(41) 3020-4646","","","81650310"]],[210,4,0,[],0,[9,3],[0,0,0],["Pca Zacarias, 51","(41) 3020-4646","","","80020080"]],[211,4,25,[],0,[6,3],[0,0,0],["R Bruno Filgueira, 369 Cj 1602","(41) 3095-0640 · (41) 3095-0661","","","80440220"]],[212,4,19,[],0,[7,3,8,3],[0,0,0],["R Bruno Filgueira, 369 9 A Sl 902","(41) 3019-1819","","","80240220"]],[213,4,21,[],0,[2,3],[0,0,0],["Rua Deputado Mario de Barros, 900 14 Andar","(41) 3022-6699 · (41) 3222-8587 · (41) 3353-4433","","82375940000120","80530280"]],[214,4,19,[],0,[5,3],[0,0,0],["Avenida Republica Argentina, 2056 Conjunto 85 Andar 8","(41) 3045-4499 · (41) 9989-55863","","","80620970"]],[215,4,18,[],3,[7,3,8,3],[0,0,0],["Al Pres Taunay, 1600","(41) 3335-3531","","","80430000"]],[216,4,0,[],0,[9,3],[0,0,0],["Rua Doutor Pedrosa, 151 Conj 510 Andar 05","(41) 3016-8553 · (41) 9981-73990","","07713874000135","80420120"]],[217,4,19,[],0,[8,3],[0,0,0],["Av Silva Jardim, 2042","(41) 3342-7632","","68607712000107","80240020"]],[218,4,26,[],0,[25,3],[0,0,0],["Av Iguacu, 1236","(41) 3090-7004","","00066079000153","80250190"]],[219,4,21,[],0,[10,3],[0,0,0],["Av Joao Gualberto, 1673 Sl 04","(41) 3352-5262","","05913839000134","80030001"]],[220,4,38,[],0,[63,3],[0,0,0],["Rua Dom Alberto Goncalves, 311","(41) 3338-0202","","","80510340"]],[221,4,19,[],0,[1,3],[0,0,0],["R Bruno Filgueira, 369 3 Andar - Cj 302","(41) 3242-7611","","76195759000139","80240220"]],[222,4,25,[],3,[10,3],[0,0,0],["Av 7 de Setembro, 6700","(41) 3077-5050 · (41) 3342-5356","","","80240001"]],[223,4,48,[],0,[22,3],[0,0,0],["R Natal, 31","(41) 4004-8610 · (41) 8000-0086","","","82920000"]],[224,4,0,[],0,[18,3],[0,0,0],["Joao Negrao, 380 4 Anda Sl 42","(41) 3024-1015 · (41) 9990-41258","","","80010200"]],[225,4,26,[],0,[7,2,8,2],[0,0,0],["Av Presidente Getulio Vargas, 593 Terreo","(41) 3148-0419","","","80230030"]],[226,4,19,[],0,[27,3],[0,0,0],["Rua Herculano Carlos Franco de Souza, 362","(41) 3224-2685 · (41) 3323-7517 · (41) 3342-8484","","","80240290"]],[227,4,18,[],0,[27,3],[0,0,0],["R Padre Anchieta, 1846 Andar 10 Conj1014","(41) 3568-2036","","","80730000"]],[228,4,0,[],0,[15,3,48,3],[0,0,0],["Al Doutor Carlos de Carvalho, 1087","(41) 3223-8996","","","80430180"]],[229,4,0,[],4,[55,3,19,3],[0,3,0],["R Voluntarios da Patria, 400 Conj 1302","(41) 3222-1067","","","80020000"]],[230,4,16,[],0,[16,3,28,3,30,3],[0,0,0],["R Portugal, 307 Sl 23 Ad 2","(41) 3014-7832 · (41) 3029-7472","","","80510280"]],[231,4,21,[],0,[6,3],[0,0,0],["R Manoel Eufrasio, 403","(41) 3014-3334 · (41) 3046-1393","","","80030440"]],[232,4,0,[],0,[11,3],[0,0,0],["R Amintas de Barros, 574 Casa","(41) 3019-5746","","","80060205"]],[233,4,0,[],0,[7,3,8,3],[0,0,0],["Av Sete de Setembro, 4214 Sl 1707","(41) 3016-0030","","03249167000189","80250210"]],[234,4,25,[],4,[20,3],[0,3,0],["Av Sete de Setembro, 4848","(41) 3302-7000","","79026365000145","80240000"]],[235,4,25,[],0,[6,2,51,2],[0,2,0],["R Olavo Bilac, 181","(41) 3343-3996","","79583209000185","80440040"]],[236,4,25,[],0,[5,3],[0,0,0],["Av Sete de Setembro, 4698 8 Andar-cj 808","(41) 3013-6023 · (41) 3014-6023 · (41) 9918-4616","","","80240000"]],[237,4,0,[],3,[27,3],[0,0,0],["R Lamenha Lins, 266 Sl 11","(41) 3222-3402","","","80250020"]],[238,4,25,[],0,[7,3,8,3],[0,0,0],["Avenida Sete de Setembro, 4848 Conjunto 301 5 A","(41) 3018-1821 · (41) 9922-21821","","","80240000"]],[239,4,0,[],0,[6,3],[0,0,0],["R da Paz, 195 Lj 1c","(41) 3022-2161","","03764154000148","80060160"]],[240,4,33,[],0,[93,3],[0,0,0],["R Nicolau Maeder, 34","(41) 3254-2841","","","80030330"]],[241,4,18,[],3,[72,3],[0,0,0],["R Bruno Filgueira, 369 Sala 1005","(41) 9965-75776","","","80730380"]],[242,4,0,[],3,[27,3],[0,0,0],["R Marechal Deodoro, 500 4 And - Sl 41","(41) 3223-8714 · (41) 3323-1367","","","80010010"]],[243,4,26,[],0,[45,3],[0,0,0],["R Vinte e Quatro de Maio, 1639","(41) 3013-3466","","","80220060"]],[244,4,19,[],0,[15,3,6,3,71,3],[0,0,0],["Avenida Silva Jardim, 2600 Conjunto 1701","(41) 3779-5559 · (41) 9878-87609","","","80240020"]],[245,4,0,[],0,[16,3,25,3],[0,0,0],["Rua Emiliano Perneta, 860 1 O Andar Conjunto 1","(41) 3232-5285 · (41) 9991-14673 · (41) 9998-54187","","","80420080"]],[246,4,0,[],0,[15,3,31,3],[0,0,0],["R Emiliano Perneta, 725 Sl 1103","(41) 3205-7545 · (41) 3223-4990 · (41) 9994-19590","","04046880000198","80420080"]],[247,4,33,[],0,[16,3,25,3],[0,0,0],["R Itupava, 255","(41) 3049-6113","","","80060272"]],[248,4,0,[],0,[25,3],[0,0,0],["R Emiliano Perneta, 860 5 Andar","(41) 3224-4233 · (41) 3274-4513 · (41) 3322-2997","","03704203000157","80420080"]],[249,4,17,[],0,[26,3],[0,0,0],["Avenida Parana, 1755 Sala 105","(41) 9851-28582","","","82510000"]],[250,4,44,[],0,[1,3,32,3,33,3,2,3],[0,0,0],["Rua Miguel Piekarski, 446 Sobrado","(41) 3209-1053 · (41) 9998-62113","","","82540190"]],[251,4,30,[],0,[76,3,40,3],[0,0,0],["Avenida Victor Ferreira do Amaral, 915","(41) 3262-8380 · (41) 9965-13399","","","82530230"]],[252,4,0,[],0,[93,3],[0,0,0],["R da Paz, 195 1 Andar Conj 116","(41) 3040-0011","","","80060160"]],[253,4,26,[],0,[8,3],[0,0,0],["R Conselheiro Dantas, 1154","(41) 3334-4443","","04038751000158","80220191"]],[254,4,25,[],0,[5,3],[0,0,0],["Av Sete de Setembro, 4214 Ad 9 Cj 1009","(41) 3224-8589","","","80250210"]],[255,4,34,[],0,[0,3],[0,0,0],["Rua Alberto Folloni, 1093 Vitalclin","(41) 3014-0507 · (41) 3252-6355 · (41) 9840-79227","","01218728000157","80540000"]],[256,4,19,[],4,[19,3],[0,3,0],["Rua Goias, 70 Loja 401 Andar 3 Con","(41) 3087-7500 · (41) 9927-57500","","","80620060"]],[257,4,25,[],0,[43,3,6,3],[0,0,0],["R Coronel Dulcidio, 55","(41) 3222-0108","","78375482000151","80420170"]],[258,4,32,[],0,[0,3],[0,0,0],["R Carlos Augusto Cornelsen, 321","(41) 3252-0282","","","80520560"]],[259,4,49,[],0,[4,3],[0,0,0],["R Conselheiro Dantas, 599","(41) 3332-3496","","05156487000110","80220190"]],[260,4,25,[],0,[18,3],[0,0,0],["R Alferes Angelo Sampaio, 1118 Cj 53","(41) 3342-4197","","","80420160"]],[261,4,18,[],3,[14,3],[0,0,0],["R Padre Anchieta, 2194 14o Andar","(41) 3224-6218","","","80730000"]],[262,4,18,[],3,[8,3],[0,0,0],["R Padre Anchieta, 1350","(41) 3336-1717","","","80730000"]],[263,4,0,[],0,[10,3],[0,0,0],["R Comendador Araujo, 510 10 And Cj 1002","(41) 3322-2060","","72197395000175","80420000"]],[264,4,50,[],0,[11,3],[0,0,0],["Av Comendador Franco, 2795","(41) 3266-6770 · (41) 3366-2220","","00116185000102","81520000"]],[7,4,42,[],2,[24,3],[0,3,0],["Av Anita Garibaldi, 4033","(41) 4004-0103","","","82210000"]],[7,4,34,[],2,[24,3],[0,3,0],["Av Anita Garibaldi, 2206","(41) 4004-0103","","","82200530"]],[7,4,40,[],2,[24,3],[0,3,0],["Av das Industrias, 1974","(41) 4004-0103","","","81310060"]],[7,4,32,[],2,[24,3],[0,3,0],["Av Desembargador Hugo Simas, 2647","(41) 4004-0103","","","80520250"]],[7,4,51,[],2,[23,3,24,3],[0,3,0],["Av Manoel Ribas, 5811","(41) 4004-0103","","","82400000"]],[7,4,16,[],2,[24,3],[0,3,0],["Av Manoel Ribas, 589","(41) 4004-0103","","","80510020"]],[7,4,22,[],2,[24,3],[0,3,0],["Av Marechal Floriano Peixoto, 7907","(41) 4004-0103","","","81650000"]],[7,4,35,[],2,[24,3],[0,3,0],["Av Nossa Senhora de Lourdes, 63","(41) 4004-0103","","","81530020"]],[7,4,17,[],2,[24,3],[0,3,0],["Av Parana, 1634","(41) 4004-0103","","","82510100"]],[7,4,20,[],2,[24,3],[0,3,0],["Av Presidente Kennedy, 4121","(41) 4004-0103","","","80610905"]],[7,4,19,[],2,[24,3],[0,3,0],["Av Presidente Kennedy, 1966","(41) 4004-0103","","","80610010"]],[7,4,52,[],2,[23,3,24,3],[0,3,0],["Av Senador Salgado Filho, 4303","(41) 4004-0103","","","81570000"]],[7,4,0,[],2,[24,3],[0,3,0],["Av Sete de Setembro, 4307","(41) 4004-0103","","","80250210"]],[7,4,30,[],2,[24,3],[0,3,0],["Av Victor Ferreira do Amaral, 3230","(41) 4004-0103","","","82810350"]],[7,4,19,[],2,[23,3,24,3],[0,3,0],["R Alferes Angelo Sampaio, 1299","(41) 4004-0103","","","80250120"]],[7,4,22,[],2,[23,3,24,3],[0,3,0],["R Anne Frank, 4145","(41) 4004-0103","","","81650020"]],[7,4,0,[],2,[23,3,24,3],[0,3,0],["R Barao do Rio Branco, 63 1 And","(41) 4004-0103","","","80010180"]],[7,4,25,[],2,[24,3],[0,3,0],["R Bruno Filgueira, 369","(41) 4004-0103","","","80240220"]],[7,4,53,[],2,[23,3,24,3],[0,3,0],["R Carlos Klemtz, 1994 Lj 17/18","(41) 4004-0103","","","81320000"]],[7,4,28,[],2,[23,3,24,3],[0,3,0],["R Comendador Fontana, 258","(41) 4004-0103","","","80030070"]],[7,4,0,[],2,[23,3,24,3],[0,3,0],["R da Paz, 195 1 And - Cj 101 A 103","(41) 4004-0103","","","80060160"]],[7,4,20,[],2,[23,3,24,3],[0,3,0],["R Francisco Frischmann, 2597","(41) 4004-0103","","","80320250"]],[7,4,53,[],2,[24,3],[0,3,0],["R Juvenal Carvalho, 127","(41) 4004-0103","","","81320185"]],[7,4,18,[],2,[24,3],[0,3,0],["R Martim Afonso, 3038","(41) 4004-0103","","","80730030"]],[7,4,28,[],2,[24,3],[0,3,0],["R Mateus Leme, 2690","(41) 4004-0103","","","80530010"]],[7,4,17,[],2,[23,3,24,3],[0,3,0],["R Mexico, 552","(41) 4004-0103","","","82510060"]],[7,4,13,[],2,[24,3],[0,3,0],["R Pedro Collere, 930","(41) 4004-0103","","","80320020"]],[7,4,54,[],2,[23,3,24,3],[0,3,0],["R Rubem Berta, 35","(41) 4004-0103","","","81150110"]],[7,4,55,[],2,[24,3],[0,3,0],["R Tijucas do Sul, 1777","(41) 4004-0103","","","81925060"]],[7,4,22,[],2,[24,3],[0,3,0],["R Waldemar Loureiro de Campos, 3885","(41) 4004-0103","","","81750180"]],[7,4,15,[],2,[24,3],[0,3,0],["R Xv de Novembro, 3101","(41) 4004-0103","","","80045125"]],[265,4,0,[],0,[40,3,6,3,51,3,25,3,53,3,37,3,20,3,19,3,57,3,10,3,14,3],[0,3,0],["R Brigadeiro Franco, 1703","(41) 3111-3100 · (41) 9993-55454","","81190449000161","80420200"]],[266,4,0,[],0,[28,3,29,3],[0,0,0],["Avenida Vicente Machado, 2322","(41) 3242-5353","","","80440020"]],[267,4,38,[],0,[28,3,29,3],[0,0,0],["R Alcides Munhoz, 433 2o Andar","(41) 3018-7775 · (41) 3240-6978","","05876316000165","80810040"]],[268,4,0,[],0,[28,3,29,3],[0,0,0],["R Rua Comendador Araujo, 143, 143 Cj 113 11 Andar","(41) 3322-3789","","","80420900"]],[269,4,56,[],0,[35,3,10,3],[0,0,0],["R Presidente Rodrigo Otavio, 1976","(41) 3352-1029","","03764436000145","80040452"]],[270,4,26,[],3,[39,3],[0,0,0],["Av Iguacu, 1236 210","(41) 9924-31843","","","80250190"]],[270,4,28,[],3,[39,3],[0,0,0],["R Senador Xavier da Silva, 488 C 903","(41) 3224-5604","","","80530900"]],[271,4,33,[],0,[44,3,72,3,49,3],[0,0,0],["R Paraguassu, 853 Terreo","(41) 3253-1813","","","80030270"]],[272,4,21,[],0,[48,3],[0,0,0],["Av Joao Gualberto, 1881 Sala 801","(41) 3121-0078 · (41) 9844-36986","","","80030001"]],[273,4,0,[],0,[7,3,8,3],[0,0,0],["Avenida Vicente Machado, 401","(41) 3111-3223 · (41) 3222-9297","","81502288000102","80420010"]],[274,4,40,[],0,[1,3,17,3,33,3],[0,0,0],["Rua Manoel Valdomiro de Macedo, 2931","(41) 3329-8634","","","81170150"]],[275,4,25,[],0,[39,3],[0,0,0],["Rua Capitao Souza Franco, 290","(41) 3023-5545 · (41) 3521-4758 · (41) 3521-4766","","75092189000199","80730420"]],[276,4,31,[],1,[65,3,66,3,67,2],[[[3,6]],0,0],["R Raphael Papa, 10","(41) 3306-9000","","77799823000153","82530190"]],[277,4,25,[],1,[83,3,92,3,66,3],[[[6,6]],0,0],["R Presidente Taunay, 483","(41) 3222-4222 · (41) 3310-4120","","76104058000147","80420180"]],[278,4,0,[],1,[59,3,66,3],[[[5,5]],0,0],["Av Visconde de Guarapuava, 3077","(41) 2104-0300","","","80010100"]],[279,4,19,[],1,[20,3,59,3,66,3],[[[5,5]],3,0],["R Guilherme Pugsley, 1705","(41) 3017-2100","","","80620000"]],[280,4,19,[],1,[94,3,42,3,79,3,95,3],[[[7,7]],0,0],["R Desembargador Motta, 1070","(41) 3310-1309","","76591569000130","80250060"]],[281,4,38,[],1,[42,3,59,3,74,3,65,3,66,3],[[[1,1]],0,0],["R Alcides Munhoz, 433","(41) 3240-6060","","76562198000169","80810040"]],[282,4,29,[],1,[62,2,66,3],[[[8,6]],0,0],["Av Republica Argentina, 4650","(41) 3052-5600","","77576668000106","81050001"]],[283,4,25,[],1,[3,3,34,3,15,3,69,3,16,3,77,3,39,3,40,3,4,3,90,3,5,3,42,3,43,3,44,3,22,3,47,3,48,3,6,3,50,3,25,3,0,3,96,3,24,3,53,3,37,3,20,3,19,3,56,3,71,3,89,3,57,3,35,3,27,3,28,3,29,3,30,3,58,3,73,3,7,3,8,3,59,3,68,3,60,3,61,3,31,3,97,3,10,3,11,3,12,3,74,3,62,3,36,3,13,3,64,3,14,3,65,3,66,3,98,3,67,3],[[[1,1]],3,0],["Av do Batel, 1889","(41) 3003-3230","","76555069000143","80420090"]],[284,4,0,[],1,[65,3,66,3],[[[3,3]],0,0],["Av Vicente Machado, 401","(41) 3111-3000","","81190449000242","80420010"]],[285,4,13,[],1,[6,3,71,3,57,3,95,3],[[[9,9]],0,0],["R Pedro Collere, 890","(41) 3013-9000","","01607538000121","80320320"]],[286,4,35,[],1,[99,3,90,3,94,3,42,3,75,3,54,3,73,3,31,3,2,3,36,3,66,3,98,3],[[[6,6]],0,0],["R Doutor Ovande do Amaral, 201","(41) 3165-4501","","","81520060"]],[287,4,36,[],1,[3,3,100,3,15,3,16,3,101,3,4,3,5,1,94,3,43,1,46,1,22,3,78,3,6,3,51,3,23,3,25,3,1,3,18,3,24,3,53,3,37,3,79,3,20,3,19,3,56,3,21,3,89,3,80,3,57,3,95,3,35,1,27,3,28,3,29,3,30,3,58,3,82,3,8,3,60,3,31,3,102,3,9,3,83,3,10,3,2,3,84,3,74,3,13,3,63,1,85,3,64,3,103,3,14,3,86,3,66,3,67,3],[[[1,1]],3,0],["Av Presidente Affonso Camargo, 1399","(41) 3207-3225","","","80050370"]],[288,4,32,[],1,[74,3,65,3,66,3,67,2],[[[3,6]],0,0],["Avenida Desembargador Hugo Simas, 322 Casa","(41) 3072-7272","","76498013000102","80520250"]],[289,4,19,[],1,[81,3,82,3,83,3,85,3,86,3],[[[2,2]],0,0],["Avenida Silva Jardim, 3888 Casa","(41) 3075-7000 · (41) 3075-7001","","","80250900"]],[290,4,18,[],1,[42,3,59,3,68,3,65,3,66,3,98,3,67,3],[[[1,1]],0,0],["Al Augusto Stellfeld, 1908","(41) 3240-5000","","","80730150"]],[291,4,25,[],1,[100,3,101,3,94,3,78,3,79,3,80,3,95,3,81,3,82,3,102,3,83,3,84,3,74,3,62,2,85,3,103,3,86,3,66,3,67,2],[[[5,1]],0,0],["R Alferes Angelo Sampaio, 1896","(41) 3883-8406 · (41) 3883-8482","","06943723000100","80420160"]],[292,4,57,[],1,[5,3,94,3,42,3,74,3,62,3,65,3,66,3,67,3],[[[6,6]],0,0],["Rod Br, 116 Km 396","(41) 3315-1951","","","82590100"]],[293,4,15,[],1,[42,2,74,3,62,2,65,3,66,3,67,2],[[[3,6]],0,0],["R Xv de Novembro, 2223","(41) 3218-2000 · (41) 3218-2002","","76530518000107","80045125"]],[294,4,25,[],3,[7,3,8,3],[0,0,0],["R Bruno Filgueira, 369 Sala 1004","(41) 3343-2789","","","80440220"]],[295,4,38,[],0,[39,3,37,3],[0,0,0],["Rua Myltho Anselmo da Silva, 870","(41) 3336-1110 · (41) 9915-58790","","","80510130"]],[296,4,0,[],0,[9,3],[0,0,0],["Pca Generoso Marques, 27 Cj 1101","(41) 3222-9944","","07396063000158","80020230"]],[297,4,0,[],4,[20,3,19,3],[0,3,0],["R Nunes Machado, 838","(41) 3224-4387 · (41) 9841-19567","","40182669000166","80250000"]],[298,4,19,[],4,[19,1],[0,1,0],["Avenida Presidente Getulio Vargas, 2658","(41) 3039-1818","","","80240040"]],[299,4,19,[],0,[11,3],[0,0,0],["Rua Herculano Carlos Franco de Souza, 438","(41) 3044-2940 · (41) 9960-21846 · (41) 9994-50166","","","80240290"]],[300,4,19,[],0,[16,3,25,3,28,3,29,3],[0,0,0],["Trav Ferreira do Amaral, 45 3 And","(41) 3244-6677","","02258831000193","80620090"]],[301,4,19,[],0,[3,3,34,3,15,3,4,3,6,3,51,3,55,3,19,3,27,3,7,3,8,3,14,3],[0,3,0],["Rua Goias, 70 Loa 302 2 Andar","(41) 3016-2624 · (41) 3335-2624","","68607761000140","80620060"]],[302,4,32,[],4,[55,3,20,3,19,3,56,3,21,3],[0,3,0],["Avenida Desembargador Hugo Simas, 366","(41) 3362-3111","","","80520250"]],[303,4,0,[],0,[16,3,25,3,28,3,30,3],[0,0,0],["R da Paz, 156","(41) 3263-4474","","40258550000120","80060160"]],[304,4,25,[],1,[9,3,66,3],[[[3,3]],0,0],["Av Sete de Setembro, 5899","(41) 3016-1010","","01065835000192","80240001"]],[305,4,25,[],0,[22,3,47,3],[0,0,0],["R Buenos Aires, 792","(41) 3311-9400 · (41) 3311-9415 · (41) 9888-79091","","72442437000196","80250070"]],[306,4,31,[],0,[39,3,53,3,37,3],[0,0,0],["R Fagundes Varela, 1785","(41) 3026-5559","","03850913000195","82520040"]],[307,4,15,[],0,[3,3,4,3,7,3,8,3],[0,0,0],["Rua Atilio Borio, 711 Casa","(41) 3264-7500 · (41) 9961-82974","","01557227000103","80045120"]],[308,4,58,[],1,[100,3,78,3,20,3,19,3,56,3,21,3,95,3,81,3,82,3,102,3,84,3,74,3,103,3,67,1],[[[7,9]],3,0],["R Jeremias Maciel Perretto, 300","(41) 3028-8545","","00942063000167","81210310"]],[309,4,26,[],0,[9,3],[0,0,0],["Av Getulio Vargas, 1500","(41) 3322-2020","","72443153000114","80250180"]],[310,4,27,[],0,[10,3],[0,0,0],["Av Silva Jardim, 4271","(41) 3342-3335","","02580450000126","80240021"]],[311,4,19,[],0,[1,3,32,3,18,3,2,3],[0,0,0],["R Mauricio Caillet, 77","(41) 3019-1414 · (41) 3243-1404 · (41) 9998-0772","","81247595000186","80250110"]],[312,4,20,[],1,[69,3,41,3,5,3,42,3,44,3,72,3,50,3,17,3,27,3,10,3,2,3,12,3,36,3,66,3,67,3],[[[6,6]],0,0],["R Lourival Portella Natel, 164","(41) 3016-4800","","04319359000187","80610250"]],[313,4,28,[],0,[39,3,37,3,35,3,60,3],[0,0,0],["R Mateus Leme, 2631 B","(41) 3207-9797","","00708923000100","80530010"]],[313,4,37,[],0,[39,3,37,3,35,3,60,3],[0,0,0],["Rod Br-277 Curitiba-ponta Grossa, 1437","(41) 3207-9797","","00708923000100","82305100"]],[314,4,25,[],0,[9,3],[0,0,0],["R Capitao Souza Franco, 95","(41) 3015-6222 · (41) 3233-0222","","","80730420"]],[315,4,18,[],0,[4,3],[0,0,0],["Rua Padre Anchieta, 2348 Sala 1702 17 Andar","(41) 3402-0654 · (41) 9883-18051","","","80730001"]],[316,4,37,[],4,[56,3,21,3],[0,3,0],["R Professor Pedro Viriato Parigot de Souza, 600","(41) 3028-8545","","","81200100"]],[317,4,25,[],0,[28,3,29,3],[0,0,0],["R Francisco Rocha, 857","(41) 3026-0161","","","80420130"]],[318,4,0,[],0,[45,3],[0,0,0],["Alameda Doutor Muricy, 650 Conjunto 173","(41) 3042-7330 · (41) 9952-89800","","","80020040"]],[319,4,0,[],0,[0,3,1,3,17,3,32,3],[0,0,0],["Rua Joao Negrao, 380 Sala 101","(41) 3085-1671 · (41) 9996-81266","","73546384000116","80010200"]],[320,4,15,[],0,[71,3],[0,0,0],["R Itupava, 701","(41) 3024-3888","","03233603000121","80040000"]],[321,4,0,[],3,[9,3],[0,0,0],["Rua Emiliano Perneta, 680 2 And Cj 208 207","(41) 3225-4221 · (41) 9964-10444","","","80420080"]],[322,4,16,[],0,[71,3],[0,0,0],["Rua Portugal, 307 2 Andar","(41) 3014-7832 · (41) 3029-7472 · (41) 9928-67472","","05558245000152","80510280"]],[323,4,38,[],0,[0,3],[0,0,0],["R Alcides Munhoz, 320 Casa","(41) 3335-1877","","80181142000131","80810040"]],[324,4,25,[],3,[3,3],[0,0,0],["R Capitao Souza Franco, 881 Cj 31 -3o Andar","(41) 3335-0984 · (41) 3339-2681","","","80730420"]],[325,4,19,[],3,[36,3],[0,0,0],["Av 7 de Setembro, 4881 4 And","(41) 3243-5122","","","80240120"]],[326,4,45,[],3,[11,3],[0,0,0],["Rua Joao Tschannerl, 743","(41) 3338-6408 · (41) 3338-9362","","","80820010"]],[327,4,25,[],0,[7,3,8,3],[0,0,0],["R Desembargador Motta, 1499 Sala 405","(41) 3324-3133","","","80420164"]],[328,4,36,[],3,[5,3],[0,0,0],["R Padre Germano Mayer, 325 Null","(41) 3264-6055","","","80050270"]],[329,4,51,[],3,[5,3],[0,0,0],["R Neuraci Neves do Nascimento, 106","(41) 3273-6456","","","82020720"]],[330,4,25,[],0,[76,3],[0,0,0],["R Buenos Aires, 466 10 Andar Cj 101","(41) 3322-4188","","04412767000189","80250070"]],[331,4,33,[],3,[5,3],[0,0,0],["R Paraguassu, 853","(41) 3253-1813","","","80030270"]],[332,4,19,[],0,[18,3],[0,0,0],["Rua Acyr Guimaraes, 436 Cj 1303 13 Andar","(41) 3342-2694 · (41) 9990-70130","","","80240230"]],[333,4,18,[],3,[46,3],[0,0,0],["R Padre Anchieta, 1846 Cj 904","(41) 3336-7371","","","80730000"]],[334,4,0,[],0,[71,3,89,3,27,3],[0,3,0],["R Marechal Deodoro, 630 3 Andar Conj 301","(41) 3224-2748 · (41) 3233-3386","","","80010010"]],[335,4,28,[],3,[5,3],[0,0,0],["R Sen.xavier da Silva, 488 Conj. 903","(41) 3013-0220","","","80530060"]],[336,4,27,[],3,[5,3],[0,0,0],["R Miguel Brenner, 258 Casa","(41) 3024-3598","","","80440170"]],[337,4,55,[],0,[3,3,5,3,29,3],[0,0,0],["R Tijucas do Sul, 611","(41) 3349-3655","","","81900080"]],[338,4,0,[],2,[23,3],[0,3,0],["R Voluntarios da Patria, 233 2 And Cj 23","(41) 3082-0972","","40426900000110","80020000"]],[339,4,25,[],2,[23,3],[0,3,0],["Av Vicente Machado, 1150","(41) 3222-9560","","84956994000104","80420011"]],[339,4,25,[],2,[23,3],[0,3,0],["Avenida Vicente Machado, 1150","(41) 3222-9560","","84956994000104","80420011"]],[340,4,59,[],2,[23,3],[0,3,0],["Av Mal Floriano Peixoto, 3969","(41) 3332-5733","","76726769000153","80220001"]],[340,4,40,[],2,[23,3],[0,3,0],["R Pedro Gusso, 3334","(41) 3327-7641","","76726769000153","81315000"]],[340,4,29,[],2,[23,3],[0,3,0],["R Pedro Zagonel, 195","(41) 3327-1248","","76726769000153","81050110"]],[341,4,57,[],3,[29,3],[0,0,0],["Rod Br 116 Km 396, 4021","(41) 3315-1950 · (41) 3315-1951 · (41) 9965-10779","","","82590100"]],[342,4,25,[],0,[5,3,47,3,49,3,50,3,27,3,73,3,12,3,104,3],[0,0,0],["Avenida do Batel, 1230 Bloco 2 Conjunto 612","(41) 3092-6002 · (41) 9915-43098","","","80420907"]],[343,4,56,[],0,[7,3,8,3],[0,0,0],["R Presidente Rodrigo Otavio, 1976","(41) 3352-1029","","04237464000177","80040452"]],[344,4,60,[],0,[7,3,8,3,60,3],[0,0,0],["Av Vicente Machado, 2035","(41) 3029-4758 · (41) 3077-9967","","05642226000100","80440020"]],[345,4,35,[],1,[42,3,79,3,38,3,66,3,98,3],[[[6,6]],0,0],["R Dr Ovande do Amaral, 201","(41) 3361-5000","","76591049000128","81520060"]],[346,4,0,[],0,[14,3],[0,0,0],["Av Vicente Machado, 401","(41) 3039-069 · (41) 3243-6060 · (41) 3243-6069","","81665101000183","80420010"]],[347,4,38,[],0,[46,3,6,3],[0,0,0],["Av Candido Hartmann, 570 Conj.121 Andar3","(41) 9978-28133","","","80730440"]],[348,4,0,[],0,[15,3,71,3],[0,0,0],["R Emiliano Perneta, 860 Conj 1706 Andar 17","(41) 3276-5560","","","80420080"]],[349,4,32,[],3,[6,3],[0,0,0],["Av Desembargador Hugo Simas, 322","(41) 3338-7557","","","80520250"]],[349,4,0,[],3,[6,3],[0,0,0],["R Visconde do Rio Branco, 1335 Sl 43","(41) 3232-8929","","","80420210"]],[350,4,0,[],0,[72,3,35,3,10,3],[0,0,0],["R Voluntarios da Patria, 400 Cj 902 - 9° Andar","(41) 3224-5132","","01425761000158","80020000"]],[351,4,0,[],3,[7,3,8,3],[0,0,0],["Rua Alferes Poli, 405 Conjunto 701 7 Andar","(41) 3015-2930 · (41) 3078-4356 · (41) 3245-2100","","","80230090"]],[352,4,18,[],0,[69,3],[0,0,0],["Rua Padre Anchieta, 2050 Sala 1412 14 Andar","(41) 3779-2010","","","80730001"]],[353,4,61,[],0,[5,3],[0,0,0],["Avenida Winston Churchill, 2370 Conjunto 505","(41) 3018-1422 · (41) 3248-2800 · (41) 9967-29212","","82320698000197","81150050"]],[354,4,0,[],3,[5,3],[0,0,0],["Av Sete de Setembro, 4214 Sl 1509","(41) 3232-0276","","","80250210"]],[354,4,25,[],3,[5,3],[0,0,0],["Av Sete de Setembro, 4214 Sl 1509","(41) 3232-0276","","","80250085"]],[355,4,25,[],0,[4,3,90,3],[0,0,0],["R Bruno Filgueira, 369 Sl 1603 16 Andar","(41) 3018-9757 · (41) 4111-2030","","","80440220"]],[356,4,0,[],3,[6,3],[0,0,0],["Rua Visconde do Rio Branco, 1335 1 Andar Sala 14","(41) 3262-1770 · (41) 3388-7474 · (41) 9998-75176","","","80420210"]],[357,4,26,[],3,[7,3,8,3],[0,0,0],["Av Silva Jardim, 2042 Cj 201 202 2 A","(41) 3244-0141","","","80250200"]],[358,4,0,[],0,[9,3],[0,0,0],["Av Vicente Machado, 467 7 Andar","(41) 3022-0877 · (41) 3322-0877","","05684540000155","80420010"]],[359,4,0,[],3,[8,3],[0,0,0],["Pca Zacarias, 46 Cj 132","(41) 3324-6066","","","80020080"]],[360,4,0,[],0,[10,3],[0,0,0],["Rua da Paz, 195 Conj 316 3âº Andar","(41) 3040-0011 · (41) 9976-09034","","","80060160"]],[361,4,19,[],1,[59,3,68,3,66,3],[[[1,1]],0,0],["R Joao Antonio Xavier, 1001 Terreo","(41) 3330-8181","","75105510000122","80620360"]],[362,4,16,[],3,[7,3,8,3],[0,0,0],["R Doutor Roberto Barrozo, 1381 Apto 203","(41) 3338-9447 · (41) 9990-33541","","","80520070"]],[363,4,0,[],3,[71,3,57,3],[0,0,0],["Rua da Paz, 195 Sala 1 B","(41) 3077-4792","","","80060160"]],[364,4,0,[],0,[27,3],[0,0,0],["Rua Comendador Araujo, 143 Conjunto 21","(41) 3223-2400","","03784135000183","80420900"]],[365,4,0,[],0,[3,3],[0,0,0],["Praca General Osorio, 400 Conjunto 102 1 Andar","(41) 3224-0923","","76621085000197","80020010"]],[366,4,21,[],0,[9,3],[0,0,0],["Av Joao Gualberto, 1881 7 And Sala 701","(41) 3252-2609 · (41) 3359-8366","","","80030001"]],[367,4,0,[],0,[16,3,25,3,29,3],[0,0,0],["Avenida Vicente Machado, 320 7 And Cj 702","(41) 3233-6419 · (41) 9999-85861","","01685010000170","80420010"]],[368,4,0,[],3,[9,3],[0,0,0],["R Com Araujo, 143 15 And - Cj 152","(41) 3224-4040","","","80420900"]],[369,4,21,[],3,[3,3],[0,0,0],["R Deputado Mario de Barros, 900","(41) 3353-4433 · (41) 9997-64377","","","80530280"]],[370,4,26,[],3,[14,3],[0,0,0],["Avenida Iguacu, 1236 1 Andar Sala 116","(41) 3259-6670","","","80250190"]],[370,4,26,[],3,[14,3],[0,0,0],["Avenida Iguacu, 1236 Sl116","(41) 3259-6670","","","80250190"]],[371,4,25,[],0,[7,3,8,3],[0,0,0],["Av do Batel, 1230 Cj 307 Andar 3 Bl 1","(41) 3024-4494","","","80420090"]],[372,4,13,[],0,[7,3,8,3],[0,0,0],["Avenida Republica Argentina, 1336 Sala 404","(41) 3248-8288 · (41) 3352-3099 · (41) 9992-07313","","","80620010"]],[373,4,19,[],4,[19,3],[0,3,0],["Rua Joao Antonio Xavier, 1001 Anexo Mat Ctba","(41) 3332-9329 · (41) 9915-21127","","","80620360"]],[374,4,18,[],0,[40,3],[0,0,0],["Rua Padre Anchieta, 2050 Sala 1412","(41) 3339-2060 · (41) 9882-39854 · (41) 9968-34399","","","80730000"]],[375,4,26,[],0,[5,3,47,3,0,3],[0,0,0],["Rua Almirante Goncalves, 2111 Clinica","(41) 3069-2950 · (41) 4063-7124","","","80215150"]],[23,4,21,[],3,[71,3],[0,0,0],["R Manoel Eufrasio, 395","(41) 3252-4923 · (41) 3353-7734","","","80030440"]],[376,4,25,[],0,[3,3,37,3],[0,0,0],["Rua Desembargador Costa Carvalho, 90 Casa","(41) 3306-1500 · (41) 3306-6565","","02828601000112","80440210"]],[377,4,0,[],0,[4,3],[0,0,0],["Rua Padre Antonio, 360 Casa","(41) 3076-9209 · (41) 3342-9208","","77389252000189","80030100"]],[378,4,47,[],0,[1,3,32,3,33,3,2,3],[0,0,0],["Av Marechal Floriano Peixoto, 6349 - de 4547 A 6529 - L","(41) 9990-22321","","","81610000"]],[29,4,19,[],0,[0,3,1,3,32,3,33,3,2,3],[0,0,0],["Av Republica Argentina, 151 Loja 01","(41) 3077-6469","","","80240210"]],[379,4,25,[],3,[30,3],[0,0,0],["Avenida Visconde de Guarapuava, 4628 Sala 709 710","(41) 3121-4040 · (41) 9880-68000","","","80240010"]],[380,4,28,[],0,[10,3,2,3],[0,0,0],["Avenida Candido de Abreu, 526 Conj 911 09a","(41) 3256-0749 · (41) 3264-4764 · (41) 9990-10443","","","80530905"]],[381,4,18,[],0,[4,3],[0,0,0],["R Padre Anchieta, 2050 Sala 1412","(41) 3339-2060","","","80730000"]],[382,4,13,[],0,[28,2,29,2,58,2],[0,0,0],["Avenida Republica Argentina, 1505 4âº Andar Sala 414","(41) 3148-0166 · (41) 3233-4889 · (41) 9883-88354","","","80620010"]],[383,4,19,[],3,[7,3,8,3],[0,0,0],["Rua Santa Catarina, 220 Apto 161","(41) 9919-7622","","","80620100"]],[383,4,18,[],3,[7,3,8,3],[0,0,0],["Travessa Abilio Cesar Borges, 50","(41) 9919-7622","","","80730060"]],[384,4,25,[],1,[9,3,83,3],[[[9,9]],0,0],["R Bispo Dom Jose, 2711","(41) 3016-4030","","80764889000112","80440080"]],[385,4,0,[],0,[9,3],[0,0,0],["Rua Emiliano Perneta, 424 5 Andar D","(41) 3224-9400 · (41) 3224-9588 · (41) 9883-53536","","03776427000174","80420080"]],[386,4,38,[],1,[9,3,83,3],[[[9,9]],0,0],["R Candido Hartmann, 1712","(41) 3075-2020","","74062019000107","80710570"]],[387,4,0,[],0,[9,3],[0,0,0],["R Emiliano Perneta, 680 Cj 1401 A 1405","(41) 3224-4666","","78462231000104","80420080"]],[388,4,18,[],0,[7,3,8,3],[0,0,0],["R Padre Anchieta, 1846 Cj 802","(41) 3014-7735 · (41) 9996-7247","","","80730000"]],[389,4,26,[],0,[11,3],[0,0,0],["Av Iguacu, 1236 Sala 108","(41) 3259-6691","","","80250190"]],[390,4,37,[],0,[38,2],[0,0,0],["Rod Br-277, 1437","(41) 3013-8800","","","82305100"]],[391,4,0,[],0,[3,3,43,3],[0,0,0],["Av Vicente Machado, 467 2 And - Sl 23","(41) 3111-3000 · (41) 3222-8048","","01142130000121","80420010"]],[392,4,60,[],0,[10,3],[0,0,0],["Rua General Mario Tourinho, 1746 Sala 901 Andar 09","(41) 9999-05150","","","80740015"]],[393,4,15,[],0,[11,3],[0,0,0],["R Padre Germano Mayer, 2258","(41) 3019-9900","","","80040170"]],[394,4,25,[],0,[11,3],[0,0,0],["Av Sete de Setembro, 6496","(41) 3026-6959","","82248121000111","80240001"]],[395,4,0,[],0,[10,3],[0,0,0],["R Emiliano Perneta, 424 Cj 81 8 Andar","(41) 3015-9911 · (41) 3359-9916 · (41) 3359-9917","","04388639000147","80420080"]],[396,4,38,[],1,[10,3,84,3,66,3],[[[3,3]],0,0],["R Doutor Roberto Barrozo, 1379","(41) 3335-0302","","","80810090"]],[397,4,21,[],0,[10,3],[0,0,0],["Av Joao Gualberto, 1946 Hosp Sao Lucas C M-i","(41) 3250-5511 · (41) 3250-5577","","","80030001"]],[398,4,0,[],3,[37,3],[0,0,0],["Rua Joao Negrao, 731 23 Andar Sala 11","(41) 3035-6490","","","80010200"]],[399,4,25,[],3,[5,3],[0,0,0],["Av 7 de Setembro, 4698 2 Andar - Sl 207","(41) 3039-9446","","","80240000"]],[400,4,25,[],3,[7,3,8,3],[0,0,0],["Av Sete de Setembro, 5402","(41) 3342-0183","","","80240000"]],[401,4,29,[],0,[5,3,49,3],[0,0,0],["Av Republica Argentina, 4949","(41) 3029-8849","","","81050001"]],[402,4,25,[],0,[69,3],[0,0,0],["Av Sete de Setembro, 5402 5a Sala 54","(41) 3524-0333","","","80240000"]],[403,4,19,[],0,[7,3,8,3],[0,0,0],["R Goias, 70 Loja 502 Andar 4","(41) 3123-6601","","","80620060"]],[404,4,0,[],3,[9,3],[0,0,0],["Rua Comendador Araujo, 323 Sala 126","(41) 3223-9709 · (41) 9971-63362","","","80420903"]],[405,4,0,[],0,[27,3],[0,0,0],["R Visconde do Rio Branco, 1358 Sala 805/806","(41) 3039-1970 · (41) 3209-1548 · (41) 3209-1550","","","80420210"]],[406,4,32,[],2,[23,3],[0,3,0],["R Albano Reis, 685","(41) 3342-4996","","","80520530"]],[407,4,19,[],0,[13,3],[0,0,0],["Av Republica Argentina, 210 Conj 405 4 Andar","(41) 3010-7710","","","80240210"]],[408,4,29,[],1,[3,3,16,3,5,3,6,3,27,3,29,3,7,3,8,3,10,3,11,3,36,3,13,3,64,3,14,3,67,3],[[[4,4]],0,0],["R Pedro Zagonel, 17","(41) 3021-7654","","78944691000179","81050110"]],[409,4,61,[],0,[16,3,4,3,5,3,6,3,28,3,30,3,7,3,8,3,31,3,10,3,11,3,14,3],[0,0,0],["Av Winston Churchill, 1323","(41) 3247-2126","","00449069000105","81130000"]],[410,4,18,[],0,[26,3],[0,0,0],["Rua Padre Anchieta, 2285 Sala 503","(41) 3336-4625 · (41) 9926-70812","","","80730001"]],[411,4,0,[],0,[6,3],[0,0,0],["Rua Emiliano Perneta, 860 Conjunto 1501 1506","(41) 3042-2020 · (41) 9881-15330 · (41) 9965-01396","","","80420080"]],[412,4,56,[],0,[3,2,15,2,5,2,27,2,7,2,8,2,14,2],[0,0,0],["Rua Padre Germano Mayer, 1081 Fundos","(41) 3363-3059 · (41) 3363-4312 · (41) 9978-37705","","03552060000105","80040170"]],[413,4,25,[],0,[1,3,33,3],[0,0,0],["Avenida Sete de Setembro, 5388 Sala 1603 1604 2002","(41) 3010-7771 · (41) 9972-43739","","","80240000"]],[414,4,25,[],0,[25,3,30,3,14,3],[0,0,0],["Av Vicente Machado, 1200","(41) 3232-1262","","","80420011"]],[415,4,57,[],0,[0,3],[0,0,0],["Rod Br 116, 4021 Km 396","(41) 3315-1955","","01580876000117","82590100"]],[416,4,0,[],0,[9,3],[0,0,0],["R Comendador Araujo, 510 Cj 401 e 403","(41) 3232-1442","","","80420000"]],[417,4,37,[],4,[51,3],[0,3,0],["Rua Professor Pedro Viriato Parigot de Souza, 600","(41) 3079-9717 · (41) 3079-9718","","","81200100"]],[418,4,0,[],0,[43,3,10,3,64,3],[0,0,0],["R da Paz, 195 Conj 410","(41) 3027-2525","","","80060160"]],[419,4,0,[],0,[7,3,8,3],[0,0,0],["Avenida Visconde de Guarapuava, 2764 Andar 5 Sala 509","(41) 3598-4131 · (41) 9889-24737","","","80010100"]],[420,4,19,[],0,[28,3,29,3],[0,0,0],["R Bruno Filgueira, 369 12 Andar Conj 1203","(41) 3342-7755","","","80240220"]],[421,4,15,[],4,[56,3,21,3],[0,3,0],["Rua Almirante Tamandare, 1000","(41) 3362-9778 · (41) 3363-7834","","05598471000167","80045170"]],[422,4,32,[],0,[38,3],[0,0,0],["R Emilio de Menezes, 905","(41) 3012-2800","","","80520240"]],[423,4,18,[],0,[15,3,16,3,27,3],[0,0,0],["R Padre Anchieta, 2050 Sala 1412","(41) 3339-2060","","","80730000"]],[424,4,0,[],4,[20,3,19,3,56,3,21,3],[0,3,0],["R Comendador Araujo, 1030 Casa","(41) 3322-6623 · (41) 9191-2261","","75029660000102","80420000"]],[425,4,20,[],0,[0,3],[0,0,0],["R Lourival Portella Natel, 197","(41) 3077-6025","","77954436000144","80610250"]],[426,4,38,[],0,[46,3],[0,0,0],["R Visconde do Rio Branco, 8","(41) 3030-4488","","","80410000"]],[427,4,18,[],0,[10,3],[0,0,0],["Avenida Candido Hartmann, 570 Sala 253","(41) 3342-4997 · (41) 9917-48608","","00640149000135","80730440"]],[428,4,0,[],3,[7,3,8,3],[0,0,0],["R Alferes Poli, 405 Cj 302 7 Andar","(41) 3015-2930","","","80230090"]],[429,4,0,[],0,[3,3],[0,0,0],["R Mal Deodoro, 51 Cj 1205 12 And","(41) 3225-2159","","04007931000253","80020320"]],[430,4,19,[],3,[26,3,7,3,8,3],[0,0,0],["Rua Bruno Filgueira, 369 Conjunto 604","(41) 3149-5821 · (41) 9999-40966","","","80240220"]],[431,4,25,[],3,[7,3,8,3],[0,0,0],["Rua Francisco Rocha, 353 C 17 1 Andar","(41) 3343-4057","","","80420130"]],[432,4,28,[],3,[3,3],[0,0,0],["Rua Heitor Stockler de Franca, 396 Conjunto 1108","(41) 3254-2626","","","80030030"]],[433,4,0,[],3,[3,3],[0,0,0],["R Emiliano Perneta, 10 4 And - Cj 403","(41) 3014-6346","","","80010050"]],[434,4,18,[],0,[44,3,72,3],[0,0,0],["R Padre Anchieta, 1846 Sala 312","(41) 3092-1846 · (41) 9989-71846","","","80730000"]],[435,4,22,[],0,[14,3],[0,0,0],["Av Mal Floriano Peixoto, 10216 Sl 01","(41) 3286-6363","","03945471000160","81730000"]],[435,4,22,[],0,[14,3],[0,0,0],["Pca do Carmo, 59","(41) 3286-6363","","03945471000160","81650320"]],[435,4,0,[],0,[14,3],[0,0,0],["R Emiliano Perneta, 466 5o Andar Sl 507","(41) 3040-5752 · (41) 3223-7836","","03945471000160","80420080"]],[436,4,21,[],3,[7,3,8,3],[0,0,0],["R Sao Vicente, 55 Sl 02","(41) 3253-7370 · (41) 3254-2138","","","80030470"]],[437,4,0,[],1,[65,3,67,3],[[[7,7]],0,0],["Rui Barbosa, 694","(41) 3320-3500","","76613835000189","80010030"]],[438,4,25,[],0,[3,3,34,3,15,3,16,3,40,3,4,3,5,3,43,3,44,3,46,3,22,3,47,3,105,3,72,3,6,3,50,3,23,3,24,3,53,3,19,3,71,3,57,3,35,3,27,3,28,3,29,3,30,3,7,3,8,3,60,3,61,3,31,3,10,3,11,3,36,3,13,3,63,3,64,3,14,3],[0,3,0],["Av do Batel, 1898 Sl 02 Andar 02 Cond","(41) 3312-3000","","","80420090"]],[439,4,21,[],3,[5,3],[0,0,0],["Rua Bom Jesus, 212 805","(41) 3264-9976 · (41) 9913-39976","","","80035010"]],[440,4,19,[],0,[3,3,34,3],[0,0,0],["Rua Carneiro Lobo, 468 Conjunto 1201","(41) 3077-5060","","","80240240"]],[441,4,26,[],0,[6,3],[0,0,0],["Av Iguacu, 1236","(41) 3259-6639 · (41) 3259-6640 · (41) 3359-6641","","","80250190"]],[442,4,0,[],3,[4,3],[0,0,0],["Rua Pedro Ivo, 706","(41) 3015-6769 · (41) 9911-11720","","","80010020"]],[443,4,38,[],4,[20,3,19,3,56,3,21,3],[0,3,0],["R Brigadeiro Franco, 122","(41) 3250-3000","","76689835000596","80430210"]],[444,4,55,[],3,[3,3,5,3],[0,0,0],["R Sao Jose dos Pinhais, 376","(41) 3349-9338","","","81910010"]],[445,4,19,[],3,[9,3],[0,0,0],["Av Iguacu, 2820 Sala 803","(41) 3286-6363 · (41) 3342-2539 · (41) 3343-0534","","","80240031"]],[445,4,22,[],3,[9,3],[0,0,0],["Pca do Carmo, 59","(41) 3286-6363","","","81650010"]],[446,4,60,[],0,[4,3],[0,0,0],["Rua General Mario Tourinho, 1733 Sala 1004 Andar 10 C","(41) 3018-5528 · (41) 9918-93026","","","80740015"]],[447,4,26,[],0,[11,3],[0,0,0],["Av Iguacu, 1236 Andar 1 Sala 114","(41) 9959-56304","","","80250190"]],[448,4,34,[],0,[72,3,9,3],[0,0,0],["Avenida Anita Garibaldi, 1121 1795 e 1779","(41) 3039-8878 · (41) 9991-11618","","","80540180"]],[449,4,25,[],0,[22,3],[0,0,0],["R Buenos Aires, 792","(41) 3311-9440","","","80250070"]],[450,4,0,[],3,[27,3],[0,0,0],["R da Paz, 195 Sl 516","(41) 3362-1578 · (41) 3362-3231 · (41) 9997-41191","","","80060160"]],[451,4,25,[],3,[7,3,8,3],[0,0,0],["Av do Batel, 1230 Bl B Sl 511 5 A","(41) 3342-8528","","","80420090"]],[452,4,18,[],0,[93,3],[0,0,0],["Rua Gastao Camara, 242","(41) 3024-7070 · (41) 9883-74380","","","80730300"]],[453,4,19,[],3,[4,3],[0,0,0],["R Bruno Filgueira, 369 Cj 603","(41) 3242-0463","","","80240220"]],[454,4,0,[],3,[3,3],[0,0,0],["Rua Ebano Pereira, 44 10 Andar Conj 1005","(41) 3019-1405 · (41) 3322-8577","","","80410240"]],[455,4,25,[],0,[1,3,17,3],[0,0,0],["R Buenos Aires, 441 Cj 24","(41) 9991-44102","","","80250070"]],[456,4,19,[],0,[45,3],[0,0,0],["Avenida Presidente Getulio Vargas, 2932 Conj 1204 Andar 12","(41) 3024-2786 · (41) 9983-86208","","","80240040"]],[457,4,38,[],4,[19,3],[0,3,0],["Rua Professora Rosa Saporski, 120 Terreo","(41) 3335-5432 · (41) 3336-5053 · (41) 9853-43585","","01545395000170","80810120"]],[458,4,18,[],0,[6,3],[0,0,0],["Alameda Augusto Stellfeld, 2088","(41) 3335-8388 · (41) 3336-8466 · (41) 9881-58403","","","80730150"]],[459,4,62,[],1,[87,3,88,3,66,3],[[[6,6]],0,0],["R Eleonora Muricy Novaes, 171","(41) 3271-5855","","","80210131"]],[460,4,26,[],1,[87,3,88,3,66,3],[[[6,6]],0,0],["Av Marechal Floriano Peixoto, 2509","(41) 3271-5854","","","80220000"]],[461,4,19,[],0,[5,3],[0,0,0],["R Joao Antonio Xavier, 1001","(41) 3330-8181","","03611539000175","80620360"]],[462,4,20,[],0,[22,3],[0,0,0],["R Republica Argentina, 3525","(41) 3345-1626","","76684000000110","80610260"]],[463,4,16,[],0,[14,2],[0,0,0],["R Portugal, 307 Sl 1 And Tr Bloco A","(41) 3074-7474","","02330246000157","80510280"]],[464,4,13,[],0,[14,3],[0,0,0],["Avenida Republica Argentina, 1237 Sl 1006 A 1008","(41) 3024-8880 · (41) 3026-0022 · (41) 3180-0794","","73505984000136","80620010"]],[465,4,25,[],0,[14,3],[0,0,0],["Rua Alferes Angelo Sampaio, 1896 Hospital Vita Batel","(41) 3072-6272 · (41) 9916-39933","","80182736000167","80420160"]],[466,4,37,[],0,[14,3],[0,0,0],["Rua Professor Pedro Viriato Parigot de Souza, 600 Piso L3 Sala 3021","(41) 3618-9330 · (41) 9879-89125","","","81200100"]],[467,4,13,[],0,[1,3,17,3],[0,0,0],["Avenida Republica Argentina, 1336 Conj 1813 And 18","(41) 3016-3451 · (41) 9963-89090","","","80620010"]],[468,4,21,[],0,[27,3],[0,0,0],["Rua Sao Vicente, 55 Casa","(41) 3253-7370 · (41) 3254-2138 · (41) 9922-21412","","","80030470"]],[469,4,0,[],2,[23,3],[0,3,0],["Av Vicente Machado, 401","(41) 3224-6862","","03771874000130","80420010"]],[470,4,21,[],0,[45,3],[0,0,0],["Avenida Joao Gualberto, 1881 5âº Andar Sala 501","(41) 3039-7204 · (41) 9912-52550","","","80030001"]],[471,4,0,[],0,[50,3,0,3,1,3,17,3,32,3,18,3,73,3,2,3],[0,0,0],["R Visconde do Rio Branco, 1335 Cj 92/93","(41) 3223-1107","","","80420210"]],[472,4,32,[],0,[4,3],[0,0,0],["Av Desembargador Hugo Simas, 333","(41) 3016-0505 · (41) 3016-0808","","","80520250"]],[473,4,33,[],4,[20,3,19,3,56,3],[0,3,0],["Av Joao Gualberto, 765","(41) 3352-3033 · (41) 3596-4570","","76706589000100","80030000"]],[474,4,25,[],0,[5,3],[0,0,0],["Av Sete de Setembro, 4698 8 And Cj 808","(41) 3013-6023","","","80240000"]],[475,4,14,[],3,[3,3],[0,0,0],["Av Afonso Camargo, 3653","(42) 3266-1858 · (41) 3366-5143","","","82800240"]],[476,4,18,[],0,[5,3],[0,0,0],["R Padre Anchieta, 1846 3 A Sl 309","(41) 3016-2752","","","80730000"]],[477,4,25,[],0,[16,3,28,3,29,3],[0,0,0],["Avenida Visconde de Guarapuava, 4628 3 Andar Sala 312","(41) 3352-2829 · (41) 9968-68101 · (41) 9997-25887","","","80240010"]],[478,4,28,[],3,[7,3,8,3],[0,0,0],["Av Avenida Candido de Abreu 526, 526 Sala 803","(41) 3224-9668","","","80530905"]],[479,4,25,[],4,[20,3,19,3,56,3,21,3],[0,3,0],["Avenida do Batel, 1541","(41) 3342-0666","","76717545000185","80420090"]],[480,4,23,[],3,[5,3],[0,0,0],["R Cel Amazonas Marcondes, 262","(41) 3252-1023","","","80035230"]],[481,4,25,[],0,[8,3],[0,0,0],["Av Sete de Setembro, 4923 Conj 1001","(41) 3243-0327","","","80240000"]],[482,5,63,[],0,[0,3,1,3,18,3,2,3],[0,0,0],["Rua Francisco Claudino dos Santos, 216","(41) 3070-0139 · (41) 3539-0107 · (41) 9978-25242","","00113553000150","83833056"]],[483,5,64,[],0,[1,3,32,3,33,3,2,3],[0,0,0],["R Franca, 187","(41) 3624-2044","","","83820029"]],[484,5,64,[],0,[3,3,5,3,6,3,51,3,20,3,19,3,27,3,7,3,8,3,9,3,11,3,14,3],[0,3,0],["Av das Araucarias, 67","(41) 3060-9100","","","83820071"]],[485,5,63,[],0,[3,3,5,3,51,3,25,3,1,3,37,3,55,3,20,3,19,3,27,3,29,3,7,3,8,3,9,3,2,3,11,3,13,3],[0,3,0],["R Ephigenio Pereira da Cruz, 1396","(41) 3614-2700","","01015553000180","83833018"]],[445,6,0,[],3,[9,3],[0,0,0],["Av Manoel Pedro, 2158","(41) 3622-0709","","","83750000"]],[486,7,0,[],0,[25,3,28,3,30,3],[0,0,0],["Rod Joao Leopoldo Jacomel - Rodovia das Aguas, 11558","(41) 3114-8822","","","83320382"]],[487,7,65,[],0,[1,3,32,3,33,3,2,3],[0,0,0],["R Uniflor, 940","(43) 3373-8300","","","83324227"]],[488,7,0,[],0,[20,3,11,3,12,3],[0,3,0],["Rodovia Deputado Joao Leopoldo Jacomel, 11890","(41) 3033-3332 · (41) 3033-3333 · (41) 9976-50348","","01201880000127","83320382"]],[489,7,65,[],2,[24,3],[0,3,0],["Av Jacob Macanhan, 569","(41) 4004-0103","","","83324192"]],[490,7,0,[],0,[0,3,1,3,18,3],[0,0,0],["R Sete de Setembro, 246","(41) 3551-1730 · (41) 3551-1739 · (41) 9981-06860","","","83323270"]],[491,7,66,[],1,[100,3,101,3,94,3,78,3,80,3,82,3,8,3,59,3,102,3,83,3,84,3,74,3,85,3,86,3],[[[2,2]],0,0],["Av Jacob Macanhan, 93 - de 2794 Ao Fim - L","(41) 3661-1600","","","83326000"]],[492,7,0,[],2,[23,3],[0,3,0],["R Vinte e Cinco de Agosto, 518","(41) 3667-4195","","68753813000196","83323010"]],[341,7,0,[],3,[29,3],[0,0,0],["Av Camilo de Lellis, 364","(41) 3667-3064","","","83323000"]],[493,7,57,[],0,[3,3,29,3,31,3],[0,0,0],["Rua Isaac Victor Pereira, 14 Conjunto Reis","(41) 3056-6529","","","83326200"]],[494,7,0,[],4,[55,3,20,3,19,3,56,3,21,3],[0,3,0],["R Bolsao dos Papagaios, 48","(41) 3033-9999","","","83320360"]],[433,7,0,[],3,[3,3],[0,0,0],["R Asia, 38","(41) 3667-4999","","","83323350"]],[495,8,67,[],1,[45,3,87,3,88,3,66,3],[[[6,6]],0,0],["R Jose Erasmo Storniolo, 648","(41) 4042-6319","","","83304450"]],[496,8,68,[],0,[3,3,0,3,1,3,32,3,18,3,2,3],[0,0,0],["Tv Deodoro, 29","(41) 3034-2651","","85477818000152","83301505"]],[497,8,0,[],0,[3,3,4,3,5,3,6,3,18,3,27,3,28,3,30,3,7,3,8,3,9,3,10,3,11,3],[0,0,0],["R Eliseu Jose Hipolito, 148","(41) 3034-3535","","","83301610"]],[498,9,69,[],0,[3,3,0,3,2,3],[0,0,0],["Av Sao Sebastiao, 000233 Sl 04","(41) 3672-3599","","04064860000140","83420000"]],[499,9,70,[],0,[5,3,0,3,2,3],[0,0,0],["R Isaque Rodrigues da Silva, 28","(41) 3672-2700 · (41) 3672-3422 · (41) 3672-4670","","","83420000"]],[33,10,71,[],2,[23,3],[0,3,0],["Alcidio Viana, 837 Sl 101","(41) 4020-8000","","","83005560"]],[500,10,71,[],3,[27,3],[0,0,0],["Rua Alcidio Viana, 837 8 Andar Sala 808","(41) 3081-4670 · (41) 3282-0270 · (41) 9914-53272","","","83005560"]],[501,10,72,[],0,[45,3],[0,0,0],["Av das Americas, 737","(41) 3282-4233 · (41) 3383-3155","","03988908000143","83035100"]],[502,10,71,[],3,[7,3,8,3],[0,0,0],["Rua Paulino de Siqueira Cortes, 2348 Casa","(41) 9842-43431","","","83005030"]],[503,10,71,[],3,[6,3],[0,0,0],["Rua Alcidio Viana, 837 Conjunto 409","(41) 3035-3877 · (41) 3283-3044 · (41) 9918-83044","","","83005560"]],[504,10,0,[],0,[33,3],[0,0,0],["R Colombo, 1782","(41) 8008-7801","","","83005400"]],[505,10,73,[],0,[1,3,32,3,33,3,2,3],[0,0,0],["Avenida Rui Barbosa, 5506 Andar 1","(41) 3534-4365","","","83045350"]],[506,10,71,[],0,[43,3,6,3,51,3],[0,3,0],["Rua Joao Angelo Cordeiro, 500 Sala 18","(41) 3282-0105 · (41) 9954-1363","","","83005570"]],[507,10,0,[],4,[55,3,20,3,19,3,56,3,21,3],[0,3,0],["R Isabel A. Redentora, 1434 Sala 202 A 212 Piso","(41) 3362-3111","","","83005010"]],[508,10,1,[],0,[1,3,32,3,33,3,2,3],[0,0,0],["Rua Doutor Murici, 5411","(41) 9886-44802","","","83015290"]],[509,10,71,[],4,[55,3,20,3,19,3,56,3],[0,3,0],["R Alcidio Viana, 837","(41) 3888-3625","","","83005560"]],[510,10,74,[],0,[1,3,32,3,2,3],[0,0,0],["R Nelson Basso, 50","(41) 3092-6366","","","83025160"]],[511,10,71,[],3,[5,3],[0,0,0],["Rua Joao Angelo Cordeiro, 500 2 Andar Sala 24","(41) 3035-1945 · (41) 9977-72223","","","83005570"]],[512,10,0,[],0,[3,3,16,3,5,3,6,3,0,3,1,3,17,3,18,3,19,3,27,3,7,3,8,3,10,3,11,3,14,3],[0,3,0],["R Voluntarios da Patria, 300","(41) 3340-3030","","","83005020"]],[513,10,71,[],0,[3,3,15,3,6,3,51,3,1,3,18,3,53,3,37,3],[0,3,0],["R Alcidio Viana, 942","(41) 3035-6490","","","83005560"]],[514,10,71,[],0,[5,3],[0,0,0],["R Joao Angelo Cordeiro, 500 Sala 34 3° Andar","(41) 3035-3551","","","83005570"]],[515,10,71,[],0,[61,3,11,3],[0,0,0],["R Alcidio Viana, 837","(41) 3282-4150","","00336325000140","83005560"]],[516,10,71,[],0,[5,3,18,3,10,3,2,3],[0,0,0],["Rua Paulino de Siqueira Cortes, 2175","(41) 3035-1395 · (41) 3147-9090","","04111799000144","83005030"]],[517,10,71,[],0,[7,3,8,3],[0,0,0],["Rua Alcidio Viana, 837 8 Andar Sala 801","(41) 3282-8498 · (41) 3283-3887 · (41) 9922-92870","","04914383000164","83005560"]],[518,10,71,[],0,[5,3],[0,0,0],["R Joao Angelo Cordeiro, 500 4 And - Sl 41","(41) 3283-5810","","","83005570"]],[519,10,71,[],0,[50,3],[0,0,0],["R Joao Angelo Cordeiro, 500 Sala 34","(41) 3035-3551","","","83005570"]],[520,10,71,[],0,[11,3,12,3],[0,0,0],["R Joao Angelo Cordeiro, 794","(41) 3282-3824","","01663974000118","83005570"]],[521,10,71,[],0,[9,3],[0,0,0],["Rua Joao Angelo Cordeiro, 770 Sala 01","(41) 3383-1629 · (41) 9971-1820","","","83005570"]],[522,10,71,[],0,[9,2],[0,0,0],["R Alcidio Viana, 1001 Sala 503","(41) 3146-1566","","","83005560"]],[523,10,0,[],0,[9,3],[0,0,0],["R Marcelino Nogueira, 580 4 And Sl 19","(41) 3283-2966","","84879097000144","83005370"]],[524,10,0,[],0,[14,3],[0,0,0],["Rua Voluntarios da Patria, 1380","(41) 3282-2212","","01939882000118","83005020"]],[525,10,71,[],4,[21,3],[0,3,0],["R Alcidio Viana, 837 Terreo","(41) 3888-3615","","","83005560"]],[526,10,0,[],0,[0,3,1,3,18,3],[0,0,0],["R Padre Bittencourt, 165","(41) 3035-4955 · (41) 3058-4727","","","83030490"]],[527,10,71,[],0,[3,3],[0,0,0],["Rua Joao Angelo Cordeiro, 500","(41) 3634-2207","","","83005570"]],[528,10,71,[],0,[3,3,7,3,8,3],[0,0,0],["Rua Alcidio Viana, 1001","(41) 3282-9990 · (41) 3283-4587","","","83005560"]],[529,10,0,[],0,[9,3],[0,0,0],["R Voluntarios da Patria, 1046","(41) 3035-2544 · (41) 9914-68024","","","83005020"]],[530,10,71,[],0,[7,3,8,3],[0,0,0],["Rua Alcidio Viana, 837 Sala 810","(41) 3403-6633","","","83005560"]],[531,10,71,[],0,[7,2,8,2],[0,0,0],["Rua Alcidio Viana, 837 Sala 810","(41) 3022-1604 · (41) 9911-40449","","","83005560"]],[532,10,0,[],3,[76,3,26,3],[0,0,0],["R Mendes Leitao, 2899","(41) 3035-5321 · (41) 9884-88433","","","83005150"]],[533,10,71,[],0,[72,3,27,3],[0,0,0],["Rua Alcidio Viana, 837 Sala 201","(41) 3283-2372 · (41) 3283-3819","","04547094000174","83005560"]],[534,10,0,[],0,[5,3],[0,0,0],["R Doutor Marcelino Nogueira, 580 Sala 03","(41) 9989-1105","","","83005370"]],[535,10,0,[],3,[7,3,8,3],[0,0,0],["Trav Brasil, 11","(41) 3382-1155","","","83005330"]],[536,10,0,[],4,[20,3,19,3,56,3],[0,3,0],["R Quinze de Novembro, 2316","(41) 3146-0002","","","83005000"]],[537,10,71,[],0,[1,3,17,3,18,3],[0,0,0],["Rua Alcidio Viana, 800 Sala 03,04,12,24,31","(41) 4106-4120 · (41) 4111-1388","","","83005560"]],[538,10,71,[],0,[7,3,8,3],[0,0,0],["R Joao Angelo Cordeiro, 500 Sl 16","(41) 3282-2048","","05396573000108","83005570"]],[539,10,71,[],0,[0,3],[0,0,0],["Rua Joao Angelo Cordeiro, 500 Sala 48","(41) 3282-8977 · (41) 9889-07632 · (41) 9910-26828","","73893802000141","83005570"]],[540,10,0,[],0,[0,3],[0,0,0],["Av Rui Barbosa, 5734","(41) 3282-2622","","00374614000133","83005340"]],[540,10,71,[],0,[0,3],[0,0,0],["R Joao Angelo Cordeiro, 500 Sl 31 e 32","(41) 3035-4201 · (41) 3282-4204","","00374614000133","83005570"]],[541,10,71,[],3,[8,3],[0,0,0],["R Joao Angelo Cordeiro, 770","(41) 3382-1251","","","83005570"]],[7,10,75,[],2,[24,3],[0,3,0],["Av Rui Barbosa, 5231","(41) 4004-0103","","","83065260"]],[542,10,71,[],0,[27,3,10,3],[0,0,0],["R Alcidio Viana, 916 Sala 705","(41) 3146-5435","","","83005560"]],[543,10,71,[],0,[16,3,26,3],[0,0,0],["Rua Joao Angelo Cordeiro, 500 Sala 25","(41) 3035-1482 · (41) 9874-85446","","05026020000155","83005570"]],[544,10,0,[],0,[9,3],[0,0,0],["R Izabel A Redentora, 2356","(41) 3282-1343 · (41) 3383-8897 · (41) 9875-29724","","","83005010"]],[545,10,71,[],0,[16,3,25,3,28,3,29,3],[0,0,0],["R Joao Angelo Cordeiro, 572","(41) 3035-5922 · (41) 3382-1761","","82590076000189","83005030"]],[546,10,71,[],0,[11,3],[0,0,0],["Rua Alcidio Viana, 837 Sala 810","(41) 3282-5016 · (41) 9998-15587","","68620285000105","83005560"]],[547,10,71,[],3,[5,3],[0,0,0],["R Joao Angelo Cordeiro, 500 Sl 42","(41) 3081-3606 · (41) 3282-0063","","","83005570"]],[548,10,71,[],0,[15,3],[0,0,0],["Rua Alcidio Viana, 942 Sala 06","(41) 3035-6400","","","83005560"]],[549,10,71,[],3,[3,3,46,3],[0,0,0],["R Joao Angelo Cordeiro, 500 3 And - Sl 36","(41) 3035-1622","","","83005570"]],[342,10,0,[],0,[69,3,5,3,49,3,27,3,73,3,12,3,104,3],[0,0,0],["R Izabel A Redentora, 2356 Sala 107 - 10o Andar","(41) 3283-5473","","","83005010"]],[550,10,71,[],0,[7,3,8,3],[0,0,0],["Rua Joao Angelo Cordeiro, 500 Sala 22","(41) 3282-4012 · (41) 3383-8636 · (41) 9851-17064","","","83005570"]],[551,10,71,[],1,[100,3,42,3,78,3,95,3,81,3,82,3,59,3,102,3,84,3,74,3,62,3,85,3,86,3,65,3,66,3,67,3],[[[1,1]],0,0],["R Joao Angelo Cordeiro, 480","(41) 3381-8100 · (41) 3381-8103 · (41) 3381-8112","","81306136000126","83005570"]],[552,10,71,[],0,[18,3],[0,0,0],["Rua Alcidio Viana, 837B Ed Galeno Sl 508","(41) 3282-3665","","","83005560"]],[398,10,71,[],3,[37,3],[0,0,0],["Rua Alcidio Viana, 000942","(41) 3035-6400 · (41) 3035-6490","","","83005560"]],[399,10,0,[],3,[5,3],[0,0,0],["R Joao Angelo Cordeiro, 500 2 And","(41) 3283-5212","","","83005000"]],[553,10,71,[],0,[16,3,25,3,30,3],[0,0,0],["Rua Alcidio Viana, 837 Sala 610","(41) 3035-1174 · (41) 9991-99450 · (41) 9991-99454","","05098502000110","83005560"]],[554,10,71,[],0,[31,3],[0,0,0],["R Alcidio Viana, 837 Sala 510 5 Andar","(41) 3382-5935 · (41) 9928-54515","","","83005560"]],[555,10,71,[],3,[29,3],[0,0,0],["Rua Joao Angelo Cordeiro, 500 Sala 15","(41) 3324-9071 · (41) 3382-7511 · (41) 9998-93087","","","83005570"]],[556,10,0,[],3,[15,3],[0,0,0],["Rua Verissimo Marques, 1351 Sala 01","(41) 9924-64133","","","83005410"]],[557,10,71,[],0,[5,3],[0,0,0],["R Joao Angelo Cordeiro, 500 Sl 44","(41) 3282-5580","","","83005570"]]],"consulta":{"0":"25/09/2026","1":"25/09/2026","2":"25/09/2026","3":"25/09/2026","4":"25/09/2026","5":"25/09/2026","6":"25/09/2026","7":"25/09/2026","8":"25/09/2026","9":"25/09/2026","10":"25/09/2026"}};
+
+/* ---------------------------------------------------------------- base */
+/* Os 5 produtos do arquivo viram 3 na tela: Efetivo Plus e Top Nacional sao a
+   mesma rede em duas acomodacoes. Os 5 bits continuam guardados — quando as duas
+   acomodacoes divergem, a celula diz "só enf" ou "só apto" em vez de "sim". */
+const PRODUTOS = DADOS.planos;
+const GRUPOS = DADOS.grupos || PRODUTOS.map((p, i) => ({rot: p, bits: [i], sub: null}));
+const PLANOS = GRUPOS.map(g => g.rot), NP = GRUPOS.length;
+const CURTOS = PLANOS;
+const bitsDe = g => g.bits.reduce((a, b) => a | (1 << b), 0);
+const MASCARA = GRUPOS.map(bitsDe);
+/* "sim" quando todas as acomodacoes atendem; senao qual delas */
+function marca(mask, i){
+  const g = GRUPOS[i], on = g.bits.filter(b => (mask >> b) & 1);
+  if(!on.length) return '';
+  if(on.length === g.bits.length || !g.sub) return 'sim';
+  return g.sub[g.bits.indexOf(on[0])];
+}
+const UF = DADOS.uf, CID = DADOS.cid, BAI = DADOS.bai, ESP = DADOS.esp, NOM = DADOS.nom, PR = DADOS.pr;
+const SERV = DADOS.serv, HREF = DADOS.hospRef || {}, LREF = DADOS.labRef || {};
+/* cidades que vem inteiras da consulta oficial do site da SulAmérica: {cidade: data} */
+const CONSULTA = DADOS.consulta || {};
+const PORTAL = 'https://portal.sulamericaseguros.com.br/rede-credenciada';
+const daConsulta = c => c >= 0 && CONSULTA[c] !== undefined;
+const FORA = new Set((DADOS.espFora || []).filter(x => x >= 0));
+const MUN = DADOS.mun || [], REG = DADOS.reg || [];
+const TIPOS = ['Clínica e consultório','Hospital','Laboratório','Médico','Centro de imagem'];
+const CURTO_TIPO = ['Clínica','Hospital','Laboratório','Médico','Imagem'];
+const SECAO = ['Clínicas e consultórios','Hospitais','Laboratórios de análises','Médicos',
+               'Centros de imagem'];
+const SERVICO_NOME = {'H':'Hospital','P.S':'Pronto Socorro','M':'Maternidade',
+                      'A':'Ambulatório','HDIA':'Hospital Dia'};
+
+const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'').toUpperCase();
+const NOMN = NOM.map(norm), ESPN = ESP.map(norm), BAIN = BAI.map(norm);
+const CIDN = CID.map(c => norm(c[1]) + ' ' + UF[c[0]]);
+const MUNN = MUN.map(m => norm(m[0]) + ' ' + UF[m[1]]);
+const cod10 = n => String(n).padStart(10,'0');
+const codigos = a => a.map(cod10).join(' · ');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const $ = id => document.getElementById(id);
+const guarda = (k,v) => { try{ localStorage.setItem('mzb_'+k, v); }catch(e){} };
+const lembra = k => { try{ return localStorage.getItem('mzb_'+k); }catch(e){ return null; } };
+
+/* ------------------------------------------------------- dados do corretor
+   Quem gera o PDF assina o PDF. O site e compartilhado, entao o nome nao pode
+   ficar fixo no arquivo: cada corretor preenche uma vez e fica guardado no
+   navegador dele. O padrao vem do gerador (DADOS.corretor) e so traz a marca. */
+const CAMPOS_CORR = ['corretora', 'nome', 'fone', 'email'];
+const ID_CORR = {corretora:'kCorretora', nome:'kNome', fone:'kFone', email:'kEmail'};
+const CORR = Object.assign({corretora:'Mazza Broker', nome:'', fone:'', email:''},
+                           DADOS.corretor || {});
+for(const k of CAMPOS_CORR){ const v = lembra('corr_'+k); if(v !== null) CORR[k] = v; }
+const temCorretor = () => !!(CORR.nome || CORR.fone || CORR.email);
+const corretora = () => CORR.corretora || 'Mazza Broker';
+/* corretora em negrito, depois so o que estiver preenchido */
+function assinatura(sep){
+  const p = CORR.corretora ? ['<b>' + esc(CORR.corretora) + '</b>'] : [];
+  for(const k of ['nome', 'fone', 'email']) if(CORR[k]) p.push(esc(CORR[k]));
+  return p.join(sep || ' · ');
+}
+const servicoLegivel = s => s.split('/').map(x => SERVICO_NOME[x] || x).join(' · ');
+
+/* faixas de cada cidade — PR está ordenado por cidade */
+const cIni = new Int32Array(CID.length).fill(-1), cFim = new Int32Array(CID.length);
+const cQt = new Int32Array(CID.length);
+for(let i=0;i<PR.length;i++){ const c=PR[i][1]; if(cIni[c]<0) cIni[c]=i; cFim[c]=i+1; cQt[c]++; }
+
+/* municípios sem rede -> onde procurar perto (regiões do IBGE) */
+const porImed = new Map(), porInter = new Map(), porUf = new Map();
+for(let i=0;i<MUN.length;i++){
+  const m = MUN[i];
+  if(m[4] < 0) continue;
+  for(const par of [[porImed,m[2]],[porInter,m[3]],[porUf,m[1]]]){
+    if(!par[0].has(par[1])) par[0].set(par[1], []);
+    par[0].get(par[1]).push(i);
+  }
+}
+
+/* ---------------------------------------------------------------- estado */
+const st = {cid:-1, mun:-1, plano:-1, esp:-1, bai:-1, tipo:-1, q:'',
+            planos:new Set(), modo:'qualquer'};
+/* bits exigidos pela selecao de produtos; 0 = sem recorte */
+function bitsPlano(){
+  if(!st.planos.size) return 0;
+  let b = 0;
+  for(const i of st.planos) b |= MASCARA[i];
+  return b;
+}
+/* no modo "todos" o prestador tem de atender cada produto marcado */
+function passaPlano(m){
+  if(!st.planos.size) return true;
+  if(st.modo === 'todos'){
+    for(const i of st.planos) if(!(m & MASCARA[i])) return false;
+    return true;
+  }
+  return !!(m & bitsPlano());
+}
+let achados = [], mostrados = 0;
+const PASSO = 120;
+
+/* ---------------------------------------------------------------- autocomplete */
+function autocomplete(inp, box, fonte, escolher){
+  let itens = [], sel = -1;
+  const campo = inp.closest('.campo');
+  const fechar = () => { box.classList.remove('on'); sel = -1; };
+  const pintar = (txt,q) => {
+    if(!q) return esc(txt);
+    const i = norm(txt).indexOf(q);
+    if(i<0) return esc(txt);
+    return esc(txt.slice(0,i))+'<mark>'+esc(txt.slice(i,i+q.length))+'</mark>'+esc(txt.slice(i+q.length));
+  };
+  const abrir = () => {
+    const q = norm(inp.value.trim());
+    itens = fonte(q).slice(0,60);
+    if(!itens.length){
+      if(q && inp.id === 'fCid'){
+        box.innerHTML = '<div class="aviso-ac">Nenhuma cidade com esse nome tem rede nas listas ' +
+          'oficiais da SulAmérica. As listas não cobrem todos os municípios — procure a cidade ' +
+          'maior mais próxima.</div>';
+        box.classList.add('on'); sel = -1; return;
+      }
+      fechar(); return;
+    }
+    box.innerHTML = itens.map((it,i) =>
+      '<div class="op" role="option" aria-selected="false" data-i="'+i+'"><span>'+pintar(it.rot,q)+
+      '</span><span class="qt'+(it.mun!==undefined?' zero':'')+'">'+esc(it.qt)+'</span></div>').join('');
+    box.classList.add('on'); sel = -1;
+  };
+  inp.addEventListener('input', () => { campo.classList.toggle('tem', !!inp.value); abrir(); });
+  inp.addEventListener('focus', abrir);
+  inp.addEventListener('blur', () => setTimeout(fechar,180));
+  inp.addEventListener('keydown', e => {
+    if(!box.classList.contains('on')){ if(e.key==='ArrowDown') abrir(); return; }
+    const ops = box.querySelectorAll('.op'), n = ops.length;
+    if(!n) return;
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){
+      e.preventDefault();
+      sel = (sel + (e.key==='ArrowDown'?1:n-1) + n) % n;
+      ops.forEach((d,i)=>d.setAttribute('aria-selected', i===sel));
+      ops[sel].scrollIntoView({block:'nearest'});
+    } else if(e.key==='Enter'){
+      e.preventDefault();
+      if(sel<0 && itens.length===1) sel = 0;
+      if(sel>=0){ escolher(itens[sel]); fechar(); }
+    } else if(e.key==='Escape'){ fechar(); inp.blur(); }
+  });
+  box.addEventListener('mousedown', e => {
+    const d = e.target.closest('[data-i]'); if(!d) return;
+    e.preventDefault(); escolher(itens[+d.dataset.i]); fechar();
+  });
+}
+
+function faixa(){ return st.cid>=0 ? [cIni[st.cid], cFim[st.cid]] : [0, PR.length]; }
+
+function fonteCidade(q){
+  const out = [];
+  for(let i=0;i<CID.length;i++){
+    if(!cQt[i]) continue;
+    const p = q ? CIDN[i].indexOf(q) : 0;
+    if(p < 0) continue;
+    out.push({id:i, rot:CID[i][1]+' — '+UF[CID[i][0]], qt:cQt[i], p:p});
+  }
+  if(MUN.length){
+    for(let i=0;i<MUN.length;i++){
+      if(MUN[i][4] >= 0) continue;
+      const p = q ? MUNN[i].indexOf(q) : -1;
+      if(p < 0) continue;
+      out.push({mun:i, rot:MUN[i][0]+' — '+UF[MUN[i][1]], qt:'sem rede', p:p+500});
+    }
+  }
+  out.sort((a,b) => a.p-b.p ||
+    (typeof b.qt==='number' && typeof a.qt==='number' ? b.qt-a.qt : 0));
+  return out;
+}
+
+function fonteEsp(q){
+  const qt = new Int32Array(ESP.length);
+  const f = faixa(), bit = st.modo === 'qualquer' ? bitsPlano() : 0;
+  for(let i=f[0];i<f[1];i++){
+    if(st.tipo>=0 && PR[i][4]!==st.tipo) continue;
+    if(st.bai>=0 && PR[i][2]!==st.bai) continue;
+    const e = PR[i][5];
+    for(let k=0;k<e.length;k+=2) if(!FORA.has(e[k]) && (!bit || (e[k+1]&bit))) qt[e[k]]++;
+  }
+  const out = [];
+  for(let i=0;i<ESP.length;i++){
+    if(!qt[i]) continue;
+    const p = q ? ESPN[i].indexOf(q) : 0;
+    if(p < 0) continue;
+    out.push({id:i, rot:ESP[i], qt:qt[i], p:p});
+  }
+  out.sort((a,b) => a.p-b.p || b.qt-a.qt || a.rot.localeCompare(b.rot));
+  return out;
+}
+
+/* ---------------------------------------------------------------- filtro */
+function filtrar(){
+  const f = faixa(), ini = f[0], fim = f[1];
+  const bit = st.modo === 'qualquer' ? bitsPlano() : 0;
+  const toks = st.q.trim() ? norm(st.q).split(/\s+/) : null;
+  const dig = /^\d+$/.test(st.q.trim()) ? st.q.trim().replace(/^0+/,'') : null;
+  const res = [];
+  for(let i=ini;i<fim;i++){
+    const p = PR[i];
+    if(st.tipo>=0 && p[4]!==st.tipo) continue;
+    if(st.bai>=0 && p[2]!==st.bai) continue;
+    if(toks){
+      const n = NOMN[p[0]];
+      let ok = toks.every(t => n.includes(t));
+      if(!ok && dig) ok = p[3].some(c => cod10(c).replace(/^0+/,'').startsWith(dig));
+      if(!ok) continue;
+    }
+    const e = p[5];
+    let mask = 0, sub = null, varia = false, m0 = -1;
+    for(let k=0;k<e.length;k+=2){
+      if(st.esp>=0 && e[k]!==st.esp) continue;
+      if(bit && !(e[k+1]&bit)) continue;
+      (sub || (sub=[])).push(e[k], e[k+1]);
+      mask |= e[k+1];
+      if(m0<0) m0 = e[k+1]; else if(m0!==e[k+1]) varia = true;
+    }
+    if(!sub) continue;
+    /* no modo "todos" o corte e no prestador inteiro, nao especialidade a especialidade */
+    if(!passaPlano(mask)) continue;
+    res.push({p:p, sub:sub, mask:mask, varia:varia});
+  }
+  return res;
+}
+
+/* --------------------------------------------------------- tabela da rede */
+function cabecTabela(){
+  let h = '<table class="tab-rede"><thead><tr><th>Prestador</th>';
+  for(let i=0;i<NP;i++) h += '<th class="p">' + esc(PLANOS[i]) + '</th>';
+  return h + '</tr></thead><tbody>';
+}
+
+/* uma linha por prestador: nome, onde fica, o que faz, e um ✔ por produto */
+function linhaRede(r){
+  const p = r.p, blocos = (p[6] && p[6][0]) || 0, lab = (p[6] && p[6][1]) || 0;
+  const esps = [];
+  for(let k=0;k<r.sub.length;k+=2) if(!FORA.has(r.sub[k])) esps.push(ESP[r.sub[k]]);
+
+  let onde = BAI[p[2]] ? esc(BAI[p[2]]) + ' · ' : '';
+  onde += esc(CID[p[1]][1]) + '/' + esc(UF[CID[p[1]][0]]);
+  if(p[3] && p[3].length) onde += ' · <b>' + esc(p[3].map(cod10).join(' / ')) + '</b>';
+
+  let h = '<tr><td><span class="nm">' + esc(NOM[p[0]]) + '</span>' +
+          '<span class="sub">' + onde + '</span>';
+  /* estava na planilha ou nas listas em PDF e nao aparece na consulta oficial */
+  if(p[6] && p[6][2] === 2 && p[7] && p[7][2])
+    h += '<span class="sub fora">Consta na ' + esc(p[7][2]) + ', mas não aparece na busca da ' +
+         'SulAmérica de ' + esc(CONSULTA[p[1]] || '') + ', nem pelo nome. Confirme antes de indicar.</span>';
+  /* endereco e telefone so nas cidades que ja vem da consulta oficial */
+  if(p[7] && (p[7][0] || p[7][1]))
+    h += '<span class="sub">' + esc(p[7][0] || '') + (p[7][0] && p[7][1] ? ' · ' : '') +
+         (p[7][1] ? '<span class="tel">' + p[7][1].split(' · ').map(esc).join('</span> · <span class="tel">') + '</span>' : '') +
+         '</span>';
+  if(esps.length){
+    const lim = 6;
+    h += '<span class="sub">' + esps.slice(0, lim).map(esc).join(' · ') +
+         (esps.length > lim ? ' <b>+' + (esps.length - lim) + '</b>' : '') + '</span>';
+  }
+  const selos = [];
+  if(blocos){
+    /* o que o hospital cobre em algum produto: H internacao, P.S pronto-socorro, HDIA */
+    const s = new Set();
+    for(const bl of blocos) for(const v of bl) for(const x of (SERV[v] || '').split('/')) s.add(x);
+    if(s.has('H') || s.has('H PED')) selos.push('internação');
+    if(s.has('P.S') || s.has('P.S PED')) selos.push('pronto-socorro');
+    if(s.has('HDIA') && !s.has('H')) selos.push('hospital-dia');
+  }
+  if(lab) selos.push('exames');
+  if(r.varia) selos.push('varia por especialidade');
+  if(p[6] && p[6][2] === 1) selos.push('só na lista oficial');
+  if(p[6] && p[6][2] === 2) selos.push('fora da busca oficial');
+  if(selos.length)
+    h += '<div class="selos">' + selos.map(x => '<span class="selo-t">' + x + '</span>').join('') + '</div>';
+  h += '</td>';
+
+  for(let i=0;i<NP;i++){
+    const t = marca(r.mask, i);
+    h += '<td class="pl ' + (t ? 's'+i+' c'+i : 'nao') + '">' +
+         (t ? '&#10003;' + (t !== 'sim' ? '<i>'+esc(t)+'</i>' : '') : '&ndash;') + '</td>';
+  }
+  return h + '</tr>';
+}
+
+/* --------------------------------------------------------- escolha de produto */
+function pintaProdutos(){
+  const f = faixa();
+  const qt = [], cid = [];
+  for(let i=0;i<NP;i++){ qt.push(0); cid.push(new Set()); }
+  for(let i=f[0];i<f[1];i++){
+    const p = PR[i];
+    let m = 0;
+    for(let k=1;k<p[5].length;k+=2) m |= p[5][k];
+    for(let g=0;g<NP;g++) if(m & MASCARA[g]){ qt[g]++; cid[g].add(p[1]); }
+  }
+  $('cartoesProd').innerHTML = PLANOS.map((n,i) =>
+    '<label class="cartao-prod c'+i+(st.planos.has(i)?' on':'')+'">' +
+    '<input type="checkbox" data-p="'+i+'"'+(st.planos.has(i)?' checked':'')+'>' +
+    '<span><b>'+esc(n)+'</b><span>'+qt[i].toLocaleString('pt-BR')+' prestadores' +
+    (st.cid<0 ? ' · '+cid[i].size.toLocaleString('pt-BR')+' cidades' : '')+'</span></span></label>'
+  ).join('');
+  for(const b of $('fModo').children) b.setAttribute('aria-pressed', b.dataset.m === st.modo);
+  $('fModo').style.display = st.planos.size > 1 ? '' : 'none';
+}
+
+/* ---------------------------------------------------------------- ficha */
+function matriz(r){
+  const p = r.p, blocos = (p[6] && p[6][0]) || 0, lab = (p[6] && p[6][1]) || 0;
+  let ambul = 0, temAmbul = false;
+  for(let k=0;k<r.sub.length;k+=2)
+    if(!FORA.has(r.sub[k])){ ambul |= r.sub[k+1]; temAmbul = true; }
+  let interMask = 0;
+  /* os blocos guardam os 5 produtos do arquivo, nao os 3 da tela */
+  if(blocos) for(const bl of blocos)
+    for(let b=0;b<PRODUTOS.length;b++) if(bl[b]>0) interMask |= 1<<b;
+
+  const linha = (rot, m, ativo) => {
+    if(!ativo) return '';
+    let h = '<tr><th>'+rot+'</th>';
+    for(let i=0;i<NP;i++){
+      const t = marca(m, i);
+      h += '<td>'+(t ? '<span class="cel sim c'+i+'">'+t+'</span>'
+                     : '<span class="cel">&ndash;</span>')+'</td>';
+    }
+    return h + '</tr>';
+  };
+  let h = '<table class="cobertura"><thead><tr><th></th>';
+  for(let i=0;i<NP;i++) h += '<th>'+esc(CURTOS[i])+'</th>';
+  h += '</tr></thead><tbody>';
+  h += linha('Consultas', ambul, temAmbul);
+  h += linha('Internação', interMask, !!blocos);
+  h += linha('Exames', lab, !!lab);
+  h += '</tbody></table>';
+
+  if(blocos){
+    const grupos = new Map();
+    for(const bl of blocos)
+      for(let i=0;i<NP;i++)
+        for(const b of GRUPOS[i].bits){
+          const s = SERV[bl[b]];
+          if(!s) continue;
+          if(!grupos.has(s)) grupos.set(s, []);
+          if(grupos.get(s).indexOf(PLANOS[i]) < 0) grupos.get(s).push(PLANOS[i]);
+        }
+    if(grupos.size){
+      h += '<div class="servico"><span class="rot">Internação cobre</span>';
+      grupos.forEach((planos, s) => {
+        h += '<i><b>'+esc(servicoLegivel(s))+'</b>' +
+             (grupos.size>1 ? ' <u>— '+esc(planos.join(', '))+'</u>' : '') + '</i>';
+      });
+      h += '</div>';
+    }
+  }
+  return {html:h, ambul:ambul, interMask:interMask, blocos:blocos, lab:lab};
+}
+
+function ficha(r){
+  const p = r.p, c = CID[p[1]];
+  const soListas = !!(p[6] && p[6][2] === 1);
+  let h = '<article class="ficha t'+p[4]+'">';
+  h += '<div class="cab"><h3>'+esc(NOM[p[0]])+'</h3><span class="tipo">'+CURTO_TIPO[p[4]]+'</span></div>';
+  h += '<div class="endereco">'+esc(BAI[p[2]] ? BAI[p[2]]+' · ' : '')+esc(c[1])+'/'+esc(UF[c[0]])+
+       (soListas ? '' : ' · <code>'+codigos(p[3])+'</code>')+'</div>';
+
+  const m = matriz(r);
+  h += m.html;
+
+  if(soListas){
+    const onde = m.blocos && m.lab ? 'nas listas de hospitais e de laboratórios'
+               : m.blocos ? 'na lista de hospitais' : 'na lista de laboratórios';
+    h += '<div class="aviso nota">Consta só ' + onde + '. O buscador de consultórios não traz ' +
+         'este endereço, então as especialidades de consulta não são informadas.</div>';
+  } else if(m.blocos){
+    const dif = [];
+    for(let i=0;i<NP;i++){
+      const interna = !!(m.interMask & MASCARA[i]), atende = !!(m.ambul & MASCARA[i]);
+      if(atende && !interna) dif.push(PLANOS[i]+' atende consulta mas não interna');
+      if(interna && !atende) dif.push(PLANOS[i]+' interna mas não atende consulta');
+    }
+    if(dif.length) h += '<div class="aviso">'+esc(dif.join(' · '))+'.</div>';
+  }
+
+  const vis = [];
+  for(let k=0;k<r.sub.length;k+=2) if(!FORA.has(r.sub[k])) vis.push(r.sub[k]);
+  if(vis.length){
+    h += '<div class="esp-bloco"><div class="esp-rot">Especialidades <span>'+vis.length+'</span></div>';
+    h += '<div class="chips'+(vis.length>12?' corta':'')+'">';
+    for(const e of vis) h += '<span class="chip'+(st.esp>=0?' hit':'')+'">'+esc(ESP[e])+'</span>';
+    if(vis.length>12) h += '<button class="chip abrir">+'+(vis.length-12)+'</button>';
+    h += '</div></div>';
+  }
+
+  if(r.varia){
+    h += '<details class="detalhe"><summary>A cobertura muda conforme a especialidade</summary>' +
+         '<table><tr><th>Especialidade</th>';
+    for(let i=0;i<NP;i++)
+      h += '<th>'+esc(PLANOS[i].replace('Efetivo ','Ef.').replace('Top ',''))+'</th>';
+    h += '</tr>';
+    for(let k=0;k<r.sub.length;k+=2){
+      h += '<tr><td>'+esc(ESP[r.sub[k]])+'</td>';
+      for(let i=0;i<NP;i++)
+        h += '<td>'+(marca(r.sub[k+1],i) ? '<b style="color:var(--p'+i+')">&#10003;</b>' : '&middot;')+'</td>';
+      h += '</tr>';
+    }
+    h += '</table></details>';
+  }
+  return h + '</article>';
+}
+
+/* ---------------------------------------------------------------- render */
+function render(reinicia){
+  const lista = $('lista');
+  if(reinicia){ lista.innerHTML = ''; mostrados = 0; }
+
+  if(!achados.length){
+    $('maisWrap').style.display = 'none';
+    lista.innerHTML = st.mun >= 0 ? painelRegiao()
+      : (st.cid<0 && st.esp<0 && st.tipo<0 && !st.planos.size && !st.q.trim()) ? painelInicial()
+      : '<div class="painel"><h2>Nenhum prestador com esses filtros</h2>' +
+        '<p>Tente tirar a especialidade ou o bairro, ou trocar o plano.</p></div>';
+    return;
+  }
+  const fatia = achados.slice(mostrados, mostrados + PASSO);
+  let h = '', aberto = false;
+  let tipoAtual = mostrados > 0 ? achados[mostrados-1].p[4] : -9;
+  for(const r of fatia){
+    if(r.p[4] !== tipoAtual){
+      if(aberto) h += '</tbody></table>';
+      const qt = achados.reduce((s,x) => s + (x.p[4]===r.p[4] ? 1 : 0), 0);
+      h += '<div class="secao"><h2>'+SECAO[r.p[4]]+'</h2><span class="qt">'+qt+'</span><hr></div>' +
+           cabecTabela();
+      tipoAtual = r.p[4]; aberto = true;
+    } else if(!aberto){ h += cabecTabela(); aberto = true; }
+    h += linhaRede(r);
+  }
+  if(aberto) h += '</tbody></table>';
+  lista.insertAdjacentHTML('beforeend', h);
+  mostrados += fatia.length;
+  const resta = achados.length - mostrados;
+  $('maisWrap').style.display = resta > 0 ? 'block' : 'none';
+  $('mais').textContent = 'Mostrar mais ' + Math.min(resta, PASSO) + ' de ' + resta;
+}
+
+function painelInicial(){
+  const rec = (lembra('recentes')||'').split('|').filter(x => x && CID[+x]);
+  const top = rec.length ? rec.map(Number)
+            : Array.from(CID.keys()).sort((a,b) => cQt[b]-cQt[a]).slice(0,8);
+  return '<div class="painel"><h2>Comece pela cidade</h2>' +
+    '<p>Digite no campo acima. Vale qualquer município do Brasil — se não tiver rede, a tela ' +
+    'mostra as cidades da região que têm.</p><div class="anel"><h3>' +
+    (rec.length ? 'Suas últimas cidades' : 'Maiores redes do país') + '</h3><div class="atalhos">' +
+    top.map(i => '<button class="atalho" data-cid="'+i+'">'+esc(CID[i][1])+'/'+esc(UF[CID[i][0]])+
+      ' <span>'+cQt[i]+'</span></button>').join('') + '</div></div></div>';
+}
+
+function painelRegiao(){
+  const m = MUN[st.mun], uf = UF[m[1]], visto = new Set([st.mun]);
+  const chips = (lista, limite) => {
+    const itens = (lista || []).filter(i => !visto.has(i))
+      .map(i => ({i:i, c:MUN[i][4], n:cQt[MUN[i][4]]}))
+      .sort((a,b) => b.n - a.n);
+    const corte = limite ? itens.slice(0, limite) : itens;
+    corte.forEach(x => visto.add(x.i));
+    const resto = itens.length - corte.length;
+    return corte.map(x => '<button class="atalho" data-cid="'+x.c+'">'+esc(MUN[x.i][0])+
+             ' <span>'+x.n+'</span></button>').join('') +
+           (resto > 0 ? '<span class="resto">+'+resto+' na busca por cidade</span>' : '');
+  };
+  const bloco = (t, conteudo, vazio) => '<div class="anel"><h3>'+esc(t)+'</h3>' +
+    (conteudo ? '<div class="atalhos">'+conteudo+'</div>'
+              : '<p class="vazio">'+esc(vazio)+'</p>') + '</div>';
+  const imed = chips(porImed.get(m[2]));
+  const temInter = REG[m[3]] && REG[m[3]] !== REG[m[2]];
+  const inter = temInter ? chips(porInter.get(m[3])) : null;
+  const est = chips(porUf.get(m[1]), 10);
+
+  let h = '<div class="painel"><h2>'+esc(m[0])+' / '+esc(uf)+'</h2>' +
+    '<p><b>Nenhum prestador nas listas oficiais da SulAmérica.</b> A rede referenciada não cobre ' +
+    'esta cidade — o cliente é atendido na cidade com rede mais próxima. Da mais perto para a mais longe:</p>';
+  h += bloco('1. Região imediata de ' + (REG[m[2]] || '?'), imed,
+             'Nenhuma cidade desta região imediata tem rede.');
+  if(temInter) h += bloco('2. Região intermediária de ' + REG[m[3]], inter,
+             'Nenhuma outra cidade desta região intermediária tem rede.');
+  h += bloco((temInter ? '3. ' : '2. ') + 'Maiores redes de ' + uf, est,
+             'Nenhuma outra cidade com rede neste estado.');
+  h += '<p class="rodape-anel">Os anéis seguem a divisão do IBGE em regiões geográficas imediatas ' +
+       'e intermediárias — é a região de referência do município, não distância em quilômetros. ' +
+       'O número é a quantidade de prestadores.</p></div>';
+  return h;
+}
+
+function resumo(){
+  const box = $('resumo'), selos = $('selosUf');
+  if(!achados.length){ box.innerHTML = ''; selos.innerHTML = ''; return; }
+  const qt = new Array(NP).fill(0), esps = new Set();
+  for(const r of achados){
+    for(let i=0;i<NP;i++) if(r.mask & MASCARA[i]) qt[i]++;
+    for(let k=0;k<r.sub.length;k+=2) if(!FORA.has(r.sub[k])) esps.add(r.sub[k]);
+  }
+  const onde = st.cid>=0 ? CID[st.cid][1]+'/'+UF[CID[st.cid][0]] : 'todo o Brasil';
+  const total = achados.length;
+  let h = '<div class="contagem"><b>'+total.toLocaleString('pt-BR')+'</b><span>prestadores em ' +
+          esc(onde) + (esps.size ? ' · '+esps.size+' especialidades' : '') + '</span></div>' +
+          '<div class="medidores">';
+  for(let i=0;i<NP;i++){
+    const pct = total ? Math.round(100*qt[i]/total) : 0;
+    h += '<div class="medidor"><div class="nome">'+esc(CURTOS[i])+'</div>' +
+         '<div class="val" style="color:var(--p'+i+')">'+qt[i].toLocaleString('pt-BR')+'</div>' +
+         '<div class="trilho"><i style="width:'+pct+'%;background:var(--p'+i+')"></i></div></div>';
+  }
+  box.innerHTML = h + '</div>';
+
+  if(daConsulta(st.cid)){
+    const fora = achados.filter(r => r.p[6] && r.p[6][2] === 2).length;
+    selos.innerHTML = '<span class="selo-uf ok">Rede completa da cidade: consulta oficial da SulAmérica em ' +
+      esc(CONSULTA[st.cid]) + ' — consultas, exames, internação e pronto-socorro, com endereço e telefone</span>' +
+      (fora ? '<span class="selo-uf falta">' + fora + (fora === 1 ? ' prestador' : ' prestadores') +
+              ' das listas anteriores fora da busca oficial, marcado' + (fora === 1 ? '' : 's') + '</span>' : '');
+  } else if(st.cid>=0){
+    const uf = UF[CID[st.cid][0]];
+    let s = '';
+    for(const par of [['Hospitais', HREF], ['Exames', LREF]]){
+      const r = par[1][uf];
+      s += r ? '<span class="selo-uf ok">'+par[0]+': lista oficial de '+esc(uf)+' · '+esc(r.ref)+'</span>'
+             : '<span class="selo-uf falta">'+par[0]+': '+esc(uf)+' ainda sem lista oficial</span>';
+    }
+    selos.innerHTML = s;
+  } else selos.innerHTML = '';
+}
+
+/* ---------------------------------------------------------------- ações */
+function atualiza(){
+  pintaProdutos();
+  const vazio = st.mun >= 0 ||
+    (st.cid<0 && st.esp<0 && st.tipo<0 && !st.planos.size && !st.q.trim());
+  achados = vazio ? [] : filtrar();
+  resumo();
+  render(true);
+}
+
+function bairros(){
+  const sel = $('fBai'), f = faixa(), qt = new Map();
+  for(let i=f[0];i<f[1];i++) qt.set(PR[i][2], (qt.get(PR[i][2])||0)+1);
+  const lista = Array.from(qt.keys()).sort((a,b) => BAIN[a].localeCompare(BAIN[b]));
+  sel.innerHTML = '<option value="-1">todos os bairros</option>' +
+    lista.map(i => '<option value="'+i+'">'+esc(BAI[i]||'—')+' ('+qt.get(i)+')</option>').join('');
+  sel.disabled = st.cid < 0;
+  sel.value = '-1'; st.bai = -1;
+}
+
+function setCidade(i){
+  st.cid = i; st.bai = -1; st.mun = -1;
+  $('fCid').value = i>=0 ? CID[i][1]+' — '+UF[CID[i][0]] : '';
+  $('cCid').classList.toggle('tem', i>=0);
+  bairros();
+  if(i>=0){
+    guarda('cidade', i);
+    const rec = [String(i)].concat((lembra('recentes')||'').split('|')
+      .filter(x => x && x!==String(i)));
+    guarda('recentes', rec.slice(0,8).join('|'));
+  }
+  atualiza();
+}
+function setMunicipio(i){
+  st.cid = -1; st.mun = i;
+  $('fCid').value = MUN[i][0] + ' — ' + UF[MUN[i][1]];
+  $('cCid').classList.add('tem');
+  bairros(); atualiza();
+}
+function setEsp(i){
+  st.esp = i;
+  $('fEsp').value = i>=0 ? ESP[i] : '';
+  $('cEsp').classList.toggle('tem', i>=0);
+  if(i>=0) $('avancado').classList.add('on');
+  atualiza();
+}
+
+/* ------------------------------------------------------- documento para PDF */
+/* ---------------------------------------------------------------- PDF
+   O PDF sai pelo gerador compartilhado com a Amil (pdf-rede.js): baixa
+   direto, sem janela de impressao, com o nome do produto e da cidade. */
+const TOM_PDF = ['#a3123c', '#b0552a', '#1d5089', '#0e6b64', '#6b3fa0'];
+
+function assinaturaPdf(){
+  const p = [CORR.corretora || 'Mazza Broker'];
+  for(const k of ['nome', 'fone', 'email']) if(CORR[k]) p.push(CORR[k]);
+  return 'Documento gerado em ' + new Date().toLocaleDateString('pt-BR') + '  ·  ' + p.join('  ·  ');
+}
+function nomeArquivoPdf(partes){
+  return partes.filter(Boolean).join(' - ').replace(/\s*\/\s*/g, '-')
+               .replace(/[\\:*?"<>|]+/g, '-').replace(/\s+/g, ' ').trim() + '.pdf';
+}
+const juntar = n => n.length <= 1 ? (n[0] || '') : n.slice(0, -1).join(', ') + ' e ' + n[n.length - 1];
+/* especialidades numa linha so, deixando lugar para o "e mais N";
+   max = caracteres que cabem na coluna do prestador (102 sem endereco, 5 produtos) */
+function espUmaLinha(lista, max){
+  max = max || 102;
+  const cabe = []; let tam = 0;
+  for(let k=0;k<lista.length;k++){
+    if(cabe.length && tam + lista[k].length + 3 > (k < lista.length - 1 ? max - 12 : max)) break;
+    cabe.push(lista[k]); tam += lista[k].length + 3;
+  }
+  return cabe.join(' · ') + (lista.length > cabe.length ? '  e mais ' + (lista.length - cabe.length) : '');
+}
+
+/* Botao em "Montando..." enquanto o PDF sai; volta sozinho no fim. */
+function entregarPdf(botao, montar){
+  if(!window.PDFRede){ alert('O gerador de PDF não carregou. Recarregue a página e tente de novo.'); return; }
+  const rotulo = botao ? botao.textContent : '';
+  if(botao){ botao.disabled = true; botao.textContent = 'Montando…'; }
+  const fim = () => { if(botao){ botao.disabled = false; botao.textContent = rotulo; } };
+  setTimeout(() => {
+    let r;
+    try { r = window.PDFRede.baixar(montar()); }
+    catch(e){ fim(); alert('Não consegui montar o PDF: ' + (e.message || e)); return; }
+    Promise.resolve(r).then(fim, e => { fim(); alert('Não consegui montar o PDF: ' + (e && e.message || e)); });
+  }, 30);
+}
+
+function documentoRede(){
+  const comEsp = $('fEspPdf').checked;
+  const onde = st.cid>=0 ? CID[st.cid][1]+' / '+UF[CID[st.cid][0]] : 'Brasil — todas as cidades';
+  const uf = st.cid>=0 ? UF[CID[st.cid][0]] : null;
+  /* o PDF mostra so os produtos marcados na tela; nenhum marcado = todos */
+  const COLS = st.planos.size ? [...st.planos].sort((a,b) => a-b) : PLANOS.map((_, i) => i);
+  const nomes = COLS.map(i => PLANOS[i]);
+
+  const recorte = [];
+  if(st.planos.size) recorte.push('produto ' + nomes.join(st.modo === 'todos' ? ' e ' : ' ou '));
+  if(st.esp>=0) recorte.push('especialidade ' + ESP[st.esp]);
+  if(st.bai>=0) recorte.push('bairro ' + BAI[st.bai]);
+  if(st.q.trim()) recorte.push('busca “' + st.q.trim() + '”');
+
+  const porTipo = {0:[], 1:[], 2:[], 3:[], 4:[]};
+  for(const r of achados) porTipo[r.p[4]].push(r);
+
+  const placar = [[achados.length, 'prestadores']];
+  for(const c of [[1,'hospitais'], [0,'clínicas'], [3,'médicos'], [2,'laboratórios'], [4,'centros de imagem']])
+    if(porTipo[c[0]].length) placar.push([porTipo[c[0]].length, c[1]]);
+  for(const i of COLS){
+    let n = 0;
+    for(const r of achados) if(r.mask & MASCARA[i]) n++;
+    placar.push([n, PLANOS[i]]);
+  }
+
+  const fonte = [];
+  if(daConsulta(st.cid)){
+    fonte.push(['Toda a rede', true], [' — consulta oficial de rede referenciada no site da SulAmérica Saúde, ' +
+               'feita em ' + CONSULTA[st.cid] + ': consultas, exames, internação e pronto-socorro.', false]);
+    const fora = achados.filter(r => r.p[6] && r.p[6][2] === 2).length;
+    if(fora) fonte.push([' ' + fora + (fora === 1 ? ' prestador das listas anteriores não aparece'
+                          : ' prestadores das listas anteriores não aparecem') +
+                         ' na busca e ' + (fora === 1 ? 'vai marcado' : 'vão marcados') + '.', false]);
+  } else {
+    fonte.push(['Consultas e exames', true], [' — buscador oficial da SulAmérica, base ' + DADOS.ref + '. ', false]);
+    if(uf && HREF[uf]) fonte.push(['Internação', true], [' — lista oficial de hospitais de ' + uf + ', ' + HREF[uf].ref + '. ', false]);
+    if(uf && LREF[uf]) fonte.push(['Exames e diagnóstico', true], [' — lista oficial de laboratórios de ' + uf + ', ' + LREF[uf].ref + '.', false]);
+    if(st.cid < 0 && Object.keys(CONSULTA).length)
+      fonte.push([' Nas cidades já atualizadas pela consulta oficial da SulAmérica, a rede vem dela.', false]);
+  }
+  const agrupados = COLS.filter(i => GRUPOS[i].sub).map(i => PLANOS[i]);
+
+  const secoes = [{ tipo: 'leitura',
+    cartoes: [
+      { titulo: COLS.length === 1 ? 'O produto' : 'Os ' + COLS.length + ' produtos',
+        etiquetas: COLS.map(i => [PLANOS[i], TOM_PDF[i]]),
+        texto: [['O ', false], ['visto', true], [' na coluna do produto significa que aquele prestador ' +
+                'atende quem tem esse plano.' + (agrupados.length ? ' ' + juntar(agrupados) +
+                (agrupados.length > 1 ? ' reúnem' : ' reúne') + ' enfermaria e apartamento — quando só ' +
+                'uma acomodação atende, a coluna avisa.' : ''), false]] },
+      { titulo: 'Como a rede está organizada',
+        texto: [['Cada bloco é um tipo de atendimento: ', false], ['hospitais', true], [', ', false],
+                ['clínicas e consultórios', true], [', ', false], ['médicos', true], [' e ', false],
+                ['laboratórios e imagem', true], ['. Sob o nome do hospital vem o que ele cobre — ' +
+                 'internação, pronto socorro, maternidade, ambulatório.', false]] },
+      { titulo: 'De onde vêm os dados', texto: fonte }
+    ],
+    aviso: [['Antes de contratar. ', true], ['A rede referenciada é definida e alterada exclusivamente ' +
+            'pela SulAmérica Saúde, a qualquer tempo. Este documento reproduz as listas oficiais na data ' +
+            'indicada e serve para orientar a escolha — ', false],
+            ['confirme o prestador no portal da operadora antes de fechar o contrato.', true]] }];
+
+  const produtos = COLS.map(i => ({ nome: PLANOS[i], cor: TOM_PDF[i] }));
+  for(const par of [[1,'Hospitais'], [0,'Clínicas e consultórios'], [3,'Médicos'],
+                    [2,'Laboratórios de análises'], [4,'Centros de imagem']]){
+    const lista = porTipo[par[0]];
+    /* endereco quando a base traz (cidades da consulta oficial); o telefone vai na mesma
+       coluna, embaixo: com cinco produtos, uma coluna a mais espreme o nome */
+    const temEnd = lista.some(r => r.p[7] && (r.p[7][0] || r.p[7][1]));
+    /* caracteres que cabem na coluna do nome: mesma conta do pdf-rede.js (A4 deitado,
+       780 pt uteis, ~8 pt de respiro por coluna); sem endereco e com 5 produtos dá 102 */
+    const colNome = 780 - (temEnd ? 150 : 0) - 92 -
+                    COLS.length * Math.min(56, Math.floor(300 / COLS.length)) -
+                    8 * (2 + (temEnd ? 1 : 0) + COLS.length);
+    const maxEsp = Math.min(140, Math.max(40, Math.floor(colNome / 3.45)));
+    secoes.push({ tipo: 'bloco', titulo: par[1],
+      conta: lista.length + (lista.length === 1 ? ' prestador' : ' prestadores'),
+      endereco: temEnd, telefone: false, produtos: produtos,
+      linhas: lista.map(r => {
+        const p = r.p, blocos = (p[6] && p[6][0]) || 0, c = CID[p[1]];
+        let detalhe = [];
+        if(blocos){
+          const g = new Set();
+          for(const bl of blocos)
+            for(let b=0;b<PRODUTOS.length;b++) if(SERV[bl[b]]) g.add(SERV[bl[b]]);
+          /* so pronto-socorro ou hospital-dia nao e internacao */
+          const interna = Array.from(g).some(s => /(^|\/)H( PED)?(\/|$)/.test(s));
+          if(g.size) detalhe = [[interna ? 'Internação: ' : 'Cobre: ', true],
+                                [Array.from(g).map(servicoLegivel).join(' | '), false]];
+        }
+        let esp = '';
+        if(comEsp){
+          const vis = [];
+          for(let k=0;k<r.sub.length;k+=2) if(!FORA.has(r.sub[k])) vis.push(ESP[r.sub[k]]);
+          esp = espUmaLinha(vis, maxEsp);
+        }
+        return { nome: NOM[p[0]], detalhe: detalhe, esp: esp,
+                 tag: p[6] && p[6][2] === 2 ? 'FORA DA BUSCA OFICIAL' : '',
+                 end: p[7] ? [p[7][0]].concat(p[7][1] ? p[7][1].split(' · ').slice(0, 2) : [])
+                               .filter(Boolean).join('\n') : '',
+                 bairro: BAI[p[2]] || '', cidade: c ? c[1] + ' / ' + UF[c[0]] : '',
+                 marcas: COLS.map(i => { const t = marca(r.mask, i); return !t ? false : (t === 'sim' ? true : t); }) };
+      }) });
+  }
+
+  return {
+    arquivo: nomeArquivoPdf(['Rede SulAmérica Saúde', juntar(nomes), st.cid>=0 ? onde : 'Brasil']),
+    rodape: 'Rede referenciada SulAmérica Saúde   ·   ' + onde,
+    corretora: corretora(), corretorNome: CORR.nome || '',
+    capa: { titulo: 'Rede referenciada', destaque: 'SulAmérica Saúde', onde: onde,
+            recorte: recorte.join('  ·  '), placar: placar, cores: COLS.map(i => TOM_PDF[i]),
+            assinatura: assinaturaPdf() },
+    secoes: secoes
+  };
+}
+
+function imprime(){
+  if(!achados.length){ alert('Nada para gerar: a busca não trouxe prestadores.'); return; }
+  entregarPdf($('bImp'), documentoRede);
+}
+
+function imprimeTroca(){
+  const a = parTroca.de, b = parTroca.para;
+  if(a === b) return;
+  entregarPdf($('bPdfTroca'), () => {
+    const A = PLANOS[a], B = PLANOS[b];
+    const onde = st.cid >= 0 ? CID[st.cid][1] + ' / ' + UF[CID[st.cid][0]] : 'Brasil';
+    const d = comparaPlanos(a, b);
+    const pct = d.temA ? Math.round(d.mantem*100/d.temA) : 0;
+    const menos = d.temA - d.mantem;
+    const hosp = d.perdidos.filter(x => x[4] === 1);
+    const secoes = [
+      { tipo: 'texto', titulo: 'O que a troca significa', conta: onde, texto: [
+        ['O ', false], [A, true], [' atende ' + d.temA.toLocaleString('pt-BR') + ' prestadores em ' +
+        d.cidA.toLocaleString('pt-BR') + ' cidades. O ', false], [B, true], [' atende ' +
+        d.temB.toLocaleString('pt-BR') + ' em ' + d.cidB.toLocaleString('pt-BR') +
+        '. Dos que o cliente tem hoje, ', false], [d.mantem.toLocaleString('pt-BR'), true],
+        [' continuam na rede e ', false], [menos.toLocaleString('pt-BR'), true],
+        [' saem. Em troca, o ' + B + ' acrescenta ', false], [d.soB.length.toLocaleString('pt-BR'), true],
+        [' prestadores que hoje ele não tem.', false]] },
+      { tipo: 'grade', titulo: 'Hospitais que saem da rede', conta: hosp.length, cor: '#8b0633',
+        itens: hosp.map(x => ({ nome: NOM[x[0]], sub: (BAI[x[2]] ? BAI[x[2]] + ' · ' : '') +
+                                CID[x[1]][1] + '/' + UF[CID[x[1]][0]] })) }
+    ];
+    if(!hosp.length) secoes.push({ tipo: 'texto', texto: [['Nenhum hospital se perde nessa troca', true],
+      [' em ' + onde + '. A diferença entre os dois produtos está em clínicas, exames ou consultórios.', false]] });
+    return {
+      arquivo: nomeArquivoPdf(['Rede SulAmérica Saúde', 'troca de ' + A + ' para ' + B, onde]),
+      rodape: 'SulAmérica Saúde   ·   ' + A + ' para ' + B + '   ·   ' + onde,
+      corretora: corretora(), corretorNome: CORR.nome || '',
+      capa: { titulo: 'O que muda', destaque: A + ' para ' + B, onde: onde, recorte: '',
+              placar: [[pct + '%', 'da rede mantida'], [menos, 'prestadores a menos'],
+                       [hosp.length, 'hospitais a menos'], [d.cidSemB, 'cidades sem rede']],
+              cores: [TOM_PDF[a], TOM_PDF[b]], assinatura: assinaturaPdf() },
+      secoes: secoes
+    };
+  });
+}
+
+/* ---------------------------------------------------------------- exportar */
+function tabela(){
+  const cab = ['UF','CIDADE','BAIRRO','PRESTADOR','TIPO','CODIGO','ENDERECO','TELEFONE','FONTE','ESPECIALIDADE']
+    .concat(PLANOS).concat(PLANOS.map(x => 'Internação ' + x));
+  const servGrupo = (p, i) => !p[6] || !p[6][0] ? '' :
+    GRUPOS[i].bits.map(b => p[6][0].map(bl => SERV[bl[b]]).filter(Boolean).join(' / '))
+      .filter(Boolean).filter((v,j,a) => a.indexOf(v)===j).join(' | ');
+  const l = [cab];
+  for(const r of achados){
+    const p = r.p, c = CID[p[1]];
+    const f = [];
+    if(p[6] && p[6][2] === 2) f.push((p[7] && p[7][2] || 'base anterior') + '; fora da consulta oficial ' +
+                                      (CONSULTA[p[1]] || ''));
+    else if(p[7]) f.push('consulta oficial ' + (CONSULTA[p[1]] || ''));
+    else {
+      if(!p[6] || p[6][2]!==1) f.push('buscador');
+      if(p[6] && p[6][0]) f.push('lista de hospitais');
+      if(p[6] && p[6][1]) f.push('lista de laboratórios');
+    }
+    const int5 = [];
+    for(let i=0;i<NP;i++) int5.push(servGrupo(p, i));
+    for(let k=0;k<r.sub.length;k+=2){
+      const m = r.sub[k+1];
+      const lin = [UF[c[0]], c[1], BAI[p[2]], NOM[p[0]], TIPOS[p[4]], codigos(p[3]),
+                   p[7] ? p[7][0] : '', p[7] ? p[7][1] : '', f.join(' + '), ESP[r.sub[k]]];
+      for(let i=0;i<NP;i++){ const t = marca(m, i); lin.push(t ? (t==='sim' ? 'Sim' : 'Sim ('+t+')') : ''); }
+      l.push(lin.concat(int5));
+    }
+  }
+  return l;
+}
+const csvTexto = () => tabela()
+  .map(l => l.map(v => '"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\r\n');
+const nomeArquivo = () => 'Rede SulAmérica - ' + (st.cid>=0 ? CID[st.cid][1] : 'Brasil');
+
+let SALVAR = null;   /* capacidade de download da página publicada */
+if(typeof window !== 'undefined' && window.claude && window.claude.use)
+  window.claude.use('downloads').then(d => { SALVAR = d; }, () => {});
+
+function recado(btn, txt, voltar){
+  btn.textContent = txt;
+  setTimeout(() => { btn.textContent = voltar; }, 2400);
+}
+
+async function exportar(){
+  const btn = $('bCsv'), dados = '﻿' + csvTexto();
+  if(SALVAR){
+    try{
+      await SALVAR.save({filename: nomeArquivo()+'.csv', data: dados});
+      recado(btn, '✓ salvo', 'Exportar'); return;
+    }catch(e){
+      const cod = e && e.code;
+      if(cod === 'declined') return;
+      if(cod === 'extension_not_enabled' || cod === 'rejected_extension'){
+        try{
+          await SALVAR.save({filename: nomeArquivo()+'.txt', data: dados});
+          recado(btn, '✓ salvo em .txt', 'Exportar'); return;
+        }catch(e2){ if(e2 && e2.code === 'declined') return; }
+      }
+      copiar(); recado(btn, 'copiado — cole no Excel', 'Exportar'); return;
+    }
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([dados], {type:'text/csv;charset=utf-8'}));
+  a.download = nomeArquivo()+'.csv';
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+  recado(btn, '✓ baixado', 'Exportar');
+}
+
+function copiar(){
+  const txt = tabela().map(l => l.join('\t')).join('\n');
+  const btn = $('bCopiar');
+  const manual = () => {
+    const t = document.createElement('textarea');
+    t.value = txt; t.style.position='fixed'; t.style.opacity='0';
+    document.body.appendChild(t); t.select();
+    let ok = false; try{ ok = document.execCommand('copy'); }catch(e){}
+    t.remove(); return ok;
+  };
+  const fim = ok => recado(btn, ok ? '✓ copiado' : 'use o Exportar', 'Copiar');
+  if(navigator.clipboard && window.isSecureContext)
+    navigator.clipboard.writeText(txt).then(() => fim(true), () => fim(manual()));
+  else fim(manual());
+}
+
+/* ---------------------------------------------------------------- início */
+(function(){
+  /* no topo só o essencial: a lista estado a estado fica no rodapé */
+  const periodo = reg => {
+    const refs = [...new Set(Object.keys(reg).map(u => reg[u].ref))];
+    if(!refs.length) return '';
+    return refs.length === 1 ? refs[0] : refs[0] + ' a ' + refs[refs.length-1];
+  };
+  const linha = (rot, reg) => {
+    const n = Object.keys(reg).length;
+    return n ? '<b>'+rot+'</b> · ' + n + (n===1 ? ' estado · ' : ' estados · ') + esc(periodo(reg))
+             : '<b>'+rot+'</b> · nenhum estado carregado';
+  };
+  /* cidades que ja vem da consulta oficial: ate tres pelo nome, depois so a conta */
+  const cons = Object.keys(CONSULTA).map(Number);
+  const nomeCid = c => CID[c][1] + '/' + UF[CID[c][0]];
+  const datas = [...new Set(cons.map(c => CONSULTA[c]))].sort((a, b) =>
+    a.split('/').reverse().join('').localeCompare(b.split('/').reverse().join('')));
+  const quando = datas.length > 1 ? datas[0] + ' a ' + datas[datas.length-1] : (datas[0] || '');
+  $('fonteResumo').innerHTML = (cons.length
+    ? ['<b>Consulta oficial</b> · ' + (cons.length <= 3 ? esc(cons.map(nomeCid).join(', '))
+        : cons.length.toLocaleString('pt-BR') + ' cidades') + ' · ' + esc(quando)] : []).concat([
+  ]).join('<br>');
+
+  /* ate 12 cidades pelo nome; depois, quantas por estado */
+  const porUf = {};
+  for(const c of cons) porUf[UF[CID[c][0]]] = (porUf[UF[CID[c][0]]] || 0) + 1;
+  const listaCons = cons.length <= 12 ? cons.map(nomeCid).sort().join(', ')
+    : cons.length.toLocaleString('pt-BR') + ' cidades (' + Object.keys(porUf).sort()
+        .map(u => u + ' ' + porUf[u]).join(', ') + ')';
+  const det = [];
+  if(cons.length)
+    det.push('<b>Consulta oficial:</b> <a href="' + PORTAL + '" target="_blank" rel="noopener" ' +
+      'style="color:var(--ouro)">consulta de rede ' +
+      'referenciada</a> do site da SulAmérica Saúde, ' + esc(quando) + ' — ' + esc(listaCons) +
+      '. Nessas cidades a rede inteira vem dela ' +
+      '(consultas, exames, internação e pronto-socorro, com endereço e telefone).');
+  det.push('<b>Planos:</b> ' + esc(PRODUTOS.join(' e ')) + ' (PME).');
+  for(const par of [[HREF,'Lista de hospitais por linha de planos'],
+                    [LREF,'Lista de laboratórios por linha de planos (SADT)']]){
+    const ufs = Object.keys(par[0]).sort();
+    if(ufs.length)
+      det.push(ufs.map(u => esc(par[0][u].arquivo)+' — “'+par[1]+'” '+esc(u)+', '+
+        esc(par[0][u].ref)).join(' · ') + '.');
+  }
+  det.push('Cobertura: ' + CID.length.toLocaleString('pt-BR') + ' cidades.');
+  $('fonteDetalhe').innerHTML = det.join('<br>');
+  $('ger').textContent = DADOS.gerado;
+  mostraCorretor();
+  if(DADOS.logoBranca){ $('logoOp').src = DADOS.logoBranca; $('logoOp').hidden = false; }
+})();
+
+autocomplete($('fCid'), $('acCid'), fonteCidade,
+  it => it.mun !== undefined ? setMunicipio(it.mun) : setCidade(it.id));
+autocomplete($('fEsp'), $('acEsp'), fonteEsp, it => setEsp(it.id));
+
+$('cartoesProd').addEventListener('change', e => {
+  const c = e.target.closest('input[data-p]');
+  if(!c) return;
+  const i = +c.dataset.p;
+  if(c.checked) st.planos.add(i); else st.planos.delete(i);
+  guarda('produtos', [...st.planos].join(','));
+  atualiza();
+});
+$('fModo').addEventListener('click', e => {
+  const b = e.target.closest('button[data-m]');
+  if(!b || b.dataset.m === st.modo) return;
+  st.modo = b.dataset.m; guarda('modo', st.modo); atualiza();
+});
+$('fBai').addEventListener('change', e => { st.bai = +e.target.value; atualiza(); });
+$('fTipo').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  Array.from(e.currentTarget.children).forEach(x => x.setAttribute('aria-pressed', x===b));
+  st.tipo = +b.dataset.t; atualiza();
+});
+let timer;
+$('fQ').addEventListener('input', e => {
+  $('cQ').classList.toggle('tem', !!e.target.value);
+  clearTimeout(timer);
+  timer = setTimeout(() => { st.q = e.target.value; atualiza(); }, 160);
+});
+document.querySelectorAll('.limpar').forEach(b => b.addEventListener('click', () => {
+  const alvo = b.dataset.alvo;
+  if(alvo==='fCid'){ st.mun = -1; setCidade(-1); }
+  else if(alvo==='fEsp') setEsp(-1);
+  else { $('fQ').value=''; st.q=''; $('cQ').classList.remove('tem'); atualiza(); }
+}));
+$('bAvancado').addEventListener('click', e => {
+  const on = $('avancado').classList.toggle('on');
+  e.currentTarget.setAttribute('aria-expanded', on);
+  e.currentTarget.textContent = on ? 'Menos filtros' : 'Mais filtros';
+});
+/* ------------------------------------------------------- aba Visao geral
+   O panorama e sempre de uma UF inteira (ou do Brasil), nao da cidade
+   filtrada: um mapa de uma cidade so nao diz nada. A cidade escolhida na
+   aba Rede completa serve para dizer *qual* UF mostrar. */
+const GEO = DADOS.geo || 0;
+
+function escopoGeral(){
+  if(st.cid >= 0) return {uf: CID[st.cid][0], rot: UF[CID[st.cid][0]]};
+  return {uf: -1, rot: 'Brasil'};
+}
+
+function somaGeral(uf){
+  const cidades = [];
+  const porTipo = [0,0,0,0,0], porPlano = [], cidPlano = [];
+  for(let i=0;i<NP;i++){ porPlano.push(0); cidPlano.push(0); }
+  let total = 0;
+  for(let c=0;c<CID.length;c++){
+    if(!cQt[c]) continue;
+    if(uf >= 0 && CID[c][0] !== uf) continue;
+    let n = 0, hosp = 0;
+    const naCidade = [];
+    for(let i=0;i<NP;i++) naCidade.push(0);
+    for(let i=cIni[c]; i<cFim[c]; i++){
+      const p = PR[i];
+      let m = 0;
+      for(let k=1;k<p[5].length;k+=2) m |= p[5][k];
+      n++; total++;
+      porTipo[p[4]]++;
+      if(p[4] === 1) hosp++;
+      for(let g=0;g<NP;g++) if(m & MASCARA[g]){ porPlano[g]++; naCidade[g]++; }
+    }
+    for(let g=0;g<NP;g++) if(naCidade[g]) cidPlano[g]++;
+    const g = GEO ? GEO[c] : 0;
+    cidades.push({c:c, n:n, hosp:hosp, lat: g ? g[0] : 0, lon: g ? g[1] : 0});
+  }
+  return {total:total, cidades:cidades, porTipo:porTipo, porPlano:porPlano, cidPlano:cidPlano};
+}
+
+/* mapa de bolhas: projecao simples, com a longitude corrigida pelo cosseno */
+function desenhaMapa(cidades){
+  const pts = cidades.filter(c => c.lat && c.lon);
+  if(pts.length < 3) return '';
+  const latM = pts.reduce((a,c)=>a+c.lat,0)/pts.length;
+  const k = Math.cos(latM*Math.PI/180);
+  const X = c => c.lon*k, Y = c => -c.lat;
+  let x0=Infinity, x1=-Infinity, y0=Infinity, y1=-Infinity;
+  for(const c of pts){
+    x0=Math.min(x0,X(c)); x1=Math.max(x1,X(c));
+    y0=Math.min(y0,Y(c)); y1=Math.max(y1,Y(c));
+  }
+  const maxN = Math.max.apply(null, pts.map(c=>c.n));
+  /* a escala cabe nas duas dimensoes: limitar so a altura cortaria o mapa */
+  const L = 1000, ALT = 620, m = 46;
+  const escala = Math.min((x1-x0) ? (L-2*m)/(x1-x0) : 1e9,
+                          (y1-y0) ? (ALT-2*m)/(y1-y0) : 1e9);
+  const larg = (x1-x0)*escala, alta = (y1-y0)*escala;
+  const alt = alta + 2*m;
+  const dx = (L - 2*m - larg)/2;            /* centraliza o que sobrar */
+  const px = c => m + dx + (X(c)-x0)*escala;
+  const py = c => m + (Y(c)-y0)*escala;
+  const raio = n => 5 + 34*Math.sqrt(n/maxN);
+  /* as maiores primeiro, para as pequenas ficarem por cima e clicaveis */
+  const ord = pts.slice().sort((a,b)=>b.n-a.n);
+  let h = '<svg viewBox="0 0 ' + L + ' ' + Math.round(alt) + '" role="img" ' +
+          'aria-label="mapa de bolhas: cada circulo e uma cidade">';
+  for(const c of ord){
+    const r = raio(c.n);
+    h += '<circle class="bolha" cx="'+px(c).toFixed(1)+'" cy="'+py(c).toFixed(1)+
+         '" r="'+r.toFixed(1)+'"><title>Rede SulAmérica por Cidade</title></circle>';
+    if(c.hosp) h += '<circle class="miolo" cx="'+px(c).toFixed(1)+'" cy="'+py(c).toFixed(1)+
+                    '" r="'+Math.min(4.5, r*0.36).toFixed(1)+'" pointer-events="none"/>';
+  }
+  /* nomeia so as tres maiores, para nao virar sopa de letra */
+  for(const c of ord.slice(0,3))
+    h += '<text x="'+(px(c)+raio(c.n)+5).toFixed(1)+'" y="'+(py(c)+4).toFixed(1)+'">'+
+         esc(CID[c.c][1])+'</text>';
+  return h + '</svg>';
+}
+
+function barras(titulo, sub, rotulos, valores){
+  const max = Math.max.apply(null, valores.concat([1]));
+  const ord = rotulos.map((r,i)=>({r:r, v:valores[i], i:i})).sort((a,b)=>b.v-a.v);
+  let h = '<div><h2>'+titulo+'</h2><p class="sob">'+sub+'</p><div class="barras">';
+  for(const o of ord)
+    h += '<div class="l"><span>'+esc(o.r)+'</span><div class="t"><i class="b'+o.i+
+         '" style="width:'+(o.v*100/max).toFixed(1)+'%"></i></div>' +
+         '<b class="n">'+o.v.toLocaleString('pt-BR')+'</b></div>';
+  return h + '</div></div>';
+}
+
+function pintaGeral(){
+  const e = escopoGeral(), d = somaGeral(e.uf);
+  const cats = [[1,'hospitais'], [2,'laboratórios'], [4,'centros de imagem'],
+                [0,'clínicas'], [3,'médicos']];
+  let h = '<div class="geral"><div class="placar-geral">' +
+    '<div><b>' + d.total.toLocaleString('pt-BR') + '</b><span>prestadores</span></div>' +
+    '<div><b>' + d.cidades.length.toLocaleString('pt-BR') + '</b><span>cidades</span></div>';
+  for(const c of cats)
+    if(d.porTipo[c[0]])
+      h += '<div><b>' + d.porTipo[c[0]].toLocaleString('pt-BR') + '</b><span>' + c[1] + '</span></div>';
+  h += '</div><p class="escopo">Rede de <b>' + esc(e.rot) + '</b>' +
+       (e.uf < 0 ? ' inteiro' : ' inteiro') +
+       '. Escolha uma cidade no filtro da aba <b>Rede completa</b> para trocar a praça deste panorama.</p>';
+
+  const mapa = desenhaMapa(d.cidades);
+  if(mapa){
+    const maior = Math.max.apply(null, d.cidades.map(c=>c.n));
+    h += '<h2>Onde está a rede</h2><p class="sob">Cada círculo é uma cidade; ' +
+         'o tamanho acompanha quantos prestadores atendem nela. Passe o cursor para ver os números.</p>' +
+         '<div class="mapa">' + mapa + '</div><div class="legenda-mapa">' +
+         '<span><i style="width:13px;height:13px"></i>' +
+         Math.max(1, Math.round(maior*0.07)).toLocaleString('pt-BR') + ' prestadores</span>' +
+         '<span><i style="width:30px;height:30px"></i>' + maior.toLocaleString('pt-BR') + ' prestadores</span>' +
+         '<span><em></em>o miolo dourado marca cidade com hospital</span></div>';
+  }
+
+  h += '<div class="duplo">' +
+    barras('Prestadores por produto', 'Quantos prestadores a rede de cada produto alcança.',
+           PLANOS, d.porPlano) +
+    barras('Cidades atendidas por produto',
+           'Onde o produto chega. É aqui que a diferença entre um e outro costuma aparecer.',
+           PLANOS, d.cidPlano) + '</div></div>';
+  $('pGeral').innerHTML = h;
+}
+
+/* ------------------------------------------------------ aba Entre planos
+   Compara duas redes: quem o cliente mantem e quem ele deixa de ter ao sair
+   do produto atual para o outro. Usa a praca filtrada na aba Rede completa. */
+const parTroca = {de: NP - 1, para: 0};
+
+function comparaPlanos(a, b){
+  const f = faixa(), mA = MASCARA[a], mB = MASCARA[b];
+  const perdidos = [], soB = [];
+  let temA = 0, temB = 0, mantem = 0;
+  const cidA = new Set(), cidB = new Set();
+  for(let i=f[0];i<f[1];i++){
+    const p = PR[i];
+    let m = 0;
+    for(let k=1;k<p[5].length;k+=2) m |= p[5][k];
+    const A = !!(m & mA), B = !!(m & mB);
+    if(A){ temA++; cidA.add(p[1]); }
+    if(B){ temB++; cidB.add(p[1]); }
+    if(A && B) mantem++;
+    else if(A) perdidos.push(p);
+    else if(B) soB.push(p);
+  }
+  let cidSemB = 0;
+  for(const c of cidA) if(!cidB.has(c)) cidSemB++;
+  return {temA:temA, temB:temB, mantem:mantem, perdidos:perdidos, soB:soB,
+          cidA:cidA.size, cidB:cidB.size, cidSemB:cidSemB};
+}
+
+function pintaEntre(){
+  const onde = st.cid >= 0 ? CID[st.cid][1] + '/' + UF[CID[st.cid][0]] : 'todo o Brasil';
+  const sel = (id, v) => '<select id="' + id + '">' + PLANOS.map((n,i) =>
+        '<option value="' + i + '"' + (i===v ? ' selected' : '') + '>' + esc(n) + '</option>'
+      ).join('') + '</select>';
+  let h = '<div class="entre"><h2>O que muda entre dois produtos</h2>' +
+    '<p class="sob">Escolha o produto que o cliente tem hoje e o que está sendo considerado. ' +
+    'A comparação usa a praça filtrada na aba <b>Rede completa</b> — agora, <b>' + esc(onde) + '</b>.</p>' +
+    '<div class="escolha-par">' +
+      '<div class="campo"><label for="dePlano">Produto atual</label>' + sel('dePlano', parTroca.de) + '</div>' +
+      '<span class="seta">&rarr;</span>' +
+      '<div class="campo"><label for="paraPlano">Comparar com</label>' + sel('paraPlano', parTroca.para) + '</div>' +
+      '<button class="btn" id="bPdfTroca">Gerar PDF</button>' +
+    '</div>';
+
+  if(parTroca.de === parTroca.para){
+    h += '<div class="nada" style="margin-top:22px">Escolha dois produtos diferentes para ver a comparação.</div></div>';
+    $('pEntre').innerHTML = h;
+    ligaEntre();
+    return;
+  }
+
+  const d = comparaPlanos(parTroca.de, parTroca.para);
+  const pct = d.temA ? Math.round(d.mantem*100/d.temA) : 0;
+  const menos = d.temA - d.mantem;
+  const hospPerdidos = d.perdidos.filter(p => p[4] === 1);
+  const A = PLANOS[parTroca.de], B = PLANOS[parTroca.para];
+
+  h += '<div class="placar-perde">' +
+    '<div><b class="bom">' + pct + '%</b><span>da rede mantida</span></div>' +
+    '<div><b>' + menos.toLocaleString('pt-BR') + '</b><span>prestadores a menos</span></div>' +
+    '<div><b>' + hospPerdidos.length.toLocaleString('pt-BR') + '</b><span>hospitais a menos</span></div>' +
+    '<div><b>' + d.cidSemB.toLocaleString('pt-BR') + '</b><span>cidades sem rede</span></div>' +
+    '<div><b class="bom">' + d.soB.length.toLocaleString('pt-BR') + '</b><span>que só o ' + esc(B) + ' tem</span></div>' +
+    '</div>' +
+    '<p class="frase-troca">Trocando <b>' + esc(A) + '</b> por <b>' + esc(B) + '</b> em ' + esc(onde) +
+    ': o ' + esc(A) + ' atende <b>' + d.temA.toLocaleString('pt-BR') + '</b> prestadores em <b>' +
+    d.cidA.toLocaleString('pt-BR') + '</b> cidades; o ' + esc(B) + ', <b>' +
+    d.temB.toLocaleString('pt-BR') + '</b> em <b>' + d.cidB.toLocaleString('pt-BR') + '</b>.</p>';
+
+  if(hospPerdidos.length){
+    h += '<h2>Hospitais que o cliente deixa de ter</h2>' +
+      '<p class="sob">É a perda que pesa numa internação. Confira caso a caso antes de recomendar a troca.</p>' +
+      '<div class="perde-lista">' +
+      hospPerdidos.slice(0, 120).map(p => '<div class="it"><b>' + esc(NOM[p[0]]) + '</b><span>' +
+        esc(BAI[p[2]] || '') + (BAI[p[2]] ? ', ' : '') + esc(CID[p[1]][1]) + '</span></div>').join('') +
+      '</div>';
+    if(hospPerdidos.length > 120)
+      h += '<p class="sob" style="margin-top:12px">e mais ' + (hospPerdidos.length-120) +
+           ' hospitais — filtre uma cidade para ver a lista fechada.</p>';
+  } else {
+    h += '<div class="nada"><b>Nenhum hospital se perde nessa troca</b> em ' + esc(onde) +
+         '. A diferença entre os dois produtos está em clínicas, exames ou consultórios.</div>';
+  }
+  h += '</div>';
+  $('pEntre').innerHTML = h;
+  ligaEntre();
+}
+
+function ligaEntre(){
+  const de = $('dePlano'), para = $('paraPlano');
+  if(de) de.addEventListener('change', e => { parTroca.de = +e.target.value; pintaEntre(); });
+  if(para) para.addEventListener('change', e => { parTroca.para = +e.target.value; pintaEntre(); });
+  const b = $('bPdfTroca');
+  if(b) b.addEventListener('click', () => {
+    if(!temCorretor() && lembra('corr_pulou') !== '1'){ abreCorr(imprimeTroca); return; }
+    imprimeTroca();
+  });
+}
+
+/* ---------------------------------------------------------------- abas */
+const PAINEL = {geral:'pGeral', entre:'pEntre', rede:'pRede'};
+let abaAtual = 'rede';
+function abre(nome){
+  abaAtual = nome;
+  for(const b of $('abas').children) b.setAttribute('aria-selected', b.dataset.aba === nome);
+  for(const k in PAINEL) $(PAINEL[k]).hidden = (k !== nome);
+  if(nome === 'geral' && typeof pintaGeral === 'function') pintaGeral();
+  if(nome === 'entre' && typeof pintaEntre === 'function') pintaEntre();
+  guarda('aba', nome);
+}
+$('abas').addEventListener('click', e => {
+  const b = e.target.closest('button[data-aba]');
+  if(b) abre(b.dataset.aba);
+});
+
+$('mais').addEventListener('click', () => render(false));
+$('bCsv').addEventListener('click', exportar);
+$('bCopiar').addEventListener('click', copiar);
+$('bImp').addEventListener('click', () => {
+  /* primeira vez sem dados: pergunta antes, senao o PDF sai sem assinatura */
+  if(!temCorretor() && lembra('corr_pulou') !== '1'){ abreCorr(imprime); return; }
+  imprime();
+});
+
+/* ---- janela "Seus dados" ---- */
+let corrDoPdf = false;
+function mostraCorretor(){
+  $('seloRod').textContent = corretora();
+  const p = [];
+  for(const k of ['nome', 'fone', 'email']) if(CORR[k]) p.push(esc(CORR[k]));
+  $('rodCorr').innerHTML = p.length
+    ? p.join(' · ') + ' · <button type="button" class="trocar" id="trocaCorr">trocar</button>'
+    : '<button type="button" class="trocar" id="trocaCorr">preencha seus dados para assinar o PDF</button>';
+}
+function abreCorr(vemDoPdf){
+  corrDoPdf = typeof vemDoPdf === 'function' ? vemDoPdf : null;
+  for(const k of CAMPOS_CORR) $(ID_CORR[k]).value = CORR[k] || '';
+  const d = $('dlgCorr');
+  if(d.showModal) d.showModal(); else d.setAttribute('open', '');
+  $('kNome').focus();
+}
+function fechaCorr(){
+  const d = $('dlgCorr');
+  if(d.open && d.close) d.close(); else d.removeAttribute('open');
+}
+$('bCorr').addEventListener('click', () => abreCorr(false));
+$('bCorrSalva').addEventListener('click', () => {
+  for(const k of CAMPOS_CORR){ CORR[k] = $(ID_CORR[k]).value.trim(); guarda('corr_'+k, CORR[k]); }
+  guarda('corr_pulou', '');
+  mostraCorretor();
+  fechaCorr();
+  if(corrDoPdf) corrDoPdf();
+});
+$('bCorrFecha').addEventListener('click', () => {
+  fechaCorr();
+  /* pulou de proposito: nao pergunta mais e o PDF sai so com a marca */
+  if(corrDoPdf){ guarda('corr_pulou', '1'); corrDoPdf(); }
+});
+$('bCorrLimpa').addEventListener('click', () => {
+  for(const k of ['nome', 'fone', 'email']){ CORR[k] = ''; guarda('corr_'+k, ''); $(ID_CORR[k]).value = ''; }
+  mostraCorretor();
+});
+document.querySelector('footer').addEventListener('click', e => {
+  if(e.target.id === 'trocaCorr') abreCorr(false);
+});
+$('bZerar').addEventListener('click', () => {
+  st.planos.clear(); st.modo = 'qualquer'; st.tipo = -1; st.q = ''; st.mun = -1;
+  guarda('produtos', ''); guarda('modo', 'qualquer');
+  $('fQ').value = ''; $('cQ').classList.remove('tem');
+  Array.from($('fTipo').children).forEach((x,i) => x.setAttribute('aria-pressed', i===0));
+  setEsp(-1); setCidade(-1);
+});
+$('lista').addEventListener('click', e => {
+  const b = e.target.closest('[data-cid]');
+  if(b){ setCidade(+b.dataset.cid); window.scrollTo({top:0, behavior:'smooth'}); return; }
+  const m = e.target.closest('button.abrir');
+  if(m){ m.parentNode.classList.remove('corta'); m.remove(); }
+});
+document.addEventListener('keydown', e => {
+  if(e.key==='/' && !/^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName)){
+    e.preventDefault(); $('fCid').focus(); $('fCid').select();
+  }
+});
+
+if(lembra('comoler') !== 'fechado') $('comoler').open = true;
+$('comoler').addEventListener('toggle', e => guarda('comoler', e.target.open ? 'aberto' : 'fechado'));
+
+const pl = lembra('produtos');
+if(pl) for(const i of pl.split(',')) if(PLANOS[+i]) st.planos.add(+i);
+const md = lembra('modo');
+if(md === 'todos' || md === 'qualquer') st.modo = md;
+const cd = lembra('cidade');
+if(cd !== null && CID[+cd]) setCidade(+cd); else { bairros(); atualiza(); }
+$('fCid').focus();
+</script>
+<script src="../operadoras.js" data-operadora="sulamerica"></script>
+</body>
+</html>
