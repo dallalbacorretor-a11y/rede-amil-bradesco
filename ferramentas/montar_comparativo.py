@@ -268,7 +268,8 @@ SELOS_AMIL = {"a": "ACRED", "e": "TE", "p": "ESP", "r": "RES", "d": "DOUT", "q":
 
 
 def unidades_amil_coletadas():
-    """({(uf, cidade): [unidades]}, {(uf, cidade): data}) de ferramentas/amil/<UF>/<CIDADE>.json.
+    """({(uf, cidade): [unidades]}, {(uf, cidade): data}) de ferramentas/amil/<UF>/<CIDADE>.json
+    (a coleta da busca avancada do rede-amil, trazida pelo sincronizar.sh).
     Medico pessoa fisica (sem CNPJ) vem marcado "pf": so entra no comparativo se casar
     com um estabelecimento da Bradesco no mesmo consultorio."""
     out, datas = {}, {}
@@ -853,7 +854,8 @@ def montar():
                    "cep": extra[4] if len(extra) > 4 else "", "pf": pf,
                    "m": marcas_brad(mask), "tok": tokens(nom_b[p[0]])})
 
-    # Amil: nas cidades coletadas unidade a unidade na busca avancada (coletar_amil.py),
+    # Amil: nas cidades coletadas unidade a unidade na busca avancada (rede-amil,
+    # ferramentas/coletar.py; chega aqui pelo sincronizar.sh),
     # as unidades de la, cada uma com os produtos dela. Nas outras, a pagina da Amil:
     # um registro por CNPJ pode ter varios enderecos (uma rede de laboratorios com 31
     # unidades); cada endereco vira uma unidade, na cidade dele
@@ -1081,7 +1083,7 @@ def montar():
     dados = {
         "gerado": date.today().strftime("%d/%m/%Y"),
         "baseAmil": {uf: d.get("gerado_em", "") for uf, d in A.items()},
-        # cidades conferidas unidade a unidade na busca avancada (coletar_amil.py)
+        # cidades conferidas unidade a unidade na busca avancada (rede-amil, coletar.py)
         "baseAmilCid": {uf + "|" + c: dt for (uf, c), dt in datas_a.items()},
         # consulta oficial de rede referenciada (dia ou periodo); sem ela, a base do buscador
         "baseBradesco": periodo(datas_b) or B.get("ref", ""),
