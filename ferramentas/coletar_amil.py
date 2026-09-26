@@ -194,6 +194,62 @@ def coleta_cidade(uf, cidade, paralelo=4):
     return lista
 
 
+def vizinhas(uf, pular=()):
+    """Unidade de um municipio que a busca nao oferece na lista de cidades do produto (Almirante
+    Tamandare, por exemplo) so aparece na consulta de uma cidade vizinha, e coleta_cidade guarda
+    so quem e da cidade pedida: ela ficava de fora. Aqui, a partir do cache (nenhuma consulta
+    nova), cada unidade que apareceu na consulta de outra cidade entra no arquivo da cidade
+    dela, com o produto, o tipo e a especialidade da consulta. So em cidade que ja tem arquivo
+    (a coletada): nas outras, o comparativo continua usando a pagina da Amil. `pular`: cidades
+    que ficam como estao. Devolve [(cidade, nome, endereco, produtos)] do que entrou."""
+    tipo_de = {re.sub(r"[^A-Z0-9]+", "_", t): t for t in TIPOS}
+    prod_de = {r: p for p, rs in REDES[uf].items() for r in rs}
+    achadas = {}
+    for arq in CACHE.glob(f"*-{uf}-*.html"):
+        partes = arq.stem.split("-")
+        if len(partes) != 4 or partes[3] not in tipo_de or not partes[0].isdigit() \
+                or int(partes[0]) not in prod_de:
+            continue
+        r, cidade_q, tipo = int(partes[0]), partes[2], tipo_de[partes[3]]
+        for k, u in unidades(arq.read_text(encoding="utf-8")).items():
+            if u["uf"] != uf or u["cidade"] == cidade_q or u["cidade"] in pular:
+                continue
+            v = achadas.setdefault((u["cidade"], k), {"u": u, "p": set(), "esp": {}})
+            v["p"].add(prod_de[r])
+            es = v["esp"].setdefault(tipo, [])
+            es += [e for e in u["esp"] if e not in es]
+    entrou = []
+    for c in sorted({c for c, _ in achadas}):
+        f = PASTA / uf / f"{c}.json"
+        if not f.exists():
+            continue
+        d = json.loads(f.read_text(encoding="utf-8"))
+        tem = {(x["cod"], x["end"]): x for x in d["unidades"]}
+        mudou = False
+        for (cv, k), v in achadas.items():
+            if cv != c:
+                continue
+            y = tem.get(k)
+            if not y:
+                y = tem[k] = dict(v["u"], esp={}, produtos=[], tipos=[], achado="cidade vizinha")
+                d["unidades"].append(y)
+            novos = v["p"] - set(y["produtos"])
+            if novos or not y["tipos"]:
+                entrou.append((c, y["nome"], y["end"], sorted(novos or v["p"])))
+            antes = json.dumps([y["produtos"], y["tipos"], y["esp"]], sort_keys=True)
+            # so acrescenta, na ordem em que ja estava
+            y["produtos"] += [p for p in sorted(v["p"]) if p not in y["produtos"]]
+            y["tipos"] += [t for t in sorted(v["esp"]) if t not in y["tipos"]]
+            for t, es in v["esp"].items():
+                y["esp"].setdefault(t, [])
+                y["esp"][t] += [e for e in es if e not in y["esp"][t]]
+            mudou |= antes != json.dumps([y["produtos"], y["tipos"], y["esp"]], sort_keys=True)
+        if mudou:
+            d["unidades"].sort(key=lambda u: (u["nome"], u["end"]))
+            f.write_text(json.dumps(d, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    return entrou
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("uf")
@@ -218,6 +274,8 @@ def main():
         if c not in feitas:
             feitas.add(c)
             coleta_cidade(uf, c, a.paralelo)
+    entrou = vizinhas(uf)
+    print(f"{len(entrou)} unidades (ou produtos) achadas so na consulta de cidade vizinha", flush=True)
 
 
 if __name__ == "__main__":
