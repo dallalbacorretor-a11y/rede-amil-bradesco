@@ -1,0 +1,4403 @@
+{
+ "data": "2026-09-26",
+ "cidades": [
+  {
+   "cidade": "ADRIANOPOLIS",
+   "unidades": 0,
+   "antes": 0,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "AGUDOS DO SUL",
+   "unidades": 0,
+   "antes": 0,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "ALMIRANTE TAMANDARE",
+   "unidades": 0,
+   "antes": 0,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "ARAUCARIA",
+   "unidades": 13,
+   "antes": 13,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "BALSA NOVA",
+   "unidades": 0,
+   "antes": 0,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "BOCAIUVA DO SUL",
+   "unidades": 1,
+   "antes": 1,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "CAMPINA GRANDE DO SUL",
+   "unidades": 8,
+   "antes": 8,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "CAMPO DO TENENTE",
+   "unidades": 0,
+   "antes": 0,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "CAMPO LARGO",
+   "unidades": 22,
+   "antes": 22,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "CAMPO MAGRO",
+   "unidades": 0,
+   "antes": 0,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "CERRO AZUL",
+   "unidades": 0,
+   "antes": 0,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "COLOMBO",
+   "unidades": 14,
+   "antes": 14,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "CONTENDA",
+   "unidades": 0,
+   "antes": 0,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "CURITIBA",
+   "unidades": 661,
+   "antes": 661,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "DOUTOR ULYSSES",
+   "unidades": 0,
+   "antes": 0,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "FAZENDA RIO GRANDE",
+   "unidades": 14,
+   "antes": 14,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "ITAPERUCU",
+   "unidades": 0,
+   "antes": 0,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "LAPA",
+   "unidades": 3,
+   "antes": 3,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "MANDIRITUBA",
+   "unidades": 1,
+   "antes": 1,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "PIEN",
+   "unidades": 0,
+   "antes": 0,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "PINHAIS",
+   "unidades": 12,
+   "antes": 12,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "PIRAQUARA",
+   "unidades": 6,
+   "antes": 6,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "QUATRO BARRAS",
+   "unidades": 3,
+   "antes": 3,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "QUITANDINHA",
+   "unidades": 1,
+   "antes": 1,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "RIO BRANCO DO SUL",
+   "unidades": 1,
+   "antes": 1,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "RIO NEGRO",
+   "unidades": 2,
+   "antes": 2,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "unidades": 83,
+   "antes": 83,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "TIJUCAS DO SUL",
+   "unidades": 1,
+   "antes": 1,
+   "novas": 0,
+   "sairam": 0
+  },
+  {
+   "cidade": "TUNAS DO PARANA",
+   "unidades": 0,
+   "antes": 0,
+   "novas": 0,
+   "sairam": 0
+  }
+ ],
+ "totais_sem_tipo": {
+  "877-ARAUCARIA": 344,
+  "877-CAMPINA GRANDE DO SUL": 202,
+  "877-CAMPO LARGO": 358,
+  "877-COLOMBO": 56,
+  "877-CURITIBA": 2207,
+  "877-FAZENDA RIO GRANDE": 335,
+  "877-PINHAIS": 2022,
+  "877-PIRAQUARA": 56,
+  "877-QUATRO BARRAS": 241,
+  "877-RIO BRANCO DO SUL": 2,
+  "877-SAO JOSE DOS PINHAIS": 1022,
+  "879-ARAUCARIA": 347,
+  "879-BOCAIUVA DO SUL": 4,
+  "879-CAMPINA GRANDE DO SUL": 241,
+  "879-CAMPO LARGO": 454,
+  "879-COLOMBO": 67,
+  "879-CURITIBA": 3860,
+  "879-FAZENDA RIO GRANDE": 338,
+  "879-LAPA": 15,
+  "879-MANDIRITUBA": 5,
+  "879-PINHAIS": 3392,
+  "879-PIRAQUARA": 94,
+  "879-QUATRO BARRAS": 281,
+  "879-QUITANDINHA": 2,
+  "879-RIO BRANCO DO SUL": 1,
+  "879-RIO NEGRO": 25,
+  "879-SAO JOSE DOS PINHAIS": 1500,
+  "879-TIJUCAS DO SUL": 1,
+  "880-ARAUCARIA": 347,
+  "880-BOCAIUVA DO SUL": 4,
+  "880-CAMPINA GRANDE DO SUL": 241,
+  "880-CAMPO LARGO": 454,
+  "880-COLOMBO": 67,
+  "880-CURITIBA": 4129,
+  "880-FAZENDA RIO GRANDE": 338,
+  "880-LAPA": 15,
+  "880-MANDIRITUBA": 5,
+  "880-PINHAIS": 3573,
+  "880-PIRAQUARA": 94,
+  "880-QUATRO BARRAS": 281,
+  "880-QUITANDINHA": 2,
+  "880-RIO BRANCO DO SUL": 1,
+  "880-RIO NEGRO": 25,
+  "880-SAO JOSE DOS PINHAIS": 1529,
+  "880-TIJUCAS DO SUL": 1,
+  "881-ARAUCARIA": 310,
+  "881-BOCAIUVA DO SUL": 4,
+  "881-CAMPINA GRANDE DO SUL": 235,
+  "881-CAMPO LARGO": 441,
+  "881-COLOMBO": 67,
+  "881-CURITIBA": 4060,
+  "881-FAZENDA RIO GRANDE": 303,
+  "881-LAPA": 15,
+  "881-MANDIRITUBA": 5,
+  "881-PINHAIS": 3510,
+  "881-PIRAQUARA": 94,
+  "881-QUATRO BARRAS": 275,
+  "881-QUITANDINHA": 2,
+  "881-RIO BRANCO DO SUL": 1,
+  "881-RIO NEGRO": 25,
+  "881-SAO JOSE DOS PINHAIS": 1494,
+  "881-TIJUCAS DO SUL": 1,
+  "882-ARAUCARIA": 310,
+  "882-BOCAIUVA DO SUL": 4,
+  "882-CAMPINA GRANDE DO SUL": 235,
+  "882-CAMPO LARGO": 441,
+  "882-COLOMBO": 67,
+  "882-CURITIBA": 4062,
+  "882-FAZENDA RIO GRANDE": 303,
+  "882-LAPA": 15,
+  "882-MANDIRITUBA": 5,
+  "882-PINHAIS": 3512,
+  "882-PIRAQUARA": 94,
+  "882-QUATRO BARRAS": 275,
+  "882-QUITANDINHA": 2,
+  "882-RIO BRANCO DO SUL": 1,
+  "882-RIO NEGRO": 25,
+  "882-SAO JOSE DOS PINHAIS": 1494,
+  "882-TIJUCAS DO SUL": 1,
+  "884-ARAUCARIA": 346,
+  "884-BOCAIUVA DO SUL": 4,
+  "884-CAMPINA GRANDE DO SUL": 241,
+  "884-CAMPO LARGO": 453,
+  "884-COLOMBO": 68,
+  "884-CURITIBA": 3269,
+  "884-FAZENDA RIO GRANDE": 337,
+  "884-LAPA": 15,
+  "884-MANDIRITUBA": 5,
+  "884-PINHAIS": 2822,
+  "884-PIRAQUARA": 95,
+  "884-QUATRO BARRAS": 282,
+  "884-QUITANDINHA": 2,
+  "884-RIO BRANCO DO SUL": 2,
+  "884-RIO NEGRO": 24,
+  "884-SAO JOSE DOS PINHAIS": 1379,
+  "884-TIJUCAS DO SUL": 1,
+  "1074-ARAUCARIA": 339,
+  "1074-BOCAIUVA DO SUL": 4,
+  "1074-CAMPINA GRANDE DO SUL": 236,
+  "1074-CAMPO LARGO": 361,
+  "1074-COLOMBO": 68,
+  "1074-CURITIBA": 3307,
+  "1074-FAZENDA RIO GRANDE": 330,
+  "1074-LAPA": 3,
+  "1074-PINHAIS": 2975,
+  "1074-PIRAQUARA": 94,
+  "1074-QUATRO BARRAS": 277,
+  "1074-QUITANDINHA": 2,
+  "1074-RIO BRANCO DO SUL": 2,
+  "1074-RIO NEGRO": 25,
+  "1074-SAO JOSE DOS PINHAIS": 1465,
+  "1074-TIJUCAS DO SUL": 1,
+  "1079-ARAUCARIA": 339,
+  "1079-BOCAIUVA DO SUL": 4,
+  "1079-CAMPINA GRANDE DO SUL": 236,
+  "1079-CAMPO LARGO": 360,
+  "1079-COLOMBO": 68,
+  "1079-CURITIBA": 2753,
+  "1079-FAZENDA RIO GRANDE": 330,
+  "1079-LAPA": 3,
+  "1079-PINHAIS": 2441,
+  "1079-PIRAQUARA": 94,
+  "1079-QUATRO BARRAS": 277,
+  "1079-QUITANDINHA": 2,
+  "1079-RIO BRANCO DO SUL": 2,
+  "1079-RIO NEGRO": 24,
+  "1079-SAO JOSE DOS PINHAIS": 1344,
+  "1079-TIJUCAS DO SUL": 1,
+  "1081-ARAUCARIA": 345,
+  "1081-BOCAIUVA DO SUL": 4,
+  "1081-CAMPINA GRANDE DO SUL": 240,
+  "1081-CAMPO LARGO": 454,
+  "1081-COLOMBO": 67,
+  "1081-CURITIBA": 3503,
+  "1081-FAZENDA RIO GRANDE": 336,
+  "1081-LAPA": 3,
+  "1081-MANDIRITUBA": 5,
+  "1081-PINHAIS": 3083,
+  "1081-PIRAQUARA": 93,
+  "1081-QUATRO BARRAS": 280,
+  "1081-QUITANDINHA": 2,
+  "1081-RIO BRANCO DO SUL": 1,
+  "1081-RIO NEGRO": 25,
+  "1081-SAO JOSE DOS PINHAIS": 1501,
+  "1081-TIJUCAS DO SUL": 1,
+  "1123-ARAUCARIA": 338,
+  "1123-CAMPINA GRANDE DO SUL": 200,
+  "1123-CAMPO LARGO": 343,
+  "1123-COLOMBO": 51,
+  "1123-CURITIBA": 1240,
+  "1123-FAZENDA RIO GRANDE": 329,
+  "1123-PINHAIS": 1125,
+  "1123-PIRAQUARA": 52,
+  "1123-QUATRO BARRAS": 237,
+  "1123-SAO JOSE DOS PINHAIS": 758,
+  "1134-ARAUCARIA": 305,
+  "1134-BOCAIUVA DO SUL": 4,
+  "1134-CAMPINA GRANDE DO SUL": 235,
+  "1134-CAMPO LARGO": 442,
+  "1134-COLOMBO": 67,
+  "1134-CURITIBA": 3881,
+  "1134-FAZENDA RIO GRANDE": 298,
+  "1134-LAPA": 15,
+  "1134-MANDIRITUBA": 5,
+  "1134-PINHAIS": 3335,
+  "1134-PIRAQUARA": 94,
+  "1134-QUATRO BARRAS": 275,
+  "1134-QUITANDINHA": 2,
+  "1134-RIO BRANCO DO SUL": 1,
+  "1134-RIO NEGRO": 24,
+  "1134-SAO JOSE DOS PINHAIS": 1452,
+  "1134-TIJUCAS DO SUL": 1,
+  "1136-ARAUCARIA": 305,
+  "1136-BOCAIUVA DO SUL": 4,
+  "1136-CAMPINA GRANDE DO SUL": 235,
+  "1136-CAMPO LARGO": 442,
+  "1136-COLOMBO": 67,
+  "1136-CURITIBA": 3880,
+  "1136-FAZENDA RIO GRANDE": 298,
+  "1136-LAPA": 15,
+  "1136-MANDIRITUBA": 5,
+  "1136-PINHAIS": 3334,
+  "1136-PIRAQUARA": 94,
+  "1136-QUATRO BARRAS": 275,
+  "1136-QUITANDINHA": 2,
+  "1136-RIO BRANCO DO SUL": 1,
+  "1136-RIO NEGRO": 24,
+  "1136-SAO JOSE DOS PINHAIS": 1451,
+  "1136-TIJUCAS DO SUL": 1
+ },
+ "cidade_vizinha": [
+  {
+   "cidade": "CURITIBA",
+   "nome": "FRISCHMANN AISENGART MED DIAGNOSTICA",
+   "end": "AVENIDA PRESIDENTE KENNEDY, 4121",
+   "produtos": [
+    "black"
+   ]
+  }
+ ],
+ "acrescidas": [
+  {
+   "cidade": "CURITIBA",
+   "nome": "INSTITUTO PAULO NASSIF",
+   "end": "RUA FRANCISCO ROCHA, 857",
+   "cnpj": "19484222000155",
+   "produtos": [
+    "black",
+    "s2500",
+    "s6500black"
+   ],
+   "origem": "sem tipo"
+  }
+ ],
+ "procurados": [
+  {
+   "cidade": "ARAUCARIA",
+   "nome": "Centro Medico de Araucaria",
+   "end": "R Prof Alfredo Parodi, 317",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "ARAUCARIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "ARAUCARIA",
+   "nome": "Cim Araucaria - Cent Integ de Med",
+   "end": "R Manoel Ribas, 100 Lj 2",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "INTEG"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "ARAUCARIA",
+   "nome": "Davita",
+   "end": "Av Archelau De Almeida Torres, 2141",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "DAVITA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "ARAUCARIA",
+   "nome": "Innovare",
+   "end": "Av Doutor Victor Do Amaral, 1217 Sobreloja",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "INNOVARE"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "ARAUCARIA",
+   "nome": "Instituto Momentto",
+   "end": "R Joao Pessoa, 145, Sl/26",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "MOMENTTO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "ARAUCARIA",
+   "nome": "Le Corp Saude",
+   "end": "R Albary P Ferreira, 400",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "CORP"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "ARAUCARIA",
+   "nome": "Laboratorio Sao Carlos",
+   "end": "R PRF Alfredo Parodi, 317",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "CARLOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CAMPINA GRANDE DO SUL",
+   "nome": "Labck - Laboratorio Caboracy Kosop",
+   "end": "Rodovia do Caqui, 1150, Fundos Sala",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "CABORACY",
+    "LABCK"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CAMPO LARGO",
+   "nome": "Clin Ped Werner & Werner S/S Ltda",
+   "end": "Avenida Padre Natal Pigatto, 781",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "WERNER"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CAMPO LARGO",
+   "nome": "Clinica de Ortopedia Campo Largo",
+   "end": "R Generoso Marques, 1789",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ORTOPEDIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CAMPO LARGO",
+   "nome": "Clinica Invida",
+   "end": "R Barao do Rio Branco, 1443",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "INVIDA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CAMPO LARGO",
+   "nome": "Davita Campo Largo",
+   "end": "R Ayrton Senna da Silva, 3500",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "DAVITA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CAMPO LARGO",
+   "nome": "Ifo-instituto de Fisioteraria Ortop",
+   "end": "R Barao Do Rio Branco, 1443 Sala 02",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "FISIOTERARIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CAMPO LARGO",
+   "nome": "Medicos de Olhos S A",
+   "end": "R Quintino Bocaiuva, 1626",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "MEDICOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CAMPO LARGO",
+   "nome": "Proemi Neuro Reabilitacao Neurologi",
+   "end": "R Rua Benedito Soares Pinto, 1729",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "REABILITACAO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CAMPO LARGO",
+   "nome": "Cimad Centro de Imagem Diagnostica",
+   "end": "R Domingos Cordeiro, 1223 - Ate 1299/1300",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "DIAGNOSTICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "COLOMBO",
+   "nome": "Hospital Maternidade Alto Maracana",
+   "end": "R S Pedro, 892",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "MARACANA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "COLOMBO",
+   "nome": "CL de Fisiot Jerrison G Ferreira",
+   "end": "Rod da Uva, 930",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "FISIOTERAPIA",
+    "JERRISON"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "COLOMBO",
+   "nome": "Clinica Pro Familia",
+   "end": "R Odonis Bighi, 53",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "FAMILIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "COLOMBO",
+   "nome": "NK Servicos de Fisioterapia Ltda",
+   "end": "R Paschoa Lazarotto Toniolo, 1502",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "FISIOTERAPIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "COLOMBO",
+   "nome": "Policlinica Bom Pastor",
+   "end": "Av Marginal J de Anchieta, 1404",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "POLICLINICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "COLOMBO",
+   "nome": "Policlinica Colombo",
+   "end": "R Walfrido Ceccon, 40",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "POLICLINICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "COLOMBO",
+   "nome": "Sunaga Serviços Medicos",
+   "end": "R Thomas Edison, 178, Sala 1",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "MEDICOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "COLOMBO",
+   "nome": "Metrolab",
+   "end": "R Jose Leal Fontoura, 348",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "METROLAB"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Cim Agua Verde - Cent Integr de Med",
+   "end": "Av Presidente Getulio Vargas, 3201",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "INTEGR"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Hospital Erastinho",
+   "end": "R Doutor Ovande Do Amaral, 201",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "ERASTINHO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Hospital Novo Mundo",
+   "end": "Av Republica Argentina, 4650",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "MUNDO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Hospital Union Ltda",
+   "end": "Avenida Silva Jardim, 3888 Casa",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "UNION"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "A-mi",
+   "end": "R Luisa Dariva, 40, Conjunto 91 9 Andar",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Ab Vitae",
+   "end": "Av Joao Gualberto, 1342 Andar 15",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "VITAE"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Aldeia Cannara",
+   "end": "R Dona Alice Tibirica, 111",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "CANNARA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Alfaclin Servicos de Saude",
+   "end": "R Francisco Derosso, 2571, 03 TR Andar",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "ALFACLIN"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Aliana R G Kohane",
+   "end": "Rua Padre Anchieta, 1846 Cj 811",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "ALIANA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Alime Bakri Saude da Mulher S/S LTD",
+   "end": "R Emiliano Perneta, 860 Cj 1606 - 16 Andar",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "MULHER"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Alto da Gloria Cons Med Associados",
+   "end": "Avenida Parana, 337 Sala 1002",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "ASSOCIADOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Amistad Clinica de Esp Medicas",
+   "end": "R Pe Anchieta, 1691, CJ 907 9 And",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "AMISTAD"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Ana Paula Martins Nelli Cons Pediatrico",
+   "end": "R Euclides da Cunha, 441",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "PEDIATRICO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Andressa Giacomazi Michelangel",
+   "end": "R Pe Anchieta, 2050, SL 1703",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "GIACOMAZZI",
+    "MICHELANGEL"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Angiocentro Curitiba",
+   "end": "R Pe Anchieta, 2310, CJ 31 - 3 And",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ANGIOCENTRO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Angiocirurgioes",
+   "end": "R Des Motta, 3329",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "ANGIOCIRURGIOES",
+    "CIRURGIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Annapurna Clinica Medica Ltda",
+   "end": "R Bruno Filgueira, 369 12 Sala 1204",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "ANNAPURNA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Asa Ecoclinica",
+   "end": "R Vltos da Patria, 475, CJ 1301",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "ECOCLINICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Avivar Saude",
+   "end": "R Dom Pedro I, 800",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "AVIVAR"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Aw Saude",
+   "end": "Av Mal Floriano Peixoto, 2208",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "SAUDE"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Axis Medicina e Tecnologia",
+   "end": "Av do Batel, 1889, 2 And",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "TECNOLOGIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Bambini",
+   "end": "Av Sete De Setembro, 5402 Conjunto 53 e 54",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "BAMBINI"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Bambino Clinica Pediatrica",
+   "end": "R Padre Anchieta Bigorrilho - de 1325/1326 A 2853/2854, 2050, Sala 2606 Andar 26 C",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "PEDIATRICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Bana & Figueira Servicos Medicos",
+   "end": "Av Republica Argentina, 1228, SL 706",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "FIGUEIRA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "BL Servicos Medicos SS",
+   "end": "Av Sete De Setembro, 4923 Sala 102",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "MEDICOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Bonalumi & Bonalumi",
+   "end": "Rua Carneiro Lobo, 570 Conjunto 1503",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "BONALUMI"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "C A O Cto Avan Otorrinolaringologia",
+   "end": "Av Sete De Setembro, 6700",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "OTORRINOLARINGOLOGIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "C e C Cons Medicos e Empreedimentos",
+   "end": "R Itupava, 701",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "EMPREEDIMENTOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Cardio e Saude",
+   "end": "R Heitor S de Franca, 396, CJ 709/710",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "CARDIO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Cardiocare Clinica Cardiologica",
+   "end": "Av Marechal Humberto de Alencar Castelo Branco - Lado Impar, 295",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "CARDIOLOGICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Cardiocenter",
+   "end": "Av Republica Argentina, 369, 1005",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "CARDIOCENTER"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Cent de Recuperacao Neurologica",
+   "end": "R Vereador Washington Mansur, 287",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "RECUPERACAO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Cent Dia Clin Recuperacao Ltda",
+   "end": "R Otavio Pereira Dos Anjos, 454 Casa",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "RECUPERACAO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Centra",
+   "end": "R VSC do Rio Branco, 8",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "CENTRA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Centro de Check Up de Curitiba",
+   "end": "R Emiliano Perneta, 860 21 And",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "CHECK"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Centro de Fisioterapia Iguacu Ltda",
+   "end": "Av Vereador Toaldo Tulio, 2354, Loja 4",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "FISIOTERAPIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Centro de Nefrologia Nacoes",
+   "end": "Av Mal Humberto de A C Branco, 131",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "NEFROLOGIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Centro Medico Anita",
+   "end": "Av Anita Garibaldi, 3842",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "ANITA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Centro Medico Boqueirao",
+   "end": "R Napoleao Laureano, 800",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "BOQUEIRAO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Centro Medico Lumen S/S",
+   "end": "Alameda Augusto Stellfeld, 1437",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "LUMEN"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Centro Medico Marechal",
+   "end": "Av Marechal Floriano Peixoto, 8693 Sl 01",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "MARECHAL"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Centro Medico Sao Francisco",
+   "end": "R Des Vieira Cavalcanti, 1089",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "FRANCISCO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Cim Cic - Centro Integrado de Medi",
+   "end": "R Manoel Valdomiro De Macedo, 2851",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "MEDI"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Cion - Centro Integrado de Ortop e Neurologia",
+   "end": "R General Mario Tourinho - Ate 739/740, 1733, SL 1004 Andar 10",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "NEUROLOGIA",
+    "SINAPSE"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Cionc",
+   "end": "R Des Vieira Cavalcanti, 1152",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "CIONC"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Cirurgicare - Park Shopping Barigui",
+   "end": "R Professor Pedro Viriato Parigot De Souza, 600 Loja 3001-b",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "CIRURGICARE"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "CL Arritmia Card e Sincope",
+   "end": "R Pres Rodrigo Otavio, 830",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ARRITMIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "CL Olhos Aristides Athaide",
+   "end": "R Pres Faria, 51, 103",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ARISTIDES"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "CL Prof DR Octavio Silveira",
+   "end": "R Deputado Heitor Alencar Furtado - de 2802/2803 A 3999/4000, 3350, 4 And - Sala 404",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "SILVEIRA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Claudia Valeria Ciuffi",
+   "end": "R Da Paz, 195 L6",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "CLAUDIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Climepar",
+   "end": "R Sete de Abril, 763",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "CLIMEPAR"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Climulti",
+   "end": "Al Princesa Izabel, 2526",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "CLIMULTI"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clin Av de Cir do Cerebro e Coluna",
+   "end": "Av Sete de Setembro, 4884, 17 Andar",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "CEREBRO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clin de Dermat e Pneumol Curitiba",
+   "end": "Av Sete De Setembro, 4214 Cj 1501",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "PNEUMOL"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clin de Frat e Ortopedia Sao Marcos",
+   "end": "R Goncalves Dias, 507",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "ORTOPEDIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clin de Uroginecologia SC Ltda",
+   "end": "Av Mal Floriano Peixoto, 50 Cj 201",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "UROGINECOLOGIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clin Dermatologica Geann de Bortoli",
+   "end": "Av Vicente Machado, 467 3 A Cj 34",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "DERMATOLOGICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clin DR Flavio Menoncin",
+   "end": "Av Visconde De Guarapuava, 3444 Cj 802",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "MENONCIN"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clin Ecocor SC Ltda",
+   "end": "Rua Desembargador Westphalen, 594",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "ECOCOR"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clin Madalozzo de Neurocirurgia",
+   "end": "Avenida Do Batel, 1230 Bloco B Sala 708",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "NEUROCIRURGIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clin Med Von Bahten Ltda",
+   "end": "Avenida Candido De Abreu, 140 8 Andar Conjunto 801",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "BAHTEN"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clin Saboia Onco Masto e Cir Plast",
+   "end": "R Visconde De Nacar, 656",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "SABOIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clini San",
+   "end": "Av Iguacu, 1676",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "CLINI"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Alves",
+   "end": "Av Pres Getulio Vargas, 2932, SL 802",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ALVES"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Cmi",
+   "end": "R Presidente Faria, 421, Conjunto 71 07 Andar",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "CLINICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Cordial",
+   "end": "R Bruno Filgueira, 576",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "CORDIAL"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica da Coluna Vertebral",
+   "end": "Al Prca Izabel, 605",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "VERTEBRAL"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica de Cir Geral e Oftalmologia",
+   "end": "R Da Paz, 195 Sl 504 505",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "OFTALMOLOGIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica de Fisioterapia Itupava",
+   "end": "Rua Da Paz, 195 Cj 15",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "FISIOTERAPIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica de Olhos Gulin",
+   "end": "Av Republica Argentina, 2150 Cj 52 5 Andar",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "OLHOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica de Olhos Muricy",
+   "end": "Av Sete de Setembro, 5899",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "MURICY",
+    "VISAO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica de Psicologia Escuta",
+   "end": "Al DR Carlos de Carvalho, 75, CJ 82",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "PSICOLOGIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica de Psicologia Psicoclin",
+   "end": "R Brigadeiro Franco - de 1395/1396 A 2049/2050, 1924, Sala 1004 10 Andar",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "PSICOLOGIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica de Saude Feminina",
+   "end": "R Professor Brandao, 196",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "FEMININA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica DR Edison Fabri",
+   "end": "R Marechal Deodoro, 235 Sl 1408",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "EDISON"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Eureka",
+   "end": "R Miguel Piekarski - Ate 739/740, 446",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "EUREKA",
+    "INTERVENCAO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Fraturas Vila Hauer",
+   "end": "R Miguel Poholink, 114",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "FRATURAS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Gandhi",
+   "end": "Av Anita Garibaldi, 2565",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "GANDHI"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Graf Guimaraes",
+   "end": "Av Sete de Setembro, 759 / Av Senador Souza Naves - de 786/787 Ao Fim, 1025",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "GUIMARAES"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Hara Fisioterapia e Acupunt",
+   "end": "R Augusto Severo, 414",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "FISIOTERAPIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Homeoclin",
+   "end": "Av Republica Argentina, 3021, SLS 110 e 112",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "HOMEOCLIN"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Integrada Godoy",
+   "end": "Av Parana Bacacheri - de 1371/1372 A 3744/3745, 1624",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "GODOY"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Jardins",
+   "end": "Av Silva Jardim, 2121",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "JARDINS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica L Equilibre de Psico e Fono",
+   "end": "Avenida Republica Argentina, 3396 Imovel Comercial",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "EQUILIBRE"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Marpy Pediatria",
+   "end": "R Da Paz, 195 Cj 124",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "PEDIATRIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Matheus Kowal Rosales",
+   "end": "R Tenente Miguel Anselmo Da Silva, 240",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "MATHEUS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Medica Cic",
+   "end": "R Pedro Gusso, 3308",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "CLINICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Medica Gondek",
+   "end": "R Desembargador Motta, 1499 Cj 404 - 4 Andar",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "GONDEK"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Medica Kurahashi Melo",
+   "end": "R Da Paz, 98 Sala 304",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "KURAHASHI"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Medica Makino Montemezzo",
+   "end": "R Professor Pedro Viriato Parigot De Souza, 3901 Andar 4 Cj 44",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "MONTEMEZZO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Medica Medilocus",
+   "end": "Rua Conselheiro Araujo, 434 Sala 23 Andar 2",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "MEDILOCUS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Medica Vita Sano",
+   "end": "Av Des Hugo Simas, 281",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "VITA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Medica Vitali",
+   "end": "Av Candido de Abreu, 526, SL 310",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "VITALI"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Oftalmologica Hauer",
+   "end": "Rua Jose Peixoto De Lacerda Wernek, 41",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "OFTALMOLOGICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Ohana - Intervencao Comportamental",
+   "end": "Av Anita Garibaldi - de 1347 A 1789 - Lado Impar, 1593",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "COMPORTAMENTAL"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Olhos DR R Formiga",
+   "end": "R Emilio de Menezes, 1090",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "FORMIGA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Personal",
+   "end": "R Rockefeller, 152, LJ 02",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "PERSONAL"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Qali",
+   "end": "Avenida Manoel Ribas, 985 Sala 34 35",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "QALI"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Sao Luiz",
+   "end": "Al Doutor Carlos De Carvalho, 1087",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "LUIZ"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Schmitz Rathunde",
+   "end": "Tv Itarare, 55 Conj 51",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "RATHUNDE"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Siria",
+   "end": "Av Republica Argentina, 1228 Andar 21 Sala 2106",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "SIRIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Vieira SS LT",
+   "end": "Av Sete De Setembro, 4848 Apto 1304",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "VIEIRA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Visao",
+   "end": "R Da Paz, 195 Sl 123",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "VISAO"
+   ],
+   "achados": [
+    {
+     "nome": "CENTRO DA VISAO",
+     "end": "RUA EMILIANO PERNETA, 680 CJ 101 - 1 ANDAR",
+     "cnpj": "05764788000126",
+     "produtos": [
+      "black",
+      "ouro",
+      "platinum",
+      "s2500",
+      "s450",
+      "s6500black",
+      "s750"
+     ],
+     "nota": 0.9,
+     "mesmo_end": false,
+     "na_coleta": true
+    }
+   ]
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinica Vital Equilibrio Saúde Integrada",
+   "end": "Av Visconde de Guarapuava, 3965, Conjunto 02",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "EQUILIBRIO",
+    "INTEGRADA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinicem Cto de Diag Hauer",
+   "end": "Rua Alcino Guanabara, 945",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "CLINICEM"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinicor",
+   "end": "R Sete de Abril, 830",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "CLINICOR"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinikids",
+   "end": "R Euclides da Cunha, 441",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "CLINIKIDS",
+    "OFTALMOLOGIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinisa Clinica de Saude Medica SS",
+   "end": "R Da Paz, 195 Conj 125",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "CLINISA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Cmeb Cto Medico Especializado",
+   "end": "Av Anita Garibaldi, 1121",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "CONSULTORIOS",
+    "ESPECIALIZADO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Coelho e Martins Servicos Medicos S",
+   "end": "R Teixeira Soares, 50",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "MARTINS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Conceptkids Cen de Desen Infantil",
+   "end": "Av Dos Estados, 889",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "CONCEPTKIDS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Cons Med Marcos Mattos Benetti",
+   "end": "R Mal Deodoro, 51 Sl 904 A",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "BENETTI"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Consult Med Juk Benke SS",
+   "end": "Rua Portugal, 351",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "CONSULT"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Consultorio Landal",
+   "end": "R Padre Anchieta, 1846 Sala 103",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "CONSULTORIO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Coopcardio PR",
+   "end": "R Lamenha Lins, 266, 2 And - SL 24",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "COOPCARDIO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Cpaa Centro de Pesquisa e Avaliacao",
+   "end": "Rua Deputado Mario De Barros, 900 14 Andar",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "AVALIACAO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Cto de Video Endoscopia",
+   "end": "R Maua, 682",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ENDOSCOPIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Cto Paranaense de Otorrino e Plasti",
+   "end": "Av Joao Gualberto, 1673 Sl 04",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "OTORRINO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Cuidados Intens de Curitiba",
+   "end": "R Jeremias M Perretto, 300",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "CUIDADOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "D Anlague Terapias Associadas",
+   "end": "R Bruno Filgueira, 369 3 Andar - Cj 302",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "ASSOCIADAS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Delta Saude",
+   "end": "Av Presidente Getulio Vargas, 593 Terreo",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "DELTA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Derma Cor",
+   "end": "R PRF Pedro V P de Souza, 3901, SL 95 9 And",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "DERMA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Dermatologia Curitiba",
+   "end": "Rua Herculano Carlos Franco De Souza, 362",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "DERMATOLOGIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Dermoestetica",
+   "end": "R Padre Anchieta, 1846 Andar 10 Conj1014",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "DERMOESTETICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Detsch e Nakatani Ser Med Hosp S/S",
+   "end": "Al Doutor Carlos De Carvalho, 1087",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "NAKATANI"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Digicentro Servicos Medicos S S",
+   "end": "R Portugal, 307 Sl 23 Ad 2",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "DIGICENTRO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Digicor",
+   "end": "PC Rui Barbosa, 245",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "DIGICOR"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Dipar Serv Diag Paranaense Soc Simp",
+   "end": "R Manoel Eufrasio, 403",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "DIPAR"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Dob Fedatto",
+   "end": "R Amintas De Barros, 574 Casa",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "FEDATTO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Dra Janaina Weingartner",
+   "end": "Av Republica Argentina, 1228, 22 And SL 2207",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "CLINI",
+    "WEINGARTNER"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Dra Marcia Mantovani",
+   "end": "Av Republica Argentina, 1160, Conj 508",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "MANTOVANI"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Duo Neuro - Saude Integrada",
+   "end": "Av Republica Argentina, 1228, Sala 1407",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "NEURO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Eccos - Servicos Medicos",
+   "end": "Av Sete De Setembro, 4214 Sl 1707",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "MEDICOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Ecolab Lab de Ecocardiografia SC LT",
+   "end": "R Olavo Bilac, 181",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "ECOCARDIOGRAFIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Eduardo Erico Zen",
+   "end": "R Da Paz, 195 Lj 1C",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "EDUARDO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Efetivamente Centro de Especialidades Integra",
+   "end": "Av Victor Ferreira do Amaral - de 1181/1182 A 2359/2360, 1262",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "EFETIVAMENTE"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Eletrofisiologia Car do Parana",
+   "end": "Av Sen Souza Naves, 522",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ELETROFISIOLOGIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Endocore",
+   "end": "Avenida Silva Jardim, 2600 Conjunto 1701",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "ENDOCORE"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Endogastro Clinica Medica S/S Ltda",
+   "end": "Rua Emiliano Perneta, 860 1 O Andar Conjunto 1",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "ENDOGASTRO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Endoneuro",
+   "end": "R Emiliano Perneta, 725 Sl 1103",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "ENDONEURO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Endoscopia Mais",
+   "end": "Av Sete de Setembro - de 4552 A 5954 - Lado Par, 4682, Sala 02",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ENDOSCOPIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Endoskope Diagnosticos Endoscopicos",
+   "end": "R Itupava, 255",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "ENDOSCOPICOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Endovideo",
+   "end": "R Emiliano Perneta, 860, 5 Andar",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "ENDOVIDEO",
+    "RESPIRATORIO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Endrigo Monte Serrat Prevedello",
+   "end": "Avenida Parana, 1755 Sala 105",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "PREVEDELLO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Equipe Saude",
+   "end": "R Jose Cadilhe, 255",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "EQUIPE"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Espaco Terapeutico Evoluir",
+   "end": "R Marechal Deodoro - Ate 0765 - Lado Impar, 665",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "TERAPEUTICO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Espaco Terapeutico Zaya",
+   "end": "R Engenheiro Serafim Voloschen, 159",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "TERAPEUTICO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Fagundes e Obrali Medicos Associado",
+   "end": "R Da Paz, 195 1 Andar Conj 116",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "ASSOCIADO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Ferraz Faria Ortopedia",
+   "end": "Av Sete De Setembro, 4214 Ad 9 Cj 1009",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "ORTOPEDIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Ferreira Servicos de Fisioterapia S",
+   "end": "Rua Alberto Folloni, 1093 Vitalclin",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "FISIOTERAPIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Fisiocore Fisioterapia e Pilates",
+   "end": "R Deputado Waldemiro Pedroso, 360, LJ 1 2 3",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "FISIOTERAPIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Fisioform",
+   "end": "R Carlos Augusto Cornelsen, 321",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "FISIOFORM"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Flavia do Rocio Follador",
+   "end": "R Conselheiro Dantas, 599",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "FOLLADOR"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Foco Oftalmologia",
+   "end": "R Heitor Stockler de Franca, 396, 6 Andar Conj 611",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "OFTALMOLOGIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Gastro Vida",
+   "end": "R Alcides Munhoz, 433 2o Andar",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "GASTRO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Gastroclinica Deodoro",
+   "end": "R Mal Deodoro, 630, CJ 102/1 Andar",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "GASTROCLINICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Genetika",
+   "end": "R Saldanha Marinho, 1782",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "GENETIKA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Genki",
+   "end": "Av Parana Cabral - Ate 1369/1370, 202, Sala 403",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "GENKI"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Gonzalez Servicos Medicos Ltda Me",
+   "end": "R Paraguassu, 853 Terreo",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "GONZALEZ"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Grupo Behavior",
+   "end": "R Doutor Carvalho Chaves, 662",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "BEHAVIOR"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Gyneclin SC Ltda",
+   "end": "Avenida Vicente Machado, 401",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "GYNECLIN"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Ice",
+   "end": "R Jeremias M Perretto, 300",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Ictr Inst Cancer Transplante",
+   "end": "R Myltho A da Silva, 870",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "TRANSPLAN",
+    "TRANSPLANTE"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Imo",
+   "end": "Rua Herculano Carlos Franco De Souza, 438",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Inst Hematol e Hemoter Ctba",
+   "end": "PC Rui Barbosa, 694",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "HEMATOL"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Inst Hematol Onco Curitiba",
+   "end": "R Fagundes Varela, 1785",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "HEMATOL"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Inst Med Flumignano",
+   "end": "Rua Atilio Borio, 711 Casa",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "FLUMIGNANO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Inst Otorrino Oftalmo",
+   "end": "Av Silva Jardim, 4271",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "OTORRINO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Inst Terapeutico de Curitiba SC LTD",
+   "end": "R Mauricio Caillet, 77",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "TERAPEUTICO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Instituto de Medicina Hiperbarica",
+   "end": "R Emilio de Menezes, 833",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "HIPERBARICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Instituto Graefe de Oftalmologia",
+   "end": "R Capitao Souza Franco, 95",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "OFTALMOLOGIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Instituto Martinelli e Brasil",
+   "end": "R da Paz, 195, Conj 316 3 Andar",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "MARTINELLI"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Isidoro C Stanischesk",
+   "end": "R Itupava, 701",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "STANISCHESK"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "J M Servicos Medicos",
+   "end": "Av Iguacu, 1236, Cons 210 2 And",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "MEDICOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Jacobovicz Consultorio Med Ltda Me",
+   "end": "Rua Portugal, 307 2 Andar",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "CONSULTORIO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Jefferson Roveda",
+   "end": "R Ebano Pereira, 44, 404",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "JEFFERSON"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Julio Cezar Uli Coelho",
+   "end": "R Cdor Araujo, 143, 113",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "COELHO",
+    "GASTROCIRURGICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Le Petit Clinica Pediatrica",
+   "end": "Avenida Do Batel, 1230 Bloco 2 Conjunto 612",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "PEDIATRICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Lec Laboratorio",
+   "end": "R Pres Rodrigo Otavio, 830",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "LABORATORIO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Letti Daudt Servicos Medicos",
+   "end": "R Paulo G Sobrinho, 362",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "MEDICOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Linvasc",
+   "end": "R Francisco Rocha, 1312",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "LINVASC"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Longevita",
+   "end": "R Padre Anchieta, 793",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "LONGEVITA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Loyola & Avellar S/S",
+   "end": "Av Candido Hartmann, 570 Conj.121 Andar3",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "AVELLAR"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "M Esther P Gaudencio",
+   "end": "Av Candido Hartmann, 528, 3and",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "GAUDENCIO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Marcos Vinicius Chiaretto",
+   "end": "R Emilio de Menezes, 833, 2 And",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "CHIARETTO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Medicina Hiperbarica",
+   "end": "TV DR Flavio Luz, 111",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "HIPERBARICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Mediclin",
+   "end": "R Tenente Francisco Ferreira de Souza - de 1836/1837 Ao Fim, 3499",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "MEDICLIN"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Medsena Clin Medica e Cirurgica LTD",
+   "end": "Avenida Vicente Machado, 320 7 And Cj 702",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "CIRURGICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Mixmed Servicos Medicos S/S",
+   "end": "Av Do Batel, 1230 Cj 307 Andar 3 Bl 1",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "MEDICOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Modena Cto de Espec Medicas",
+   "end": "R Buenos Aires, 466, 03",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "MEDICAS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Nakadomari Servicos Medicos Ltda",
+   "end": "Rua Padre Anchieta, 2050 Sala 1412",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "NAKADOMARI"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Neo Nucleo Estudos Oncologicos",
+   "end": "Rua Desembargador Costa Carvalho, 90 Casa",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "ONCOLOGICOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Neuro Intensiva Clinica de Reabilitacao",
+   "end": "R Conde de Sao Joao das Duas Barras - Ate 1139/1140, 541",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "REABILITACAO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Neuroclinica Curitiba",
+   "end": "Av Candido de Abreu, 427, CJ 508",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "NEUROCLINICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Neurofaz Reab e Desen Neurologico",
+   "end": "Av Marechal Floriano Peixoto, 6349 - De 4547 A 6529 - L",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "NEUROLOGICO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Neurofisiologia Ecoville",
+   "end": "R Joao Nicco, 59",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "NEUROFISIOLOGIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Neurointerage Reabilitacao e Desenvolviment",
+   "end": "R Manoel das Chagas Lima, 126",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "DESENVOLVIMENT"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "NK Servicos de Fisioterapia Ltda",
+   "end": "Av Republica Argentina, 151 Loja 01",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "FISIOTERAPIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Novamed Unidade Curitiba",
+   "end": "R Bpo D Jose, 2133",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "NOVAMED"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Nucleo Otorrinol e Fonodiaul SC LTD",
+   "end": "Avenida Candido De Abreu, 526 Conj 911 09a",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "OTORRINOL"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "NW Neuro e Neurofis Clinica Ltda",
+   "end": "R Padre Anchieta, 2050 Sala 1412",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "NEUROFIS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Obepar",
+   "end": "Avenida Republica Argentina, 1505 4Âº Andar Sala 414",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "OBEPAR"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Oftalmolaser Luiz Antonio Lipinski",
+   "end": "Rua Emiliano Perneta, 424 5 Andar D",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "OFTALMOLASER"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Oftalmopar Clin Oftalmol Paranaense",
+   "end": "R Emiliano Perneta, 680 Cj 1401 A 1405",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "OFTALMOPAR"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Oliveira e Tagliari Med Associados",
+   "end": "R Padre Anchieta, 1846 Cj 802",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "ASSOCIADOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Ombro DK & Cia Servicos Medicos S/S",
+   "end": "Av Iguacu, 1236 Sala 108",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "MEDICOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Oncocentro",
+   "end": "R Nicolau Maeder, 934",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ONCOCENTRO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Oncopar Clin de Oncologia",
+   "end": "Av Candido Hartmann, 528, 3/a",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ONCOLOGIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Opus Salutis Clin Med SC Ltda",
+   "end": "Av Vicente Machado, 467 2 And - Sl 23",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "SALUTIS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Ortho Spine Institut",
+   "end": "Rua General Mario Tourinho, 1746 Sala 901 Andar 09",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "INSTITUT"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Orthofisio Clinica de Fisioterapia",
+   "end": "R Carlos Klemtz, 1707",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "FISIOTERAPIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Ortopedia Schiavon",
+   "end": "R Padre Germano Mayer, 2258",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "ORTOPEDIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Ortopedia Sete",
+   "end": "Av Sete de Setembro, 6496, Casa",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "ORTOPEDIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Otoclinica",
+   "end": "R Emiliano Perneta, 424, 81",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "OTOCLINICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Paulo Sergio Matschinske",
+   "end": "Av Des Hugo Simas, 333",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "MATSCHINSKE"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Pediatria - da Matta & Garcia",
+   "end": "Av Republica Argentina, 4949",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "PEDIATRIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Pediatria Plena",
+   "end": "Av Sete de Setembro Batel - de 4552 A 5954 - Lado Par, 5402, Conj 54 Andar 5",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "PEDIATRIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Pedro Caron Medico",
+   "end": "R Goias, 70 Loja 502 Andar 4",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "PEDRO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Peleclin",
+   "end": "R Visconde Do Rio Branco, 1358 Sala 805/806",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "PELECLIN"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Pelvica Curitiba",
+   "end": "Av Republica Argentina, 1336, Andar 04 Escritorio",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "PELVICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Plus Sante",
+   "end": "R Goncalves Dias, 234",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "SANTE"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Pmed Servicos Medicos SS Ltda",
+   "end": "Av Republica Argentina, 210 Conj 405 4 Andar",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "MEDICOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Policlinica Sitio Cercado",
+   "end": "R Moreira Sales, 250",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "POLICLINICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Policlinica Veneto",
+   "end": "R Pe Anchieta, 2285, SL 503",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "POLICLINICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Precisao Servicos Medicos",
+   "end": "R Itupava, 810, SL / 02",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "PRECISAO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Prime Cor",
+   "end": "Rua Emiliano Perneta, 860 Conjunto 1501 1506",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "PRIME"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Pro Mulher",
+   "end": "R Pe Germano Mayer, 1081",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "MULHER"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Probem Psicologia CL e Saude Mental",
+   "end": "Avenida Sete De Setembro, 5388 Sala 1603 1604 2002",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "PSICOLOGIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Proftal Oftalmologia S S",
+   "end": "R Comendador Araujo, 510 Cj 401 e 403",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "OFTALMOLOGIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Psicoaprendizagem Clinica de Psicologia Ltda",
+   "end": "Av Joao Gualberto - Ate 1343/1344, 731, CJ 302 And 03",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "PSICOAPRENDIZAGEM"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Rafaela Perraro Sanderson Serv Med",
+   "end": "R Padre Anchieta, 2050 Sala 1412",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "SANDERSON"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Realmed",
+   "end": "R Lourival Portella Natel, 197",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "REALMED"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Reeducar Clinica de Fisioterapia e Reabilitacao",
+   "end": "R Senador Batista de Oliveira, 190",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "FISIOTERAPIA",
+    "OSWALDO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Reumato Prime",
+   "end": "R VSC do Rio Branco, 8",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "REUMATO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Ricardo J L Ribeiro",
+   "end": "Avenida Candido Hartmann, 570 Sala 253",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "RICARDO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Rogerio Schwabe",
+   "end": "R Mal Deodoro, 51 Cj 1205 12 And",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "ROGERIO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "RVS Alergia e Imunologia",
+   "end": "R Pe Anchieta, 1846, 03 And/sl/312",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "ALERGIA",
+    "IMUNOLOGIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Sae Clinica Medica",
+   "end": "Av Joao Gualberto, 1974",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "CLINICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Santa Cruz - Centro Medico",
+   "end": "Av Do Batel, 1898 Sl 02 Andar 02 Cond",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "CRUZ"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Schmidt & Xavier Serv Medicos",
+   "end": "Rua Carneiro Lobo, 468 Conjunto 1201",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "SCHMIDT"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Secadi Servicos Medicos",
+   "end": "R Jair do N Cesar, 226",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "MEDICOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Semec",
+   "end": "Av Iguacu, 1236, SL 301",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "CARDIOLOGICOS",
+    "SEMEC"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Sempre Saude Consultorio Medico",
+   "end": "Av Republica Argentina, 2403, CJ 105/10 And",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "CONSULTORIO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Skrobot Servicos Medicos Eireli",
+   "end": "Av Iguacu, 1236 Andar 1 Sala 114",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "SKROBOT"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Trilhas Servicos Terapeuticos",
+   "end": "R Buenos Aires, 441 Cj 24",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "TERAPEUTICOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Turbay Servicos Medicos Eireli",
+   "end": "Avenida Presidente Getulio Vargas, 2932 Conj 1204 Andar 12",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "MEDICOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Udv",
+   "end": "R Mal Deodoro, 450, CJ 801 Andar 8",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Unicardios Unid de Atend do Coracao",
+   "end": "Alameda Augusto Stellfeld, 2088",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "UNICARDIOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Unineo Curitiba",
+   "end": "R Joao Antonio Xavier, 1001",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "UNINEO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Uroclinica",
+   "end": "Av Republica Argentina, 1237, Sala 1006",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "UROCLINICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Vacinas Asami",
+   "end": "R Brigadeiro Franco - Ate 1393/1394, 974",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "VACINAS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Vanoli & Vanoli",
+   "end": "Avenida Republica Argentina, 1336 Conj 1813 And 18",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "VANOLI"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "VG Servicos Medicos",
+   "end": "Rua Sao Vicente, 55 Casa",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "MEDICOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Vitamed",
+   "end": "Av Des Hugo Simas, 333",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "VITAMED"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Way Servicos Medicos Ltda Epp",
+   "end": "R Padre Anchieta, 1846 3 A Sl 309",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "MEDICOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Wernwck e Kanashiro",
+   "end": "Av Pres Affonso Camargo, 1399",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "KANASHIRO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Wiederkher Medicos Associados",
+   "end": "Avenida Visconde De Guarapuava, 4628 3 Andar Sala 312",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "WIEDERKHER"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Zabot - Ginec e Obst",
+   "end": "Av Sete De Setembro, 4923 Conj 1001",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "ZABOT"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Lab Nilson Santos",
+   "end": "PC Zacarias, 36, CJ 1001",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "NILSON"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Laboran Analises Clinicas",
+   "end": "R PST Carlos Frank, 1527, Com 04 Terreo / R Emiliano Perneta, 10, 1201 / R Campos Sales, 454",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "LABORAN"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Laboratorio Analisa",
+   "end": "R Pe Ildefonso, 58",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ANALISA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Laboratorio Byori",
+   "end": "R Pedro Collere, 951",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "BYORI"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Laboratorio Criscenter",
+   "end": "R Bruno Filgueira, 235",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "CRISCENTER"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Laboratorio Santa Cruz",
+   "end": "Av Mal Floriano Peixoto, 3969 / R Pedro Gusso, 3334 (só SulAmérica) / R Pedro Zagonel, 195 (só SulAmérica)",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "CRUZ"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Vicenlab Lab Analises Clin",
+   "end": "Av Vicente Machado, 401",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "VICENLAB"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Angioclin Imagem Digital",
+   "end": "R Vinte e Q de Maio, 262, 2",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ANGIOCLIN"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Cedo",
+   "end": "R VSC do Rio Branco, 8",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "CEDO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Cedo Diagnostico Por Imagem",
+   "end": "Rua Benjamin Constant, 000608",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "CEDO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Clinimage Ultrasonografia",
+   "end": "R Martim Afonso, 558",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ULTRASONOGRAFIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Image Clinica Medica",
+   "end": "R Emiliano Perneta, 424, 10 And SL 103",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "IMAGE"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Luna Y Mello Serviços Medicos",
+   "end": "R Marechal Deodoro, 51, Sala 307 / Ab",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "MEDICOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "Prolab Cent Diag Cardiologico",
+   "end": "Rua Professor Pedro Viriato Parigot De Souza, 600",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "CARDIOLOGICO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "LAPA",
+   "nome": "D Agostini Clinica Medica",
+   "end": "R Ten Henrique dos Santos, 360",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "AGOSTINI"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "PINHAIS",
+   "nome": "Ativacardio - Medicina Preventiva",
+   "end": "R Terra Boa Emiliano Perneta - de 453/454 Ao Fim, 1176",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ATIVACARDIO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "PINHAIS",
+   "nome": "Centro de Especialidade DR Renato",
+   "end": "R Bom Jesus, 134, 150",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ESPECIALIDADE"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "PINHAIS",
+   "nome": "Clinica Ciranda",
+   "end": "R Uniflor, 940",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "CIRANDA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "PINHAIS",
+   "nome": "Clinica de Fraturas Pinhais",
+   "end": "Rod Joao Leopoldo Jacomel, 11890",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "COTRAUMA",
+    "FRATURAS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "PINHAIS",
+   "nome": "Espaco Terapia",
+   "end": "R Sete de Setembro, 246",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "TERAPIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "PINHAIS",
+   "nome": "Plus Clinica Servicos Medicos",
+   "end": "R Alexandre A de Farias, 139",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "MEDICOS",
+    "PLUS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "PINHAIS",
+   "nome": "Clinilabor",
+   "end": "Rod Joao L Jacomel, 12066",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "CLINILABOR"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "PINHAIS",
+   "nome": "Diagnosticos da America Sa",
+   "end": "Av Jacob Macanhan, 569",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "AMERICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "PIRAQUARA",
+   "nome": "Capi Centro Ambulatorial Piraquara",
+   "end": "R BR do Cerro Azul, 865",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "AMBULATORIAL"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "PIRAQUARA",
+   "nome": "Clinica Humana",
+   "end": "R Eliseu J Hipolito, 148",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "HUMANA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "PIRAQUARA",
+   "nome": "Lapi Lab de Analises Clinicas",
+   "end": "R BR do Cerro Azul, 865",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "LAPI"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "QUATRO BARRAS",
+   "nome": "Allegra Saude",
+   "end": "Rua Vinte e Cinco de Janeiro, 335",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ALLEGRA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "QUATRO BARRAS",
+   "nome": "Clinica Quatro Barras",
+   "end": "Av Sao Sebastiao, 233, SL 04",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "CLINICA",
+    "QUATRO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "RIO NEGRO",
+   "nome": "Laboratorio Annalab",
+   "end": "R Riachuelo, 186",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ANNALAB"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Alticlinica - Clinica Medica",
+   "end": "R Vltos da Patria, 1022",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ALTICLINICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Angimedi Clin Medica",
+   "end": "Av Das Americas, 737",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "ANGIMEDI"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Cativar Centro Terapeutico",
+   "end": "Av Rui Barbosa, 5506, Andar 1",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "TERAPEUTICO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Cim Sao Jose dos Pinhais - Cent Int",
+   "end": "R Voluntarios Da Patria, 300",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "PINHAIS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Clin Jasinski e Suzuki",
+   "end": "R Alcidio Viana, 837, 801",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "JASINSKI"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Clin Pediatrica Amorim Pereira",
+   "end": "R Joao Angelo Cordeiro, 500 4 And - Sl 41",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "PEDIATRICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Clinica Cardio Kinder",
+   "end": "R Joao A Cordeiro, 500, SL 34",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "BRETZKE",
+    "CARDIO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Clinica Cardiokinder",
+   "end": "R Joao Angelo Cordeiro, 500 Sala 34",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "CARDIOKINDER"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Clinica Cardiologica Campos",
+   "end": "R Alcidio Viana, 837, Conj 409",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "CARDIOLOGICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Clinica de Neurologia Sao Jose",
+   "end": "R Joinville, 2526",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "NEUROLOGIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Clinica de Olhos Oftalmo Brasil S/S",
+   "end": "R Alcidio Viana, 1001 Sala 503",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "OFTALMO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Clinica de Olhos Sao Jose",
+   "end": "R Marcelino Nogueira, 580 4 And Sl 19",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "OLHOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Clinica Fischer e Ribeiro",
+   "end": "R Alcidio Viana, 837, SL 506",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "FISCHER"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Clinica Psicologia Viva Mais",
+   "end": "R Scharfemberg de Quadros, 130",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "PSICOLOGIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Clinica Rehabilita",
+   "end": "R BR do Cerro Azul, 1431, Casa",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "REHABILITA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Clinica Santa Isabel",
+   "end": "R Izabel A Redentora, 2758",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ISABEL"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Clinica Sao Marcos",
+   "end": "R Jose Trevisan, 1203",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "MARCOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Clinica Semaer",
+   "end": "Rua Joao Angelo Cordeiro, 500",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "SEMAER"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Clinica Vitavisao",
+   "end": "R Voluntarios Da Patria, 1046",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "VITAVISAO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Cnsbe - Paula Valle",
+   "end": "R Joao Angelo Cordeiro, 500, Sala 38",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "CNSBE"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Consultorio Medico Integrado",
+   "end": "R BR do Cerro Azul, 1164 (só Bradesco) / Rua Alcidio Viana, 837 Sala 810 (só SulAmérica)",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "CONSULTORIO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Cto de Olhos Sao Jose dos Pinhais",
+   "end": "R Ten Djalma Dutra, 686, SL 03",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "OLHOS"
+   ],
+   "achados": [
+    {
+     "nome": "INSTITUTO DE OLHOS SAO JOSE DOS PINHAIS",
+     "end": "RUA IZABEL A REDENTORA, 2356 SALAS 111 E 112",
+     "cnpj": "04247637000138",
+     "produtos": [
+      "black",
+      "bronze",
+      "ouro",
+      "platinum",
+      "prata",
+      "s2500",
+      "s380",
+      "s450",
+      "s6500black",
+      "s750"
+     ],
+     "nota": 0.96,
+     "mesmo_end": false,
+     "na_coleta": true
+    }
+   ]
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "E.pissaia Estetica e Saude",
+   "end": "R Alcides Dal Negro, 246",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ESTETICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Equilibrio Centro de Especialidades",
+   "end": "R Izabel A Redentora, 2478, SL 01",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "EQUILIBRIO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Facility Saude - Clinica",
+   "end": "R Margarida de A Franco, 1527, SL / 04",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "FACILITY"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Femme Gineco Obstetricia",
+   "end": "R Joao A Cordeiro, 500, 1 And/sl 16",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "OBSTETRICIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Gabriel Treml Murara e Medicos Asso",
+   "end": "R Alcidio Viana, 916 Sala 705",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "GABRIEL"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Gre",
+   "end": "R Izabel A Redentora, 2370, 1 Andar - Sala 1",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Inst do Aparelho Digestivo",
+   "end": "R Joao Angelo Cordeiro, 572",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "DIGESTIVO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Iot Instituto de Ortopedia",
+   "end": "R Alcidio Viana, 837, SL 810",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "ORTOPEDIA",
+    "TRAUMAT"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Jem Servicos Medicos",
+   "end": "R Alcidio Viana, 942, SL 6",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco SulAmerica",
+   "termos": [
+    "MEDICOS"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Le Petit Clinica Pediatrica",
+   "end": "R Izabel A Redentora, 2356 Sala 107 - 10o Andar",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "PEDIATRICA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Luiz Solyon Junior",
+   "end": "R Paulino de S Cortes, 2175",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "SOLYON"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Marcelo Gipiela & Cia",
+   "end": "R Vltos da Patria, 1400",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "MARCELO"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Nuttrir",
+   "end": "Rua Alcidio Viana, 837b Ed Galeno Sl 508",
+   "origem": "comparativo sem Amil",
+   "tem": "SulAmerica",
+   "termos": [
+    "NUTTRIR"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Saudeclin",
+   "end": "R Joao A Cordeiro, 500, SL 24",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "SAUDECLIN"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Teiwaz",
+   "end": "R Joao A Cordeiro, 500, SL 3",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "TEIWAZ"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Vitta Fisio",
+   "end": "Av Rui Barbosa, 8687",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "VITTA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Viva Clinica Medica",
+   "end": "R Joinville, 2526",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "VIVA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Laboran",
+   "end": "R Loanda, 203",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "LABORAN"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Angiopar",
+   "end": "R Joao A Cordeiro, 490",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ANGIOPAR"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "SAO JOSE DOS PINHAIS",
+   "nome": "Ultradiagnose",
+   "end": "R Izabel A Redentora, 2775",
+   "origem": "comparativo sem Amil",
+   "tem": "Bradesco ",
+   "termos": [
+    "ULTRADIAGNOSE"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "ARAUCARIA",
+   "nome": "CENTRO MEDICO ARAUCARIA",
+   "end": "",
+   "origem": "pagina da Amil",
+   "cnpj": "11443290000164",
+   "termos": [
+    "ARAUCARIA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "INSTITUTO CASA RARA",
+   "end": "",
+   "origem": "pagina da Amil",
+   "cnpj": "45591361000198",
+   "termos": [
+    "CASA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "CURITIBA",
+   "nome": "CONEXA SAUDE",
+   "end": "",
+   "origem": "pagina da Amil",
+   "cnpj": "27092748000207",
+   "termos": [
+    "CONEXA"
+   ],
+   "achados": []
+  },
+  {
+   "cidade": "ALMIRANTE TAMANDARE",
+   "nome": "NOVA CLINICA LUZ",
+   "end": "",
+   "origem": "pagina da Amil",
+   "cnpj": "07265336000125",
+   "termos": [
+    "NOVA"
+   ],
+   "achados": []
+  }
+ ]
+}
