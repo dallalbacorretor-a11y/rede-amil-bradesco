@@ -2,7 +2,8 @@
 # Traz o site de cada operadora do repositorio de origem para a pasta dela.
 #
 # Os repositorios rede-amil e rede-bradesco continuam sendo onde cada rede e
-# atualizada; este aqui so junta os dois sob um link. Por isso a copia e
+# atualizada; este aqui so junta os dois sob um link. Do rede-amil vem tambem a
+# coleta unidade a unidade (ferramentas/amil), que o comparativo usa. Por isso a copia e
 # sempre inteira (apaga e traz de novo) e a unica mudanca feita nela e a
 # barra de troca de operadora, acrescentada no fim do index.html.
 #
@@ -63,3 +64,11 @@ PY
 
 traz amil "$origem_amil"
 traz bradesco "$origem_bradesco"
+
+# a coleta da Amil unidade a unidade (busca avancada) mora no rede-amil, junto com a
+# pagina que sai dela; o comparativo le a mesma coleta, que vem daqui
+if [ -d "$tmp/amil/ferramentas/amil" ]; then
+  rm -rf "$raiz/ferramentas/amil"
+  cp -r "$tmp/amil/ferramentas/amil" "$raiz/ferramentas/amil"
+  echo "coleta da Amil: $(ls "$raiz"/ferramentas/amil/_coleta_*.json | xargs -n1 basename | tr '\n' ' ')"
+fi
