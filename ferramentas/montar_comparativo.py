@@ -451,10 +451,11 @@ def casar_sulamerica(por_cidade, su, soltos=()):
         l["u"] = x["p"]
         if sem_acento(x["nome"]) not in {sem_acento(l["n"]), sem_acento(l["al"])}:
             l["nu"] = bonito(x["nome"])
-        if len(x["cnpj"]) == 14:
-            l["_c"].add(x["cnpj"])
-        l["_n"].append(x["nome"])
-        l["_e"].append(x["end"])
+        # o nome, o CNPJ e o endereco da SulAmerica nao entram no que junta linhas
+        # (juntar_empresa): a SulAmerica cadastra unidades com o nome do conjunto ("Lab
+        # Imagem" para a Masto Centro e a Denso no mesmo predio, "Hospital do Coracao" na
+        # unidade de diagnostico da Cidade Jardim) e ligaria empresas que a Amil e a
+        # Bradesco listam separadas
         l["_l"] += "u"
     # consultorio da SulAmerica x medico pessoa fisica da Amil ou da Bradesco que ficou fora
     idx_s = {}
@@ -603,8 +604,10 @@ def juntar_empresa(linhas, juntar_marcas):
         if len(g) == 1:
             out.append(g[0])
             continue
-        # quem esta em mais operadoras primeiro; a marca diz o que so parte delas lista
-        g.sort(key=lambda l: (-len(l["_l"]), l["_l"]))
+        # quem esta em mais operadoras primeiro (Amil e Bradesco; a SulAmerica nao muda o
+        # nome da linha: a unidade "Itaim" com SulAmerica nao vira o nome do Sirio Libanes);
+        # a marca diz o que so parte delas lista
+        g.sort(key=lambda l: (-len(l["_l"].replace("u", "")), l["_l"].replace("u", "") or "u"))
         todas = set("".join(l["_l"] for l in g))
         ends, vistos = [], []
         for l in g:
