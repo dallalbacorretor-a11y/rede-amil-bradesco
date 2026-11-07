@@ -175,8 +175,8 @@ td.onde{white-space:nowrap}
       <div class="campo"><span>Tipo</span><div class="seg" id="tipo"></div></div>
       <div class="acoes"><button class="btn" id="pdf" type="button">Gerar PDF</button></div>
     </div>
-    <div class="linha"><span class="op amil">Amil</span><div class="chips" id="planosAmil"></div></div>
-    <div class="linha"><span class="op brad">Bradesco</span><div class="chips" id="planosBrad"></div></div>
+    <div class="linha" id="linhaAmil"><span class="op amil">Amil</span><div class="chips" id="planosAmil"></div></div>
+    <div class="linha" id="linhaBrad"><span class="op brad">Bradesco</span><div class="chips" id="planosBrad"></div></div>
     <div class="linha" id="linhaSula" hidden><span class="op sula">SulAmérica</span><div class="chips" id="planosSula"></div></div>
   </section>
 
@@ -235,14 +235,20 @@ td.onde{white-space:nowrap}
   }).join("");
 
   function cidade() { return C.cidades.filter(function (c) { return c.k === st.cidade; })[0]; }
-  function produtosAmil() { return C.amil[cidade().uf] || []; }
+  // a operadora sem rede na cidade sai da comparacao (Taubate: so Bradesco e SulAmerica)
+  function temAmil() { return !!cidade().amil; }
+  function temBrad() { return !!cidade().brad; }
+  function produtosAmil() { return temAmil() ? (C.amil[cidade().uf] || []) : []; }
   function temSula() { return !!(C.sulaCid && C.sulaCid[cidade().k]); }
   function produtosSula() { return temSula() ? (C.sulamerica || []) : []; }
 
   // ------------------------------------------------------------- chips
   function chips() {
     var pa = produtosAmil();
-    st.amil = st.amil.filter(function (c) { return pa.some(function (p) { return p.c === c; }); });
+    // sem Amil na cidade a escolha fica guardada para a proxima cidade
+    if (pa.length) st.amil = st.amil.filter(function (c) { return pa.some(function (p) { return p.c === c; }); });
+    $("linhaAmil").hidden = !pa.length;
+    $("linhaBrad").hidden = !temBrad();
     $("planosAmil").innerHTML = pa.map(function (p) {
       return '<button type="button" class="chip" data-c="' + esc(p.c) + '" style="--c:' + p.cor + '" aria-pressed="' +
              (st.amil.indexOf(p.c) >= 0) + '"><i></i>' + esc(p.r) + "</button>";
@@ -271,7 +277,7 @@ td.onde{white-space:nowrap}
     produtosAmil().forEach(function (p) {
       if (st.amil.indexOf(p.c) >= 0) cols.push({ op: "amil", c: p.c, nome: p.r, cor: p.cor });
     });
-    st.brad.slice().sort().forEach(function (i) {
+    if (temBrad()) st.brad.slice().sort().forEach(function (i) {
       var p = C.bradesco[i];
       cols.push({ op: "brad", i: i, nome: p.r, cor: p.cor, sub: p.sub });
     });
@@ -630,7 +636,7 @@ td.onde{white-space:nowrap}
   }
   $("cidade").onchange = function () {
     st.cidade = this.value; st.teto = POR_VEZ; st.onde = "todos";
-    if (!st.amil.length || !produtosAmil().some(function (p) { return st.amil.indexOf(p.c) >= 0; })) {
+    if (produtosAmil().length && (!st.amil.length || !produtosAmil().some(function (p) { return st.amil.indexOf(p.c) >= 0; }))) {
       st.amil = produtosAmil().slice(0, 2).map(function (p) { return p.c; });
     }
     chips(); desenhar();
@@ -694,7 +700,8 @@ td.onde{white-space:nowrap}
     "buscador oficial (base ") + esc(C.baseBradesco) + ")." + (sulaCids.length ? " SulAmérica Saúde — busca de rede " +
     "referenciada oficial (" + juntar(sulaDatas) + "), planos Clássico 100 Enfermaria e Especial 100 (PME), em " +
     (sulaCids.length <= 3 ? juntar(sulaCids.map(function (c) { return c.nome; }))
-                          : sulaCids[0].nome + " e mais " + (sulaCids.length - 1) + " cidades da região") + "." : "") +
+                          : sulaCids.length + " cidades de " + juntar(sulaCids.map(function (c) { return c.uf; })
+                              .filter(function (u, i, a) { return a.indexOf(u) === i; }).sort())) + "." : "") +
     " Somente estabelecimentos; " +
     "médicos pessoa física não entram. O mesmo prestador com nomes diferentes foi unificado pelo CNPJ, pelo nome, " +
     "pela cidade e pelo endereço — quando o nome difere, a linha mostra também o nome nas outras operadoras. O prestador " +
@@ -711,7 +718,7 @@ td.onde{white-space:nowrap}
   st.amil = salvo.amil && salvo.amil.length ? salvo.amil : [];
   if (salvo.brad) st.brad = salvo.brad;
   if (salvo.sula && lembra("st3")) st.sula = salvo.sula;
-  if (!produtosAmil().some(function (p) { return st.amil.indexOf(p.c) >= 0; })) {
+  if (produtosAmil().length && !produtosAmil().some(function (p) { return st.amil.indexOf(p.c) >= 0; })) {
     st.amil = produtosAmil().slice(0, 2).map(function (p) { return p.c; });
   }
   chips(); desenhar();
