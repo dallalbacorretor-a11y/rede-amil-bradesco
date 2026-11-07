@@ -1077,6 +1077,16 @@ def montar():
         cidades.append({"k": chave_txt, "uf": uf, "nome": bonito(cidade),
                         "amil": c["amil"], "brad": c["brad"], "ambos": c["ambos"], "sula": c["sula"]})
 
+    # cidades onde a SulAmerica foi coletada: as que tem arquivo e, nos estados coletados
+    # inteiros (sulamerica/_estados.json), todas - ali, sem arquivo e sem rede SulAmerica
+    sula_cid = {uf + "|" + c: "/".join(reversed(dt.split("-"))) if "-" in dt else dt
+                for (uf, c), dt in datas_su.items()}
+    arq_est = RAIZ / "ferramentas" / "sulamerica" / "_estados.json"
+    if arq_est.exists():
+        inteiros = json.loads(arq_est.read_text(encoding="utf-8"))
+        for c in cidades:
+            if c["uf"] in inteiros and c["k"] not in sula_cid:
+                sula_cid[c["k"]] = "/".join(reversed(inteiros[c["uf"]].split("-")))
     produtos_amil = {uf: [{"c": p["codigo"], "r": (p["rotulo"] + " " + (p.get("acomodacao") or "")).strip(),
                            "l": p["linha"], "cor": p.get("cor") or "#2733c4"}
                           for p in d["produtos"]] for uf, d in A.items()}
@@ -1094,7 +1104,7 @@ def montar():
                       "sub": g.get("sub")} for i, g in enumerate(grupos)],
         # SulAmerica: planos e as cidades coletadas (so nelas os planos aparecem)
         "sulamerica": [{"c": c, "r": r, "cor": cor} for c, r, cor in PLANOS_SULA],
-        "sulaCid": {uf + "|" + c: dt for (uf, c), dt in datas_su.items()},
+        "sulaCid": sula_cid,
         "cidades": sorted(cidades, key=lambda c: -(c["amil"] + c["brad"])),
         "rede": linhas_por_cidade,
     }

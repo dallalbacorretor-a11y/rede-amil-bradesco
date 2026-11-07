@@ -9,18 +9,23 @@ digitos verificadores, ou o registro do medico), nome, endereco com CEP,
 bairro, municipio, coordenadas e telefones.
 
 Varredura: para cada plano, categoria e especialidade, uma consulta cobrindo a
-regiao inteira; quando vem cheia (50), a area e dividida em quatro e cada parte
-e consultada de novo, ate cada consulta vir com menos de 50 (a parte esta
-completa). Grava ferramentas/sulamerica/<UF>/<CIDADE>.json so das cidades
-pedidas; as respostas ficam em ferramentas/.cache-sulamerica/ (fora do git)
-para retomar.
+regiao inteira; quando vem cheia, a area e dividida em quatro e cada parte e
+consultada de novo, ate cada consulta vir com menos de CHEIA registros (a parte
+esta completa). Cheia e a partir de 40, nao so 50: o servidor pega os 50 mais
+proximos e as vezes descarta um ou dois, e a consulta saturada volta com 48 ou
+49. Com --estados, a regiao e um quadrado so que cobre os estados pedidos
+(a busca aceita raio de centenas de quilometros) e entra toda cidade deles; com
+--rmc, so Curitiba e a regiao metropolitana. Grava
+ferramentas/sulamerica/<UF>/<CIDADE>.json; as respostas ficam em
+ferramentas/.cache-sulamerica/ (fora do git) para retomar.
 
 Planos (PME; Empresarial e PME Mais tem a mesma rede):
   classico100  Classico 100 Enfermaria  produto 557, plano 69300
   especial100  Especial 100             produto 553, plano 17924
 
 Uso:
-  python3 ferramentas/coletar_sulamerica.py --rmc     # Curitiba e regiao metropolitana
+  python3 ferramentas/coletar_sulamerica.py --estados PR SC SP   # os estados inteiros
+  python3 ferramentas/coletar_sulamerica.py --rmc                # Curitiba e regiao metropolitana
 """
 import argparse
 import http.cookiejar
@@ -52,6 +57,7 @@ PLANOS = {
 CATEGORIAS = {1: "PRONTO SOCORRO", 2: "HOSPITAL E MATERNIDADE", 3: "MEDICO, CLINICA, CENTRO DIAGNOSTICO",
               7: "HOSPITAL DIA"}
 LIMITE = 50            # registros por consulta
+CHEIA = 40             # a partir daqui a consulta pode ter sido cortada (vem 48, 49 saturada)
 MEIO_MINIMO = 0.15     # km: menor meia-largura de quadrado na divisao
 
 RMC = ["ADRIANOPOLIS", "AGUDOS DO SUL", "ALMIRANTE TAMANDARE", "ARAUCARIA", "BALSA NOVA",
@@ -62,6 +68,19 @@ RMC = ["ADRIANOPOLIS", "AGUDOS DO SUL", "ALMIRANTE TAMANDARE", "ARAUCARIA", "BAL
        "TUNAS DO PARANA"]
 # quadrado que cobre Curitiba e a regiao metropolitana: centro e meia-largura (km)
 REGIAO_RMC = (-25.35, -49.45, 90.0)
+# limites de cada estado (lat sul, lat norte, lon oeste, lon leste)
+LIMITES = {"PR": (-26.72, -22.51, -54.62, -48.02), "SC": (-29.36, -25.95, -53.84, -48.35),
+           "SP": (-25.31, -19.78, -53.11, -44.16), "RS": (-33.75, -27.08, -57.65, -49.69),
+           "MG": (-22.92, -14.23, -51.05, -39.85), "RJ": (-23.37, -20.76, -44.89, -40.96)}
+
+
+def regiao_de(ufs):
+    """Quadrado (centro e meia-largura em km, com folga) que cobre os estados."""
+    la0 = min(LIMITES[u][0] for u in ufs); la1 = max(LIMITES[u][1] for u in ufs)
+    lo0 = min(LIMITES[u][2] for u in ufs); lo1 = max(LIMITES[u][3] for u in ufs)
+    lat, lon = (la0 + la1) / 2, (lo0 + lo1) / 2
+    meio = max((la1 - la0) / 2 * 111.0, (lo1 - lo0) / 2 * 111.0 * math.cos(math.radians(lat)))
+    return (lat, lon, round(meio * 1.06, 1))
 
 _trava = threading.Lock()
 
@@ -124,10 +143,10 @@ class Sessao:
                                     "procedimento": "", "tipoProduto": "M"})
         return self.pede("/common/especialidade/listar?" + q) or []
 
-    def busca(self, categoria, especialidade, lat, lon, raio_km):
+    def busca(self, categoria, especialidade, lat, lon, raio_km, nome=""):
         q = urllib.parse.urlencode({
             "canal": 1, "latitude": round(lat, 6), "longitude": round(lon, 6), "categoria": categoria,
-            "produto": self.p["produto"], "plano": self.p["plano"], "nome": "", "qualificacoes": "",
+            "produto": self.p["produto"], "plano": self.p["plano"], "nome": nome, "qualificacoes": "",
             "prefixoEmpresa": "", "empresa": "", "especialidade": especialidade, "procedimento": "",
             "tipoPesquisaProcedimento": "", "raio": int(raio_km * 1000), "programas": "", "ciCode": "",
             "elegivelPortaEntrada": "false"})
@@ -173,7 +192,7 @@ def enxuto(x):
 
 
 def varre(sessao, cache, plano, categoria, esp, regiao):
-    """Divide a regiao em quadrados ate cada consulta vir com menos de 50 registros."""
+    """Divide a regiao em quadrados ate cada consulta vir com menos de CHEIA registros."""
     lat0, lon0, meio0 = regiao
     registros, cheios = [], []
     fila = [(lat0, lon0, meio0)]
@@ -194,7 +213,7 @@ def varre(sessao, cache, plano, categoria, esp, regiao):
                 if meio / 2 >= MEIO_MINIMO:
                     r = [None] * LIMITE        # como se viesse cheia: divide
                 else:
-                    cheios.append((lat, lon))
+                    cheios.append((lat, lon, raio))
                     continue
             else:
                 cache.put(k, r)
@@ -204,9 +223,9 @@ def varre(sessao, cache, plano, categoria, esp, regiao):
         else:
             r_ok = r
         registros += r_ok
-        if len(r) >= LIMITE:
+        if len(r) >= CHEIA:
             if meio / 2 < MEIO_MINIMO:
-                cheios.append((lat, lon))
+                cheios.append((lat, lon, raio))
                 continue
             dlat = (meio / 2) / 111.0
             dlon = (meio / 2) / (111.0 * math.cos(math.radians(lat)))
@@ -216,7 +235,28 @@ def varre(sessao, cache, plano, categoria, esp, regiao):
     return registros, consultas, cheios
 
 
-def coleta(cidades, uf, regiao, paralelo=6):
+def por_letra(sessao, cache, plano, categoria, esp, lat, lon, raio):
+    """No menor quadrado, quando a consulta ainda vem cheia (o corpo clinico de um centro
+    medico: um registro por medico, no mesmo ponto) ou da erro 500 (um cadastro que derruba a
+    busca), pergunta de novo letra a letra pelo nome: o que tiver a letra vem, e o cadastro
+    com defeito so derruba as letras do nome dele. Devolve (registros, letras com erro)."""
+    regs, erros = [], []
+    for letra in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+        k = f"{plano}|{categoria}|{esp}|{lat:.5f}|{lon:.5f}|{raio:.3f}|{letra}"
+        r = cache.get(k)
+        if r is None:
+            try:
+                r = [enxuto(x) for x in sessao.busca(categoria, esp, lat, lon, raio, nome=letra)]
+            except urllib.error.HTTPError:
+                erros.append(letra)
+                continue
+            cache.put(k, r)
+        regs += r
+    return regs, erros
+
+
+def coleta(cidades_de, regiao, paralelo=6):
+    """cidades_de: {UF: lista de cidades, ou None para toda cidade do estado}."""
     cache = Cache()
     unidades = {}
     # uma sessao por consulta em paralelo: o servidor atende uma consulta por vez em
@@ -237,18 +277,33 @@ def coleta(cidades, uf, regiao, paralelo=6):
         plano, cat, esp = t
         sessao = livres[plano].get()
         try:
-            return t, varre(sessao, cache, plano, cat, esp, regiao)
+            regs, consultas, cheios = varre(sessao, cache, plano, cat, esp, regiao)
+            # o que o menor quadrado nao resolveu: letra a letra pelo nome
+            faltam = []
+            for lat, lon, raio in cheios:
+                extra, erros = por_letra(sessao, cache, plano, cat, esp, lat, lon, raio)
+                regs += extra
+                consultas += 26
+                if erros:
+                    faltam.append((lat, lon, "".join(erros)))
+            return t, (regs, consultas, cheios, faltam)
         finally:
             livres[plano].put(sessao)
-    total = 0
+    total, lacunas = 0, []
     with ThreadPoolExecutor(paralelo) as ex:
-        for n, ((plano, cat, esp), (regs, consultas, cheios)) in enumerate(ex.map(uma, tarefas), 1):
+        for n, ((plano, cat, esp), (regs, consultas, cheios, faltam)) in enumerate(ex.map(uma, tarefas), 1):
             total += consultas
             if cheios:
-                print(f"  ATENCAO {plano} cat {cat} esp {esp}: {len(cheios)} ponto(s) "
-                      "ainda com 50 registros no menor quadrado", flush=True)
+                print(f"  {plano} cat {cat} esp {esp}: {len(cheios)} ponto(s) cheio(s) ou com erro no "
+                      "menor quadrado, refeito(s) letra a letra", flush=True)
+            for lat, lon, letras in faltam:
+                lacunas.append({"plano": plano, "categoria": cat, "especialidade": esp,
+                                "lat": round(lat, 5), "lon": round(lon, 5), "letras_com_erro": letras})
+                print(f"  ATENCAO {plano} cat {cat} esp {esp} em {lat:.4f},{lon:.4f}: o servidor "
+                      f"segue com erro nas letras {letras}", flush=True)
             for r in regs:
-                if r["uf"] != uf or r["cidade"] not in cidades:
+                if r["uf"] not in cidades_de or (cidades_de[r["uf"]] is not None and
+                                                  r["cidade"] not in cidades_de[r["uf"]]):
                     continue
                 u = unidades.setdefault(r["local"], dict(r, esp={}, cats={}, produtos=[]))
                 u["esp"].setdefault(plano, [])
@@ -272,15 +327,33 @@ def coleta(cidades, uf, regiao, paralelo=6):
     for u in unidades.values():
         u["cnpj"] = cnpj_completo(u["cod"])
         u["pf"] = not re.fullmatch(r"\d{12}", u["cod"])     # medico: codigo com o registro (CRM)
-        por_cidade.setdefault(u["cidade"], []).append(u)
-    PASTA.joinpath(uf).mkdir(parents=True, exist_ok=True)
-    for cidade in cidades:
-        lista = sorted(por_cidade.get(cidade, []), key=lambda u: (u["nome"], u["end"]))
-        (PASTA / uf / f"{cidade}.json").write_text(json.dumps({
-            "cidade": cidade, "uf": uf, "data": hoje, "fonte": PORTAL,
-            "planos": {k: v["nome"] for k, v in PLANOS.items()}, "unidades": lista},
-            ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-        print(f"{cidade}/{uf}: {len(lista)} unidades", flush=True)
+        por_cidade.setdefault((u["uf"], u["cidade"]), []).append(u)
+    for uf, cidades in cidades_de.items():
+        PASTA.joinpath(uf).mkdir(parents=True, exist_ok=True)
+        # estado inteiro: a cidade que tinha arquivo e agora nao tem ninguem sai
+        lista_c = sorted(cidades) if cidades is not None else sorted(c for u_, c in por_cidade if u_ == uf)
+        if cidades is None:
+            for velho in PASTA.joinpath(uf).glob("*.json"):
+                if velho.stem not in lista_c:
+                    velho.unlink()
+        n = 0
+        for cidade in lista_c:
+            lista = sorted(por_cidade.get((uf, cidade), []), key=lambda u: (u["nome"], u["end"]))
+            n += len(lista)
+            (PASTA / uf / f"{cidade}.json").write_text(json.dumps({
+                "cidade": cidade, "uf": uf, "data": hoje, "fonte": PORTAL,
+                "planos": {k: v["nome"] for k, v in PLANOS.items()}, "unidades": lista},
+                ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+        print(f"{uf}: {n} unidades em {len(lista_c)} cidades", flush=True)
+    # estados coletados inteiros: o comparativo trata toda cidade deles como coletada (a que
+    # nao tem arquivo e cidade sem rede SulAmerica, nao cidade que ficou de fora)
+    arq_est = PASTA / "_estados.json"
+    estados = json.loads(arq_est.read_text(encoding="utf-8")) if arq_est.exists() else {}
+    estados.update({uf: hoje for uf, cidades in cidades_de.items() if cidades is None})
+    arq_est.write_text(json.dumps(dict(sorted(estados.items())), indent=1), encoding="utf-8")
+    # o que o servidor nao entregou nem letra a letra (cadastro com defeito na SulAmerica)
+    (PASTA / "_lacunas.json").write_text(json.dumps({"data": hoje, "lacunas": lacunas},
+                                                     ensure_ascii=False, indent=1), encoding="utf-8")
     (PASTA / "especialidades.json").write_text(json.dumps(
         {str(k): v for k, v in sorted(nomes_esp.items())}, ensure_ascii=False, indent=0), encoding="utf-8")
 
@@ -288,10 +361,16 @@ def coleta(cidades, uf, regiao, paralelo=6):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--rmc", action="store_true", help="Curitiba e regiao metropolitana (PR)")
+    ap.add_argument("--estados", nargs="+", help="estados inteiros, ex.: PR SC SP")
     ap.add_argument("--paralelo", type=int, default=6)
     a = ap.parse_args()
-    if a.rmc:
-        coleta(RMC, "PR", REGIAO_RMC, a.paralelo)
+    if a.estados:
+        ufs = [u.upper() for u in a.estados]
+        regiao = regiao_de(ufs)
+        print(f"regiao: centro {regiao[0]:.2f},{regiao[1]:.2f}, meia-largura {regiao[2]} km", flush=True)
+        coleta({u: None for u in ufs}, regiao, a.paralelo)
+    elif a.rmc:
+        coleta({"PR": RMC}, REGIAO_RMC, a.paralelo)
 
 
 if __name__ == "__main__":

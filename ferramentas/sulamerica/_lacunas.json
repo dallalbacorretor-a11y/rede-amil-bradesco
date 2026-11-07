@@ -1,0 +1,133 @@
+{
+ "data": "2026-11-07",
+ "lacunas": [
+  {
+   "plano": "classico100",
+   "categoria": 3,
+   "especialidade": 3320,
+   "lat": -23.53616,
+   "lon": -46.77533,
+   "letras_com_erro": "ACDEGIMNOST"
+  },
+  {
+   "plano": "classico100",
+   "categoria": 3,
+   "especialidade": 3320,
+   "lat": -23.53616,
+   "lon": -46.78073,
+   "letras_com_erro": "ACDEGIMNOST"
+  },
+  {
+   "plano": "classico100",
+   "categoria": 3,
+   "especialidade": 2820,
+   "lat": -23.53616,
+   "lon": -46.77533,
+   "letras_com_erro": "ACDEGIMNOST"
+  },
+  {
+   "plano": "classico100",
+   "categoria": 3,
+   "especialidade": 2820,
+   "lat": -23.53616,
+   "lon": -46.78073,
+   "letras_com_erro": "ACDEGIMNOST"
+  },
+  {
+   "plano": "classico100",
+   "categoria": 3,
+   "especialidade": 2120,
+   "lat": -23.53616,
+   "lon": -46.77533,
+   "letras_com_erro": "ACDEGIMNOST"
+  },
+  {
+   "plano": "classico100",
+   "categoria": 3,
+   "especialidade": 2120,
+   "lat": -23.53616,
+   "lon": -46.78073,
+   "letras_com_erro": "ACDEGIMNOST"
+  },
+  {
+   "plano": "classico100",
+   "categoria": 3,
+   "especialidade": 1010,
+   "lat": -25.53938,
+   "lon": -49.193,
+   "letras_com_erro": "ABCDEIJLORSTUZ"
+  },
+  {
+   "plano": "classico100",
+   "categoria": 3,
+   "especialidade": 1010,
+   "lat": -25.54434,
+   "lon": -49.193,
+   "letras_com_erro": "ABCDEIJLORSTUZ"
+  },
+  {
+   "plano": "especial100",
+   "categoria": 3,
+   "especialidade": 3320,
+   "lat": -23.53616,
+   "lon": -46.77533,
+   "letras_com_erro": "ACDEGIMNOST"
+  },
+  {
+   "plano": "especial100",
+   "categoria": 3,
+   "especialidade": 3320,
+   "lat": -23.53616,
+   "lon": -46.78073,
+   "letras_com_erro": "ACDEGIMNOST"
+  },
+  {
+   "plano": "especial100",
+   "categoria": 3,
+   "especialidade": 2820,
+   "lat": -23.53616,
+   "lon": -46.77533,
+   "letras_com_erro": "ACDEGIMNOST"
+  },
+  {
+   "plano": "especial100",
+   "categoria": 3,
+   "especialidade": 2820,
+   "lat": -23.53616,
+   "lon": -46.78073,
+   "letras_com_erro": "ACDEGIMNOST"
+  },
+  {
+   "plano": "especial100",
+   "categoria": 3,
+   "especialidade": 2120,
+   "lat": -23.53616,
+   "lon": -46.77533,
+   "letras_com_erro": "ACDEGIMNOST"
+  },
+  {
+   "plano": "especial100",
+   "categoria": 3,
+   "especialidade": 2120,
+   "lat": -23.53616,
+   "lon": -46.78073,
+   "letras_com_erro": "ACDEGIMNOST"
+  },
+  {
+   "plano": "especial100",
+   "categoria": 3,
+   "especialidade": 1010,
+   "lat": -25.53938,
+   "lon": -49.193,
+   "letras_com_erro": "ABCDEIJLORSTUZ"
+  },
+  {
+   "plano": "especial100",
+   "categoria": 3,
+   "especialidade": 1010,
+   "lat": -25.54434,
+   "lon": -49.193,
+   "letras_com_erro": "ABCDEIJLORSTUZ"
+  }
+ ]
+}
