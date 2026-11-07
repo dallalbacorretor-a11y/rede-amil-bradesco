@@ -440,7 +440,10 @@ def casar_sulamerica(por_cidade, su, soltos=()):
                 s = max([nota_par(x, ub) for ub in l["_ub"]] + [nota_par(ua, x) for ua in l["_ua"]] + [0])
                 if s >= 0.72:
                     pares.append((s, k_su, chave, n))
-    pares.sort(key=lambda t: -t[0])
+    # empate (duas unidades e duas linhas no mesmo predio, com a mesma nota): decide pelo
+    # nome e endereco, para a montagem dar sempre o mesmo resultado
+    pares.sort(key=lambda t: (-t[0], t[1], sem_acento(por_cidade[t[2]]["linhas"][t[3]]["n"]),
+                              por_cidade[t[2]]["linhas"][t[3]]["e"], t[3]))
     usada_su, usada_l = set(), set()
     for s, k_su, chave, n in pares:
         if k_su in usada_su or (chave, n) in usada_l:
@@ -476,7 +479,7 @@ def casar_sulamerica(por_cidade, su, soltos=()):
                 pares.append((s, k_su, n))
     # o melhor medico de cada operadora para cada consultorio: o mesmo medico pode estar na
     # Amil e na Bradesco como pessoa fisica, e a linha e das tres
-    pares.sort(key=lambda t: -t[0])
+    pares.sort(key=lambda t: (-t[0], t[1], sem_acento(soltos[t[2]][1]["nome"]), soltos[t[2]][1]["end"], t[2]))
     usado_s, escolha = set(), {}
     for s, k_su, n in pares:
         lado = soltos[n][0]
