@@ -309,6 +309,53 @@ def unidades_amil_coletadas():
     return out, datas
 
 
+KIT = RAIZ / "ferramentas" / "amil_kit" / "resumo.json"
+NOTA_KIT = "não consta no resumo da rede da Amil (Kit Corretor)"
+
+
+def aplicar_kit(au):
+    """Hospitais e laboratorios da Amil pelo resumo da rede do Kit Corretor (kit_amil.py):
+    o que casa pelo nome na mesma cidade fica com os planos do Kit; o que o Kit traz e a
+    unidade nao tem entra so com nome e cidade; o hospital da unidade que o Kit nao traz
+    fica, com a nota. (Laboratorio fora do resumo nao ganha nota: o resumo traz os
+    principais, nao todos.)"""
+    if not KIT.exists():
+        return au, None
+    K = json.loads(KIT.read_text(encoding="utf-8"))
+    ufs = {x["uf"] for x in K["itens"]}
+    idx = {}
+    for i, u in enumerate(au):
+        if u["tipo"] in (0, 2, 3) and not u.get("pf"):
+            for c in ([u["cidade"]] if u["certo"] else u["cands"]):
+                idx.setdefault((u["uf"], c), []).append(i)
+    usados, novos, casados = set(), [], 0
+    for x in K["itens"]:
+        tok = tokens(x["nome"])
+        hosp = x["t"] == 0
+        notas = sorted(((parecido(tok, au[i]["tok"]), i) for i in idx.get((x["uf"], x["cidade"]), [])
+                        if (au[i]["tipo"] == 0) == hosp), reverse=True)
+        bons = [i for s, i in notas if s >= 0.6 and s >= notas[0][0] - 0.05]
+        if bons:
+            casados += 1
+            for i in bons:
+                au[i] = dict(au[i], p=list(x["produtos"]), kit=x["planos"])
+                usados.add(i)
+            continue
+        novos.append({"uf": x["uf"], "cidade": x["cidade"], "certo": True, "cands": [x["cidade"]],
+                      "pf": False, "rede": False, "nome": x["nome"], "bairro": "", "end": "", "tel": "",
+                      "fones": set(), "cnpj": "", "tipo": x["t"], "p": list(x["produtos"]),
+                      "tok": tok, "cep": "", "xy": None, "acred": "", "kit": x["planos"]})
+    fora = 0
+    for i, u in enumerate(au):
+        if u["uf"] in ufs and u["tipo"] == 0 and not u.get("pf") and i not in usados:
+            u["nota_kit"] = NOTA_KIT
+            fora += 1
+    data = "/".join(reversed(K["data"].split("-")))
+    print(f"Kit Corretor ({data}): {len(K['itens'])} hospitais e laboratorios, {casados} casados com a "
+          f"Amil da pagina, {len(novos)} novos; {fora} hospitais da pagina fora do resumo", flush=True)
+    return au + novos, {"data": data, "fonte": K["fonte"]}
+
+
 def coordenadas(u):
     try:
         return float(u["lat"]), float(u["lon"])
@@ -741,9 +788,15 @@ def nota_par(a, b):
     # CNPJ exato: o hospital de esquina com dois enderecos na Amil (Bradesco com uma
     # unidade so) e a unidade da Amil com o CNPJ da filial que a Bradesco lista.
     if not (mesmo_end or mesma_quadra):
-        if a.get("rede") and not (mesmo_cnpj and not b.get("rede")):
+        if a.get("kit") is not None and not a["end"]:
+            # unidade que so o Kit Corretor traz (nome e cidade, sem endereco): casa pelo
+            # nome na mesma cidade, mesmo com uma rede do outro lado (Hospital Policlin, em
+            # Taubate, e o "Hospital e Mater Policlin" da Bradesco)
+            if nome < 0.75 or a["cidade"] != b["cidade"]:
+                return 0.0
+        elif a.get("rede") and not (mesmo_cnpj and not b.get("rede")):
             return 0.0
-        if b.get("rede") and not a.get("rede") and not mesmo_cnpj:
+        elif b.get("rede") and not a.get("rede") and not mesmo_cnpj:
             return 0.0
     if a["cnpj"] and b["cnpj"] and not mesmo_cnpj:
         if not (mesmo_end or mesma_quadra) and not (mesmo_fone and nome > 0.5):
@@ -871,6 +924,7 @@ def montar():
     au = [u for u in au if (u["uf"], u["cidade"]) not in coletadas]
     for lista in coletadas.values():
         au += lista
+    au, kit = aplicar_kit(au)
     # rede com varias unidades (do lado da Bradesco: varias unidades com a mesma raiz
     # de CNPJ no estado): unidade so casa com unidade no mesmo endereco
     raizes = {}
@@ -1033,6 +1087,8 @@ def montar():
             nota = em_outro_endereco(a, raiz_b, bu, "Bradesco")
             if nota:
                 c["linhas"][-1]["o"] = nota
+        if a.get("nota_kit"):
+            c["linhas"][-1]["o"] = " · ".join(filter(None, [c["linhas"][-1].get("o"), a["nota_kit"]]))
     for j, b in enumerate(bu):
         if j in par_b or b.get("pf"):
             continue
@@ -1111,6 +1167,7 @@ def montar():
         # SulAmerica: planos e as cidades coletadas (so nelas os planos aparecem)
         "sulamerica": [{"c": c, "r": r, "cor": cor} for c, r, cor in PLANOS_SULA],
         "sulaCid": sula_cid,
+        "kitAmil": kit,
         "cidades": sorted(cidades, key=lambda c: -(c["amil"] + c["brad"])),
         "rede": linhas_por_cidade,
     }

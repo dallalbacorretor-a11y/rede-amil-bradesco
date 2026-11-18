@@ -138,6 +138,7 @@ td.onde{white-space:nowrap}
   color:#fff; background:var(--c)}
 .vazio{padding:30px; text-align:center; color:var(--tinta-fraca)}
 .mais{display:block; margin:12px auto; }
+.mais[hidden]{display:none}
 
 .rodape{border-top:1px solid var(--risco); padding:16px 24px 26px; font-size:12px; color:var(--tinta-fraca)}
 .rodape-in{max-width:1240px; margin:0 auto}
@@ -696,7 +697,9 @@ td.onde{white-space:nowrap}
     ? "unidade a unidade, " + juntar(C.cidades.map(function (c) { return C.baseAmilCid[c.k]; })
         .filter(function (d, i, a) { return a.indexOf(d) === i; }))
     : "base " + Object.keys(C.baseAmil).map(function (uf) { return uf + " " + C.baseAmil[uf]; }).join(", ") +
-      unidadeAUnidade()) + "). Bradesco Saúde — " + (C.fonteBradesco === "consulta" ? "consulta oficial de rede referenciada (" :
+      unidadeAUnidade()) + ")" + (C.kitAmil ? "; hospitais, pronto-socorros, maternidades e laboratórios " +
+    "com os planos do resumo da rede do Kit Corretor Amil (" + esc(C.kitAmil.data) + ")" : "") +
+    ". Bradesco Saúde — " + (C.fonteBradesco === "consulta" ? "consulta oficial de rede referenciada (" :
     "buscador oficial (base ") + esc(C.baseBradesco) + ")." + (sulaCids.length ? " SulAmérica Saúde — busca de rede " +
     "referenciada oficial (" + juntar(sulaDatas) + "), planos Clássico 100 Enfermaria e Especial 100 (PME), em " +
     (sulaCids.length <= 3 ? juntar(sulaCids.map(function (c) { return c.nome; }))
