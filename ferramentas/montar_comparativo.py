@@ -368,8 +368,16 @@ def unidades_sulamerica(prenomes=frozenset()):
     # e os de quem a propria SulAmerica cadastra com CRM
     prenomes = set(prenomes) | {sem_acento(u["nome"]).split()[0] for d in arquivos for u in d["unidades"]
                                 if u["pf"] and u["nome"].split() and len(u["nome"].split()[0]) >= 3}
+    # mesma cidade com e sem apostrofo na coleta (SANTA BARBARA D'OESTE / D OESTE): vira a grafia sem
+    # apostrofo, a mesma do montar_sulamerica.py; senao as unidades de uma das grafias sumiam daqui
+    por_chave = {}
     for d in arquivos:
-        uf, cidade = d["uf"], sem_acento(d["cidade"])
+        n = sem_acento(d["cidade"])
+        k = re.sub(r"\s+", " ", re.sub(r"['’`]", " ", n)).strip()
+        por_chave.setdefault((d["uf"], k), set()).add(n)
+    nome_cid = {(uf, n): (k if len(ns) > 1 else n) for (uf, k), ns in por_chave.items() for n in ns}
+    for d in arquivos:
+        uf, cidade = d["uf"], nome_cid[(d["uf"], sem_acento(d["cidade"]))]
         datas[(uf, cidade)] = "/".join(reversed(d["data"].split("-")))
         for u in d["unidades"]:
             cats = {c for cs in u["cats"].values() for c in cs}

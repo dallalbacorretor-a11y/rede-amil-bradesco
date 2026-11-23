@@ -70,6 +70,19 @@ def sem_acento(s):
                    if unicodedata.category(c) != "Mn").upper()
 
 
+def nomes_de_cidade(arquivos):
+    """{(UF, nome da coleta): nome usado}. Quando a coleta traz a mesma cidade com e sem apostrofo
+    ("SANTA BARBARA D'OESTE" e "SANTA BARBARA D OESTE"), as duas usam a grafia sem apostrofo, a da
+    Bradesco. Cidade com uma grafia so fica como veio (o hifen de BIRITIBA-MIRIM nao muda).
+    O montar_comparativo.py usa a mesma regra."""
+    por_chave = {}
+    for d in arquivos:
+        n = sem_acento(d["cidade"])
+        k = re.sub(r"\s+", " ", re.sub(r"['’`]", " ", n)).strip()
+        por_chave.setdefault((d["uf"], k), set()).add(n)
+    return {(uf, n): (k if len(ns) > 1 else n) for (uf, k), ns in por_chave.items() for n in ns}
+
+
 def legivel(desc):
     """'CLINICA MEDICA' -> 'Clínica médica' (a SulAmerica escreve em maiusculas sem acento)."""
     ps = [ACENTO.get(p, p.lower()) for p in re.sub(r"\s+", " ", desc.replace("\xa0", " ")).strip().split(" ")]
@@ -120,21 +133,41 @@ def dados():
     ufs, cids, geo, bai, esp, nom, serv, pr, consulta = [], [], [], [], [], [], [""], [], {}
     idx = lambda lista, v: lista.index(v) if v in lista else (lista.append(v) or len(lista) - 1)
     datas = set()
-    for arq in sorted(DADOS_DIR.glob("*/*.json")):
-        d = json.loads(arq.read_text(encoding="utf-8"))
+    # a coleta tem a mesma cidade com duas grafias ("SANTA BARBARA D'OESTE" e "D OESTE"): as duas viram
+    # uma cidade so, sem repetir unidade (ver nome_cidade)
+    arquivos = [json.loads(a.read_text(encoding="utf-8")) for a in sorted(DADOS_DIR.glob("*/*.json"))]
+    nome_cid = nomes_de_cidade(arquivos)
+    vistas = {}
+    for d in arquivos:
         if not d["unidades"]:
             continue
-        uf, cidade = d["uf"], sem_acento(d["cidade"])
+        uf = d["uf"]
+        cidade = nome_cid[(uf, sem_acento(d["cidade"]))]
         iu = idx(ufs, uf)
-        ic = len(cids)
-        cids.append([iu, cidade])
-        pts = [(u["lat"], u["lon"]) for u in d["unidades"] if u.get("lat")]
-        geo.append(geo_brad.get((uf, cidade)) or
-                   [round(sum(p[0] for p in pts) / len(pts), 4), round(sum(p[1] for p in pts) / len(pts), 4)])
         data = "/".join(reversed(d["data"].split("-")))
-        consulta[str(ic)] = data
         datas.add(data)
+        if [iu, cidade] in cids:
+            ic = cids.index([iu, cidade])
+            # duas coletas da mesma cidade: vale a data mais antiga (a validade conta pela mais antiga)
+            if data.split("/")[::-1] < consulta[str(ic)].split("/")[::-1]:
+                consulta[str(ic)] = data
+        else:
+            ic = len(cids)
+            cids.append([iu, cidade])
+            pts = [(u["lat"], u["lon"]) for u in d["unidades"] if u.get("lat")]
+            geo.append(geo_brad.get((uf, cidade)) or
+                       [round(sum(p[0] for p in pts) / len(pts), 4), round(sum(p[1] for p in pts) / len(pts), 4)])
+            consulta[str(ic)] = data
+            vistas[ic] = set()
+        desta = set()
         for u in d["unidades"]:
+            # so pula a unidade que ja veio de OUTRO arquivo da mesma cidade (outra grafia); dentro do
+            # mesmo arquivo nada e descartado, como antes
+            chave = (sem_acento(re.sub(r"\s+", " ", u["nome"]).strip()), u.get("cnpj") or "",
+                     sem_acento(u.get("end") or ""), u.get("num") or "")
+            if chave in vistas[ic]:
+                continue
+            desta.add(chave)
             t = tipo_de(u)
             sub = []
             todas = sorted({e for es in u["esp"].values() for e in es})
@@ -157,6 +190,7 @@ def dados():
             pr.append([idx(nom, re.sub(r"\s+", " ", u["nome"]).strip()), ic, idx(bai, titulo(u.get("bairro"))),
                        [], t, sub, [blocos, exames, 0],
                        [end, fones, "", u.get("cnpj") or "", re.sub(r"\D", "", u.get("cep") or "")]])
+        vistas[ic] |= desta
     ds = sorted(datas, key=lambda x: x.split("/")[::-1])
     return {"ref": ds[-1] if ds else "", "fonte": "busca de rede referenciada da SulAmérica Saúde",
             "gerado": date.today().strftime("%d/%m/%Y"), "corretor": bradesco.get("corretor") or {},

@@ -552,6 +552,12 @@ td.onde{white-space:nowrap}
     if (rs.varias) colsTab = colsTab.concat([{ nome: nomeOnde("ambos", ops), cor: COR_HEX.ambos, largura: 52 }])
       .concat(ops.map(function (op) { return { nome: "Só " + NOME_OP[op], cor: COR_HEX[op], largura: 58 }; }))
       .concat([{ nome: "Quem tem mais", largura: 86 }]);
+    /* A4 deitado tem ~780 pt uteis e o pdf-rede.js poe 6 pt de cada lado de cada coluna. Com muitos
+       planos marcados as larguras fixas passavam disso e a ultima coluna ("Quem tem mais") saia cortada:
+       aqui elas encolhem na mesma proporcao, deixando ao menos 70 pt para o "Tipo". */
+    var fixas = colsTab.slice(1).reduce(function (s, x) { return s + x.largura; }, 0);
+    var cabe = 780 - 12 * colsTab.length - 70;
+    if (fixas > cabe) colsTab.forEach(function (x, i) { if (i) x.largura = Math.floor(x.largura * cabe / fixas); });
     var linhaTab = function (nome, o, total) {
       var cel = [nome].concat(o.p.map(num));
       if (rs.varias) {
