@@ -254,13 +254,22 @@ def pagina(D):
     html = troca(html, r'<div class="corpo">.*?</details>', COMO_LER, regex=True)
     html = troca(html, r"<footer>.*?</footer>", RODAPE, regex=True)
     html = troca(html, r"const PORTAL = '[^']*';", f"const PORTAL = '{PORTAL}';", regex=True)
-    # fontes: toda cidade vem da busca oficial; nao ha buscador nem listas em PDF
-    html = troca(html, "    '<b>Consultas</b> · Brasil · buscador ' + esc(DADOS.ref),\n"
-                       "    linha('Internação', HREF),\n    linha('Exames', LREF)\n", "")
-    html = troca(html, r"det\.push\('<b>Fontes:</b> ' \+ esc\(DADOS\.fonte\).*?\);\n",
+    # fontes: toda cidade vem da busca oficial; nao ha buscador nem listas em PDF.
+    # O resumo inteiro e trocado (desde 20/11/2026 o da Bradesco cita tambem o buscador e as
+    # listas usadas na conferencia, que nao existem na SulAmerica).
+    html = troca(html, r"\$\('fonteResumo'\)\.innerHTML = .*?\)\.join\('<br>'\);\n",
+                 "$('fonteResumo').innerHTML = (cons.length\n"
+                 "    ? ['<b>Consulta oficial</b> · ' + (cons.length <= 3 ? esc(cons.map(nomeCid).join(', '))\n"
+                 "        : cons.length.toLocaleString('pt-BR') + ' cidades') + ' · ' + esc(quando)] : []\n"
+                 "  ).join('<br>');\n", regex=True)
+    html = troca(html, r"det\.push\((?:\(cons\.length \? '<b>Base anterior, usada na conferência:</b> ' : )?"
+                       r"'<b>Fontes:</b> '\)? ?\+?\s*esc\(DADOS\.fonte\).*?\);\n",
                  "det.push('<b>Planos:</b> ' + esc(PRODUTOS.join(' e ')) + ' (PME).');\n", regex=True)
-    html = troca(html, r"det\.push\('Cobertura: as listas.*?\);\n",
+    html = troca(html, r"det\.push\('Cobertura: .*?\);\n",
                  "det.push('Cobertura: ' + CID.length.toLocaleString('pt-BR') + ' cidades.');\n", regex=True)
+    # a pagina da Bradesco guarda as escolhas com o prefixo dela; no mesmo site, a SulAmerica
+    # precisa do seu (senao a cidade 570 da Bradesco abre como outra cidade aqui)
+    html = troca(html, "const PREFIXO = 'mzb_bradesco_';", "const PREFIXO = 'mzb_sulamerica_';")
     html = troca(html, "consultas, exames, internação e pronto-socorro, com endereço e telefone), conferida contra as ' +\n"
                        "      'listas abaixo: quem está nelas e não aparece na busca, nem pelo nome, continua marcado.');",
                  "consultas, exames, internação e pronto-socorro, com endereço e telefone).');")
