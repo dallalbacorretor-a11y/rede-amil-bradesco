@@ -1,4 +1,5 @@
-# Mantem amil/ e bradesco/ iguais aos sites de rede-amil e rede-bradesco e remonta
+# Mantem amil/ e bradesco/ iguais aos sites de rede-amil e rede-bradesco, traz a base da
+# Parana Clinicas (estudo-rede-parana-clinicas) para ferramentas/parana/ e remonta
 # sulamerica/ (sobre o modelo da pagina da Bradesco) e o comparativo.
 # Roda sozinho a cada 3 horas; para puxar na hora: aba Actions > Sincronizar > Run workflow.
 name: Sincronizar
@@ -22,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Traz as duas redes
+      - name: Traz as redes
         run: ./ferramentas/sincronizar.sh
 
       # a pagina da SulAmerica usa a da Bradesco como modelo
@@ -35,13 +36,13 @@ jobs:
       - name: Grava o que mudou
         id: grava
         run: |
-          if [ -z "$(git status --porcelain -- amil bradesco sulamerica comparativo ferramentas/amil)" ]; then
+          if [ -z "$(git status --porcelain -- amil bradesco sulamerica comparativo ferramentas/amil ferramentas/parana)" ]; then
             echo "Nada mudou nas redes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A amil bradesco sulamerica comparativo ferramentas/amil
+          git add -A amil bradesco sulamerica comparativo ferramentas/amil ferramentas/parana
           git commit -m "Sincroniza com rede-amil e rede-bradesco"
           git push
           echo "mudou=1" >> "$GITHUB_OUTPUT"

@@ -7,13 +7,17 @@
 # sempre inteira (apaga e traz de novo) e a unica mudanca feita nela e a
 # barra de troca de operadora, acrescentada no fim do index.html.
 #
+# Do estudo-rede-parana-clinicas vem so a base de dados da pagina (dados_pc.json), para o
+# comparativo; o site da Parana Clinicas continua so la.
+#
 # Uso: ferramentas/sincronizar.sh
-#   ORIGEM_AMIL / ORIGEM_BRADESCO trocam a origem (ex.: um clone local).
+#   ORIGEM_AMIL / ORIGEM_BRADESCO / ORIGEM_PARANA trocam a origem (ex.: um clone local).
 set -euo pipefail
 
 raiz="$(cd "$(dirname "$0")/.." && pwd)"
 origem_amil="${ORIGEM_AMIL:-https://github.com/dallalbacorretor-a11y/rede-amil.git}"
 origem_bradesco="${ORIGEM_BRADESCO:-https://github.com/dallalbacorretor-a11y/rede-bradesco.git}"
+origem_parana="${ORIGEM_PARANA:-https://github.com/dallalbacorretor-a11y/estudo-rede-parana-clinicas.git}"
 
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
@@ -72,3 +76,15 @@ if [ -d "$tmp/amil/ferramentas/amil" ]; then
   cp -r "$tmp/amil/ferramentas/amil" "$raiz/ferramentas/amil"
   echo "coleta da Amil: $(ls "$raiz"/ferramentas/amil/_coleta_*.json | xargs -n1 basename | tr '\n' ' ')"
 fi
+
+# Parana Clinicas: so a base (uma linha por endereco, ja sem CPF de medico), sem baixar o site
+# nem as planilhas do repositorio; o montar_comparativo.py le de ferramentas/parana
+# (clone sem arquivos; o "git show" baixa so este; base vazia ou quebrada nao substitui a de hoje)
+git clone --quiet --depth 1 --branch main --filter=blob:none --no-checkout "$origem_parana" "$tmp/parana"
+git -C "$tmp/parana" show HEAD:ferramentas/dados/dados_pc.json > "$tmp/dados_pc.json"
+python3 -c 'import json, sys
+d = json.load(open(sys.argv[1], encoding="utf-8"))
+assert d and all(v.get("prestadores") for v in d.values()), "base da Parana Clinicas sem prestadores"' "$tmp/dados_pc.json"
+mkdir -p "$raiz/ferramentas/parana"
+cp "$tmp/dados_pc.json" "$raiz/ferramentas/parana/dados_pc.json"
+echo "parana-clinicas: $(git -C "$tmp/parana" log -1 --format='%h %s')"

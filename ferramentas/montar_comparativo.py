@@ -196,6 +196,14 @@ def junto_ids(juntos):
     return {x for v in juntos.values() for x in v}
 
 
+def cpf_valido(c):
+    """Numero de 11 digitos com os digitos verificadores de CPF."""
+    d = [int(x) for x in re.sub(r"\D", "", c)]
+    if len(d) != 11 or len(set(d)) == 1:
+        return False
+    return all((sum(d[i] * (n + 1 - i) for i in range(n)) * 10 % 11) % 10 == d[n] for n in (9, 10))
+
+
 def periodo(datas):
     """{'24/09/2026', '25/09/2026'} -> '24/09/2026 a 25/09/2026'"""
     ds = sorted(datas, key=lambda d: d.split("/")[::-1])
@@ -412,12 +420,76 @@ def unidades_sulamerica(prenomes=frozenset()):
     return out, datas
 
 
-def casar_sulamerica(por_cidade, su, soltos=()):
+PLANOS_PC = [("p400", "Paraná 400 QP", "#8e0e28"), ("p600", "Paraná 600 QC", "#b03a5b"),
+             ("cim", "Paraná CIM QC", "#b5761b")]
+# categorias da pagina da Parana Clinicas -> tipo do comparativo (0 hospital, 1 clinica, 2 lab, 3 imagem);
+# "Medicos dos CIM" (os medicos que atendem nas unidades proprias) nao entram
+TIPO_PC = {"Hospitais gerais": 0, "Hospitais especializados": 0, "Unidades próprias CIM": 1,
+           "Diagnóstico por imagem": 3, "Laboratórios e análises clínicas": 2, "Oncologia": 1,
+           "Terapias": 1, "Clínicas e policlínicas": 1, "Consultórios": 1}
+
+
+def unidades_parana():
+    """(unidades, data, cidades) de ferramentas/parana/dados_pc.json, a base da pagina da Parana
+    Clinicas (estudo-rede-parana-clinicas, trazida pelo sincronizar.sh), uma linha por endereco.
+    O plano marcado como direcionamento interno (D: o hospital nao aparece na busca daquele plano,
+    mas a operadora libera por encaminhamento) fica em "d". Medico pessoa fisica (sem CNPJ: a
+    operadora da o CPF, que a base publica ja traz vazio) vem marcado "pf" e so casa com o
+    consultorio cadastrado como empresa em outra operadora; o CPF nunca entra."""
+    arq = RAIZ / "ferramentas" / "parana" / "dados_pc.json"
+    if not arq.exists():
+        return [], "", set(), set()
+    base = json.loads(arq.read_text(encoding="utf-8"))
+    out, data, cidades, cpfs = [], "", set(), set()
+    for uf, d in base.items():
+        data = d.get("gerado_em", "")
+        for p in d["prestadores"]:
+            cidades.update((uf, sem_acento(c)) for c in p.get("cid") or [])
+            if p.get("cat") == "Médicos dos CIM":
+                continue
+            doc = re.sub(r"\D", "", p.get("c") or "")
+            cnpj = doc if len(doc) == 14 else ""        # CPF (11 digitos) nunca passa daqui
+            if len(doc) == 11:
+                cpfs.add(doc)
+            pf = not cnpj and p.get("cat") != "Unidades próprias CIM"
+            cats = set(p.get("cats") or [p.get("cat")])
+            esp = " ".join(sem_acento(e) for e in p.get("esp") or [])
+            if any(TIPO_PC.get(c) == 0 for c in cats):
+                tipo = 0
+            elif p.get("cat") == "Exames e procedimentos":
+                tipo = 3 if IMAGEM_ESP.search(esp) and not LAB_ESP.search(esp) else 2 if LAB_ESP.search(esp) else 1
+            else:
+                tipo = TIPO_PC.get(p.get("cat"), 1)
+            if pf:
+                tipo = 1
+            cid = [sem_acento(c) for c in p.get("cid") or []]
+            ends = p.get("e") or [""]
+            for k, e in enumerate(ends):
+                cidade = cid[k] if len(cid) == len(ends) else cid[0]
+                xy = p.get("xy") or None
+                out.append({"uf": uf, "cidade": cidade, "certo": True, "cands": [cidade], "pf": pf,
+                            "nome": p["n"], "bairro": (p.get("b") or [""])[k if len(p.get("b") or []) == len(ends) else 0],
+                            "end": e, "tel": (p.get("t") or [""])[0], "fones": fones(p.get("t") or []),
+                            "cnpj": cnpj, "tipo": tipo, "p": sorted(p.get("p") or []),
+                            "d": sorted(set(p.get("dir") or []) & set(p.get("p") or [])),
+                            "tok": tokens(p["n"]), "cep": "", "xy": tuple(xy) if xy else None, "acred": ""})
+    raizes = {}
+    for u in out:
+        if u["cnpj"]:
+            raizes[(u["uf"], u["cnpj"][:8])] = raizes.get((u["uf"], u["cnpj"][:8]), 0) + 1
+    for u in out:
+        u["rede"] = bool(u["cnpj"]) and raizes[(u["uf"], u["cnpj"][:8])] > 1
+    return out, data, cidades, cpfs
+
+
+def casar_sulamerica(por_cidade, su, soltos=(), k="u", kn="nu", letra="u"):
     """Poe cada unidade da SulAmerica na linha (Amil, Bradesco ou as duas) do mesmo lugar;
     a que nao casa vira linha propria. Mesmas regras do par Amil x Bradesco (nota_par),
     contra cada unidade da linha. `soltos`: medicos pessoa fisica da Amil e da Bradesco que
     nao casaram com ninguem ("a" ou "b", unidade); o consultorio que a SulAmerica cadastra
-    como empresa casa com eles no mesmo endereco e vira linha das duas operadoras."""
+    como empresa casa com eles no mesmo endereco e vira linha das duas operadoras.
+    A Parana Clinicas entra do mesmo jeito, depois da SulAmerica (k="pc", kn="np", letra="p"),
+    e casa tambem com a unidade da SulAmerica da linha. Devolve (casadas, soltos usados)."""
     def chaves(u):
         k = set()
         if len(u["cnpj"]) == 14:
@@ -434,18 +506,19 @@ def casar_sulamerica(por_cidade, su, soltos=()):
     for chave, c in por_cidade.items():
         idx = {}
         for n, l in enumerate(c["linhas"]):
-            for u in l["_ua"] + l["_ub"]:
-                for k in chaves(u):
-                    idx.setdefault(k, set()).add(n)
+            for u in l["_ua"] + l["_ub"] + l.get("_uu", []):
+                for ch in chaves(u):
+                    idx.setdefault(ch, set()).add(n)
         for k_su, x in enumerate(su):
             if (x["uf"], x["cidade"]) != chave:
                 continue
             cands = set()
-            for k in chaves(x):
-                cands |= idx.get(k, set())
+            for ch in chaves(x):
+                cands |= idx.get(ch, set())
             for n in cands:
                 l = c["linhas"][n]
-                s = max([nota_par(x, ub) for ub in l["_ub"]] + [nota_par(ua, x) for ua in l["_ua"]] + [0])
+                s = max([nota_par(x, ub) for ub in l["_ub"]] + [nota_par(ua, x) for ua in l["_ua"]] +
+                        [nota_par(x, uu) for uu in l.get("_uu", [])] + [0])
                 if s >= 0.72:
                     pares.append((s, k_su, chave, n))
     # empate (duas unidades e duas linhas no mesmo predio, com a mesma nota): decide pelo
@@ -459,27 +532,30 @@ def casar_sulamerica(por_cidade, su, soltos=()):
         usada_su.add(k_su)
         usada_l.add((chave, n))
         l, x = por_cidade[chave]["linhas"][n], su[k_su]
-        l["u"] = x["p"]
+        l[k] = x["p"]
+        if x.get("d"):
+            l["pd"] = x["d"]
+        l.setdefault("_u" + letra, []).append(x)
         if sem_acento(x["nome"]) not in {sem_acento(l["n"]), sem_acento(l["al"])}:
-            l["nu"] = bonito(x["nome"])
+            l[kn] = bonito(x["nome"])
         # o nome, o CNPJ e o endereco da SulAmerica nao entram no que junta linhas
         # (juntar_empresa): a SulAmerica cadastra unidades com o nome do conjunto ("Lab
         # Imagem" para a Masto Centro e a Denso no mesmo predio, "Hospital do Coracao" na
         # unidade de diagnostico da Cidade Jardim) e ligaria empresas que a Amil e a
         # Bradesco listam separadas
-        l["_l"] += "u"
+        l["_l"] += letra
     # consultorio da SulAmerica x medico pessoa fisica da Amil ou da Bradesco que ficou fora
     idx_s = {}
     for n, (lado, u) in enumerate(soltos):
-        for k in chaves(u):
-            idx_s.setdefault((u["uf"], u["cidade"], k), set()).add(n)
+        for ch in chaves(u):
+            idx_s.setdefault((u["uf"], u["cidade"], ch), set()).add(n)
     pares = []
     for k_su, x in enumerate(su):
         if k_su in usada_su or x.get("pf"):
             continue
         cands = set()
-        for k in chaves(x):
-            cands |= idx_s.get((x["uf"], x["cidade"], k), set())
+        for ch in chaves(x):
+            cands |= idx_s.get((x["uf"], x["cidade"], ch), set())
         for n in cands:
             lado, u = soltos[n]
             s = nota_par(u, x) if lado == "a" else nota_par(x, u)
@@ -505,15 +581,17 @@ def casar_sulamerica(por_cidade, su, soltos=()):
         n = ua["nome"] if ua else x["nome"]
         linha = {"n": bonito(n), "al": "", "t": x["tipo"], "b": bonito(x["bairro"] or (ua or ub)["bairro"]),
                  "e": bonito(x["end"]), "f": x["tel"] or (ua or ub).get("tel", ""), "s": "", "a": [],
-                 "m": "", "u": x["p"], "_c": {x["cnpj"]} if len(x["cnpj"]) == 14 else set(),
+                 "m": "", k: x["p"], "_c": {x["cnpj"]} if len(x["cnpj"]) == 14 else set(),
                  "_n": [x["nome"]] + [u["nome"] for u in (ua, ub) if u],
                  "_e": [x["end"]] + [u["end"] for u in (ua, ub) if u],
-                 "_l": ("a" if ua else "") + ("b" if ub else "") + "u",
-                 "_ua": [ua] if ua else [], "_ub": [ub] if ub else []}
+                 "_l": ("a" if ua else "") + ("b" if ub else "") + letra,
+                 "_ua": [ua] if ua else [], "_ub": [ub] if ub else [], "_u" + letra: [x]}
+        if x.get("d"):
+            linha["pd"] = x["d"]
         if ua:
             linha.update(a=ua["p"], s=ua.get("acred", ""))
             if sem_acento(x["nome"]) != sem_acento(n):
-                linha["nu"] = bonito(x["nome"])
+                linha[kn] = bonito(x["nome"])
         if ub:
             linha["m"] = ub["m"]
             if sem_acento(ub["nome"]) != sem_acento(n):
@@ -524,10 +602,12 @@ def casar_sulamerica(por_cidade, su, soltos=()):
             continue
         c = por_cidade.setdefault((x["uf"], x["cidade"]), {"amil": 0, "brad": 0, "ambos": 0, "linhas": []})
         c["linhas"].append({"n": bonito(x["nome"]), "al": "", "t": x["tipo"], "b": bonito(x["bairro"]),
-                            "e": bonito(x["end"]), "f": x["tel"], "s": "", "a": [], "m": "", "u": x["p"],
+                            "e": bonito(x["end"]), "f": x["tel"], "s": "", "a": [], "m": "", k: x["p"],
                             "_c": {x["cnpj"]} if len(x["cnpj"]) == 14 else set(), "_n": [x["nome"]],
-                            "_e": [x["end"]], "_l": "u", "_ua": [], "_ub": []})
-    return len(usada_su)
+                            "_e": [x["end"]], "_l": letra, "_ua": [], "_ub": [], "_u" + letra: [x]})
+        if x.get("d"):
+            c["linhas"][-1]["pd"] = x["d"]
+    return len(usada_su), usado_s
 
 
 def chave_endereco(end):
@@ -566,7 +646,7 @@ def resolver_cidades(au, bu):
             u["p"] = u["pp"].get(u["cidade"]) or u["p"]
 
 
-OPERADORA = {"a": "Amil", "b": "Bradesco", "u": "SulAmérica"}
+OPERADORA = {"a": "Amil", "b": "Bradesco", "u": "SulAmérica", "p": "Paraná Clínicas"}
 
 
 def juntar_empresa(linhas, juntar_marcas):
@@ -618,20 +698,21 @@ def juntar_empresa(linhas, juntar_marcas):
         # quem esta em mais operadoras primeiro (Amil e Bradesco; a SulAmerica nao muda o
         # nome da linha: a unidade "Itaim" com SulAmerica nao vira o nome do Sirio Libanes);
         # a marca diz o que so parte delas lista
-        g.sort(key=lambda l: (-len(l["_l"].replace("u", "")), l["_l"].replace("u", "") or "u"))
+        # (nem a Parana Clinicas, que tambem entra depois)
+        g.sort(key=lambda l: (-len(re.sub("[up]", "", l["_l"])), re.sub("[up]", "", l["_l"]) or l["_l"]))
         todas = set("".join(l["_l"] for l in g))
         ends, vistos = [], []
         for l in g:
             if not l["e"] or any(l["e"] == v or mesmo_endereco(l["e"], v) for v in vistos):
                 continue                  # o mesmo endereco escrito de outro jeito
             vistos.append(l["e"])
-            ops = [OPERADORA[k] for k in "abu" if k in l["_l"]]
+            ops = [OPERADORA[k] for k in "abup" if k in l["_l"]]
             marca = "" if set(l["_l"]) == todas else \
-                " (só " + ops[0] + ")" if len(ops) == 1 else " (" + " e ".join(ops) + ")"
+                " (só " + ops[0] + ")" if len(ops) == 1 else " (" + ", ".join(ops[:-1]) + " e " + ops[-1] + ")"
             ends.append(l["e"] + marca)
         e = " / ".join(ends[:3]) + (" e mais " + str(len(ends) - 3) + " endereços" if len(ends) > 3 else "")
         n = g[0]["n"]
-        nomes_b, nomes_u = [], []
+        nomes_b, nomes_u, nomes_p = [], [], []
         for l in g:
             nb = l["al"] or (l["n"] if "b" in l["_l"] and "a" not in l["_l"] else "")
             if "b" in l["_l"] and nb and sem_acento(nb) != sem_acento(n) and nb not in nomes_b:
@@ -639,6 +720,9 @@ def juntar_empresa(linhas, juntar_marcas):
             nu = l.get("nu") or (l["n"] if l["_l"] == "u" else "")
             if nu and sem_acento(nu) != sem_acento(n) and nu not in nomes_u:
                 nomes_u.append(nu)
+            np_ = l.get("np") or (l["n"] if l["_l"] == "p" else "")
+            if np_ and sem_acento(np_) != sem_acento(n) and np_ not in nomes_p:
+                nomes_p.append(np_)
         m = ""
         for l in g:
             if l["m"]:
@@ -653,6 +737,16 @@ def juntar_empresa(linhas, juntar_marcas):
             linha["u"] = u
         if nomes_u:
             linha["nu"] = " · ".join(nomes_u[:2])
+        # Parana Clinicas: o plano e direcionamento (D) so se nenhum endereco o atende direto
+        pc = sorted({x for l in g for x in l.get("pc", [])})
+        if pc:
+            linha["pc"] = pc
+            direto = {x for l in g for x in l.get("pc", []) if x not in l.get("pd", [])}
+            pd = sorted({x for l in g for x in l.get("pd", [])} - direto)
+            if pd:
+                linha["pd"] = pd
+        if nomes_p:
+            linha["np"] = " · ".join(nomes_p[:2])
         o = next((l["o"] for l in g if l.get("o")), "")
         if o and not (a and m):
             linha["o"] = o
@@ -1069,27 +1163,32 @@ def montar():
     su, datas_su = unidades_sulamerica(prenomes)
     soltos = ([("a", a) for i, a in enumerate(au) if a.get("pf") and i not in par_a] +
               [("b", b) for j, b in enumerate(bu) if b.get("pf") and j not in par_b])
-    casadas_su = casar_sulamerica(por_cidade, su, soltos) if su else 0
+    casadas_su, usados = casar_sulamerica(por_cidade, su, soltos) if su else (0, set())
+    # Parana Clinicas (estudo-rede-parana-clinicas): cada unidade na linha do mesmo lugar, como a SulAmerica
+    pcu, data_pc, cidades_pc, cpfs_pc = unidades_parana()
+    soltos_pc = [s for n, s in enumerate(soltos) if n not in usados]
+    casadas_pc = casar_sulamerica(por_cidade, pcu, soltos_pc, k="pc", kn="np", letra="p")[0] if pcu else 0
     for c in por_cidade.values():
         for l in c["linhas"]:
-            l.pop("_ua", None)
-            l.pop("_ub", None)
+            for k in ("_ua", "_ub", "_uu", "_up"):
+                l.pop(k, None)
         c["linhas"] = juntar_empresa(c["linhas"], juntar_marcas)
         c["amil"] = sum(1 for l in c["linhas"] if l["a"])
         c["brad"] = sum(1 for l in c["linhas"] if l["m"])
         c["sula"] = sum(1 for l in c["linhas"] if l.get("u"))
+        c["pc"] = sum(1 for l in c["linhas"] if l.get("pc"))
         c["ambos"] = sum(1 for l in c["linhas"] if l["a"] and l["m"])
 
     cidades, linhas_por_cidade, casados_total = [], {}, 0
     for (uf, cidade), c in sorted(por_cidade.items()):
-        if sum(1 for k in ("amil", "brad", "sula") if c[k]) < 2:
+        if sum(1 for k in ("amil", "brad", "sula", "pc") if c[k]) < 2:
             continue                      # so interessa onde ha rede de pelo menos duas operadoras
         c["linhas"].sort(key=lambda l: (l["t"], sem_acento(l["n"])))
         casados_total += c["ambos"]
         chave_txt = uf + "|" + cidade
         linhas_por_cidade[chave_txt] = c["linhas"]
         cidades.append({"k": chave_txt, "uf": uf, "nome": bonito(cidade),
-                        "amil": c["amil"], "brad": c["brad"], "ambos": c["ambos"], "sula": c["sula"]})
+                        "amil": c["amil"], "brad": c["brad"], "ambos": c["ambos"], "sula": c["sula"], "pc": c["pc"]})
 
     # cidades onde a SulAmerica foi coletada: as que tem arquivo e, nos estados coletados
     # inteiros (sulamerica/_estados.json), todas - ali, sem arquivo e sem rede SulAmerica
@@ -1119,16 +1218,26 @@ def montar():
         # SulAmerica: planos e as cidades coletadas (so nelas os planos aparecem)
         "sulamerica": [{"c": c, "r": r, "cor": cor} for c, r, cor in PLANOS_SULA],
         "sulaCid": sula_cid,
+        # Parana Clinicas: planos e as cidades com rede dela (so nelas os planos aparecem); na linha,
+        # "pc" sao os planos e "pd" os que sao so por direcionamento (D), fora das contagens
+        "parana": [{"c": c, "r": r, "cor": cor} for c, r, cor in PLANOS_PC] if pcu else [],
+        "pcCid": {uf + "|" + c: data_pc for uf, c in sorted(cidades_pc)},
         "cidades": sorted(cidades, key=lambda c: -(c["amil"] + c["brad"])),
         "rede": linhas_por_cidade,
     }
+    texto = ("/* gerado por ferramentas/montar_comparativo.py - nao editar */\n"
+             "window.COMPARATIVO=" + json.dumps(dados, ensure_ascii=False, separators=(",", ":")) + ";\n")
+    # CPF (medico pessoa fisica) nunca vai para a pagina publica: nem formatado, nem o numero cru
+    # de algum documento de 11 digitos das bases
+    cpf_fmt = [x for x in re.findall(r"(?<!\d)\d{3}\.\d{3}\.\d{3}-\d{2}(?!\d)", texto) if cpf_valido(x)]
+    if cpf_fmt or any(c in texto for c in cpfs_pc):
+        raise SystemExit(f"dados.js com {len(cpf_fmt)} CPF; nada foi gravado")
     destino = RAIZ / "comparativo" / "dados.js"
     destino.parent.mkdir(exist_ok=True)
-    destino.write_text("/* gerado por ferramentas/montar_comparativo.py - nao editar */\n"
-                       "window.COMPARATIVO=" + json.dumps(dados, ensure_ascii=False,
-                                                          separators=(",", ":")) + ";\n",
-                       encoding="utf-8")
+    destino.write_text(texto, encoding="utf-8")
     print(f"SulAmerica: {len(su)} unidades, {casadas_su} na linha de Amil ou Bradesco")
+    print(f"Parana Clinicas: {len(pcu)} unidades ({sum(1 for u in pcu if u['pf'])} medicos sem CNPJ), "
+          f"{casadas_pc} na linha de outra operadora")
     print(f"{len(cidades)} cidades, {casados_total} prestadores nas duas redes, "
           f"{destino.stat().st_size // 1024} KB")
     return dados
